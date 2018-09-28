@@ -115,20 +115,21 @@ public:
 				it = enem_vec.erase(it);
 				kill = true;
 			}
+			else it++;
 		}
+		return kill;
 	}
 	
 	void player_move(int dir) {
 		int test_x, test_y;
-		test_x = play.move_test(dir).first;
-		test_y = play.move_test(dir).second;
-		if (test_x>=0 && test_x < map_size && test_y >= 0 && test_y <map_size) {
+		test_x = player.move_test(dir).first;
+		test_y = player.move_test(dir).second;
+		if (test_x >= 0 && test_x < map_size && test_y >= 0 && test_y < map_size) {
 			if (map_arr[test_x][test_y] != wall) {
 				move(dir);
 			}
-			else it++;
 		}
-		return kill;
+
 	}
 
 	bool update_bullets() {
