@@ -26,6 +26,7 @@ public:
 		map_init();
 		object_init();
 	}
+	//Initializing Functions
 	void world_init() {
 		map_arr = new int*[map_size];
 		for (int i = 0; i < map_size; ++i)
@@ -70,7 +71,7 @@ public:
 	void player_init(int mode) {
 		if (mode == basic_mode) {
 			player = Player(0, 0);
-		}		
+		}
 	}
 	void item_init() {
 		int tempx, tempy;
@@ -86,6 +87,7 @@ public:
 			}
 		}
 	}
+	//Done Initializing
 	bool check_range(pair<int, int> pos) {
 		int x = pos.first;
 		int y = pos.second;
@@ -93,8 +95,8 @@ public:
 			return false;
 		return true;
 	}
-	//false 반환시 게임 종료
-	bool update_enemies() {
+	//false 반환시 게임 종료 --> 수정해야함, player와 만날 때에는 chase일 때만이기 때문에 Random에서 판별 불가
+	bool update_enemies_random() {
 		enem_vec;
 		int direction = rand() % 4;
 		for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
@@ -107,6 +109,7 @@ public:
 			it->move(direction);
 		}
 	}
+
 	bool kill_enemies(pair<int, int> pos) {
 		bool kill = false;
 		for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end();) {
@@ -129,13 +132,11 @@ public:
 			else it++;
 		}
 	}
-
-	void player_move(int dir) {
+	//Player에 대하여 Valid한 Move이면 움직이고 아니면 가만히 있음
+	void valid_move(int dir) {
 		pair<int, int> test_pos = player.move_test(dir);
-		if (check_range(test_pos)) {
-			if (map_arr[test_pos.first][test_pos.second] != wall) {
-				move(dir);
-			}
+		if (check_range(test_pos) && map_arr[test_pos.first][test_pos.second] != wall) {
+			move(dir);
 		}
 	}
 };
