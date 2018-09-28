@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -7,15 +8,55 @@
 using namespace std;
 
 Map newmap;
+void player_move_func(int key, int x, int y);
+void bullet_make(unsigned char key, int x, int y);
+void move_default(int v);
+void display();
+void reshape(int w, int h);
 
-void main(int argc, char **argv) {
+int main(int argc, char **argv) {
 	newmap = Map();
+	glutInit(&argc, argv);
+	glutInitWindowPosition(-1,-1);
+	glutInitWindowSize(500, 500);//창 크기 설정
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+	glutCreateWindow("GAME");
+	glutReshapeFunc(reshape);
+	glutDisplayFunc(display);
+
 	glutSpecialFunc(player_move_func);
 	glutKeyboardFunc(bullet_make);
 	glutTimerFunc(1000, move_default,1);
 	glutMainLoop();
-}
 
+	return 0;
+}
+void reshape(int w, int h) {
+	glLoadIdentity();
+	glViewport(0, 0, w, h);
+	gluOrtho2D(0, newmap.get_map_size(), 0, newmap.get_map_size());
+}
+void display() {
+	
+	glClearColor(1.0, 1.0, 1.0, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	int ** map_arr = newmap.get_map_arr();
+	for (int y = 0; y < newmap.get_map_size(); y++) {
+		for (int x = 0; x < newmap.get_map_size(); x++) {
+			if (map_arr[y][x] == map_info::wall) {
+				
+			}
+
+		}
+	}
+	/*
+	glColor3f(0.0, 0.0, 0.0);
+				glRectf(x, y + 1, x + 1, y);
+	*/
+	glColor3f(0.0, 1.0, 0.0);
+	glutSwapBuffers();
+}
 //클래스 안에서 본 함수를 선언하면 Error 반환하기에 여기서 선언.
 void player_move_func(int key, int x, int y) {
 	switch (key) {
@@ -38,5 +79,5 @@ void bullet_make(unsigned char key, int x, int y) {
 }
 void move_default(int v) {
 	//Have to implement
-	glutTimerFunc(1000, move_default, 1);
+	//glutTimerFunc(1000, move_default, 1);
 }

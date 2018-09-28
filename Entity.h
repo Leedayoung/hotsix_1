@@ -27,6 +27,7 @@ public:
 			case direction::right:
 				return make_pair(pos_x + 1, pos_y);
 		}
+		return make_pair(-1, -1);
 	}
 	void move(int direc) {
 		switch (direc) {

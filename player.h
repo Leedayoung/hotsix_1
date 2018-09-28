@@ -18,8 +18,9 @@ public:
 	int get_direction() {
 		return direction;
 	}
-	int set_direction(int dir) {
+	void set_direction(int dir) {
 		direction = dir;
+		return;
 	}
 	int get_num_i() {
 		return num_i;
