@@ -8,7 +8,9 @@ using namespace std;
 Map newmap;
 
 void main(int argc, char **argv) {
-	
+	newmap = Map();
+	glutSpecialFunc(player_move_func);
+	glutMainLoop();
 }
 
 void player_move_func(int key, int x, int y) {

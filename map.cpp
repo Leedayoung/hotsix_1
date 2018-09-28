@@ -22,11 +22,11 @@ private:
 
 public:
 	Map() {
-		init_world();
+		world_init();
 		map_init();
 		object_init();
 	}
-	void init_world() {
+	void world_init() {
 		map_arr = new int*[map_size];
 		for (int i = 0; i < map_size; ++i)
 			map_arr[i] = new int[map_size];
@@ -119,7 +119,17 @@ public:
 		}
 		return kill;
 	}
-	
+	bool update_bullets() {
+		for (vector<Bullet>::iterator it = bull_vec.begin(); it != bull_vec.end(); ) {
+			pair<int, int> new_pos = it->move_test();
+			if (check_range(new_pos) == false || kill_enemies(new_pos) || 
+					map_arr[new_pos.first][new_pos.second] == wall) {
+				it = bull_vec.erase(it);
+			}
+			else it++;
+		}
+	}
+
 	void player_move(int dir) {
 		int test_x, test_y;
 		test_x = player.move_test(dir).first;
@@ -130,16 +140,5 @@ public:
 			}
 		}
 
-	}
-
-	bool update_bullets() {
-		for (vector<Bullet>::iterator it = bull_vec.begin(); it != bull_vec.end(); ) {
-			pair<int, int> new_pos = it->move_test();
-			if (check_range(new_pos) == false || kill_enemies(new_pos) || 
-					map_arr[new_pos.first][new_pos.second] == wall) {
-				it = bull_vec.erase(it);
-			}
-			else it++;
-		}
 	}
 };
