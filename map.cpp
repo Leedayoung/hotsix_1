@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
-#include "player.cpp"
+#include "player.h"
+#include "bullet.h"
+#include "Enemy.h"
 using namespace std;
 
 class Map {
@@ -10,6 +12,7 @@ private:
 	int** map_arr;
 	vector <int> loc_wall;
 	vector<Enemy> enem_vec;
+	Player player;
 	int basic_mode = 0;
 	int random_mode = 1;
 	int item_numb;
@@ -50,7 +53,7 @@ public:
 				bool flag = true;
 				if (map_arr[tempx][tempy] != wall) {
 					for (int j = 0; j < i; ++j) {
-						if (enem_vec[j].get_x == tempx && enem_vec[j].get_y == tempy)
+						if (enem_vec[j].get_x() == tempx && enem_vec[j].get_y() == tempy)
 							flag = false;
 					}
 					if (flag) {
@@ -63,7 +66,7 @@ public:
 	}
 	void player_init(int mode) {
 		if (mode == basic_mode) {
-			Player(0, 0);
+			player = Player(0, 0);
 		}		
 	}
 	void item_init() {
@@ -78,6 +81,27 @@ public:
 					break;
 				}
 			}
+		}
+	}
+	bool check_range(pair<int, int> pos) {
+		int x = pos.first;
+		int y = pos.second;
+		if (x < 0 || x >= map_size || y < 0 || y >= map_size)
+			return false;
+		return true;
+	}
+	bool update_enemies() {
+		enem_vec;
+		int direction = rand() % 4;
+		for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
+			pair<int, int> new_pos = it->move_test(direction);
+			if (player.get_position() == new_pos) {
+				return false;
+			}
+			if (check_range(new_pos) == false) continue;
+			if (map_arr[new_pos.first][new_pos.second] == wall) continue;
+			it->move(direction);
+			
 		}
 	}
 };
