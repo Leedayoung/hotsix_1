@@ -12,6 +12,7 @@ private:
 	vector<Enemy> enem_vec;
 	int basic_mode = 0;
 	int random_mode = 1;
+	int item_numb;
 
 public:
 	Map() {
@@ -39,7 +40,6 @@ public:
 		enemy_init();
 		player_init(basic_mode);
 		item_init();
-		
 	}
 	void enemy_init() {
 		int tempx, tempy;
@@ -55,6 +55,7 @@ public:
 					}
 					if (flag) {
 						enem_vec.push_back(Enemy(i, tempx, tempy));
+						break;
 					}
 				}
 			}
@@ -66,6 +67,17 @@ public:
 		}		
 	}
 	void item_init() {
-
+		int tempx, tempy;
+		for (int i = 0; i < item_numb; ++i) {
+			while (true) {
+				tempx = rand() % map_size;
+				tempy = rand() % map_size;
+				bool flag = true;
+				if (map_arr[tempx][tempy] == empty) {
+					map_arr[tempx][tempy] == item;
+					break;
+				}
+			}
+		}
 	}
 };
