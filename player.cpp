@@ -82,6 +82,13 @@ public:
 	}
 	void move(int direc) {
 		Entity::move(direc);
-		
+	}
+};
+class Bullet : public Entity {
+private:
+	int id;
+public:
+	int get_id() {
+		return id;
 	}
 };
