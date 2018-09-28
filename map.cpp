@@ -12,6 +12,7 @@ private:
 	int** map_arr;
 	vector <int> loc_wall;
 	vector<Enemy> enem_vec;
+	vector<Bullet> bull_vec;
 	Player player;
 	int basic_mode = 0;
 	int random_mode = 1;
@@ -102,6 +103,29 @@ public:
 			if (check_range(new_pos) == false) continue;
 			if (map_arr[new_pos.first][new_pos.second] == wall) continue;
 			it->move(direction);
+		}
+	}
+	bool kill_enemies(pair<int, int> pos) {
+		bool kill = false;
+		for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end();) {
+			pair<int, int> new_pos = it->get_position();
+			if (new_pos == pos) {
+				it = enem_vec.erase(it);
+				kill = true;
+			}
+			else it++;
+		}
+		return kill;
+	}
+
+	bool update_bullets() {
+		for (vector<Bullet>::iterator it = bull_vec.begin(); it != bull_vec.end(); ) {
+			pair<int, int> new_pos = it->move_test();
+			if (check_range(new_pos) == false || kill_enemies(new_pos) || 
+					map_arr[new_pos.first][new_pos.second] == wall) {
+				it = bull_vec.erase(it);
+			}
+			else it++;
 		}
 	}
 };
