@@ -90,6 +90,7 @@ public:
 			return false;
 		return true;
 	}
+	//false 반환시 게임 종료
 	bool update_enemies() {
 		enem_vec;
 		int direction = rand() % 4;
@@ -101,7 +102,6 @@ public:
 			if (check_range(new_pos) == false) continue;
 			if (map_arr[new_pos.first][new_pos.second] == wall) continue;
 			it->move(direction);
-			
 		}
 	}
 };
