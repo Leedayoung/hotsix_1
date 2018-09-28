@@ -3,7 +3,6 @@
 #include <GL/freeglut.h>
 #include <vector>
 #include "map.cpp"
-#include "player.cpp"
 using namespace std;
 
 Map newmap;
