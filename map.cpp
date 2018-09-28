@@ -97,20 +97,36 @@ public:
 			return false;
 		return true;
 	}
+	bool check_wall(pair<int, int> pos) {
+		if (map_arr[pos.first][pos.second] == wall) return true;
+		else return false;
+	}
+
 	//false 반환시 게임 종료 --> 수정해야함, player와 만날 때에는 chase일 때만이기 때문에 Random에서 판별 불가, Chase 함수 짜야함
 	bool update_enemies_random() {
 		enem_vec;
-		int direction = rand() % 4;
+		int direction;
 		for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
-			pair<int, int> new_pos = it->move_test(direction);
-			//여기서 체크하고 return하면 안됨, Move 하고 return false 해야 잡힌 것이 보임
-			if (player.get_position() == new_pos) {
-				return false;
+			if (it->check_chase(player.get_position())) {
+				int x = player.get_x() - it->get_x();
+				int y = player.get_y() - it->get_y();
+				if (x > 0 && !check_wall(it->move_test(direction::right))) it->move(direction::right);
+				else if (x < 0 && !check_wall(it->move_test(direction::left))) it->move(direction::left);
+				else if (y > 0 && !check_wall(it->move_test(direction::up))) it->move(direction::up);
+				else if (y < 0 && !check_wall(it->move_test(direction::down))) it->move(direction::down);
+				if (player.get_position() == it->get_position()) {
+					return false;
+				}
 			}
-			if (check_range(new_pos) == false) continue;
-			if (map_arr[new_pos.first][new_pos.second] == wall) continue;
-			it->move(direction);
+			else {
+				direction = rand() % 4;
+				pair<int, int> new_pos = it->move_test(direction);
+				if (check_range(new_pos) == false) continue;
+				if (map_arr[new_pos.first][new_pos.second] == wall) continue;
+				it->move(direction);
+			}
 		}
+		return true;
 	}
 	bool kill_enemies(pair<int, int> pos) {
 		bool kill = false;
@@ -131,7 +147,10 @@ public:
 					map_arr[new_pos.first][new_pos.second] == wall) {
 				it = bull_vec.erase(it);
 			}
-			else it++;
+			else {
+				it->move();
+				it++;
+			}
 		}
 	}
 
@@ -156,13 +175,14 @@ public:
 		pair<int, int> current = player.get_position();
 		if (map_arr[current.first][current.second] == item) {
 			map_arr[current.first][current.second] = empty;
+			player.add_num_i();
 			return true;
 		}
 		return false;
 	}
 	//Enemy를 다 잡아서 끝나면 True를 Return함
 	bool isEnd() {
-		if (enem_vec.size == 0) return true;
+		if (enem_vec.size() == 0) return true;
 		return false;
 	}
 

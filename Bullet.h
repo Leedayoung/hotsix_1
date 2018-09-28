@@ -18,4 +18,7 @@ public:
 	pair<int, int> move_test() {
 		return Entity::move_test(direction);
 	}
+	void move() {
+		Entity::move(direction);
+	}
 };
