@@ -2,7 +2,7 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <vector>
-#include "map.cpp"
+#include "map.h"
 #include "player.h"
 using namespace std;
 
