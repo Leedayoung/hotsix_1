@@ -131,14 +131,11 @@ public:
 	}
 
 	void player_move(int dir) {
-		int test_x, test_y;
-		test_x = player.move_test(dir).first;
-		test_y = player.move_test(dir).second;
-		if (test_x >= 0 && test_x < map_size && test_y >= 0 && test_y < map_size) {
-			if (map_arr[test_x][test_y] != wall) {
+		pair<int, int> test_pos = player.move_test(dir);
+		if (check_range(test_pos)) {
+			if (map_arr[test_pos.first][test_pos.second] != wall) {
 				move(dir);
 			}
 		}
-
 	}
 };
