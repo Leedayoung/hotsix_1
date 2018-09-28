@@ -1,4 +1,6 @@
 #include <iostream>
+#include <GL/glew.h>
+#include <GL/freeglut.h>
 #include <vector>
 #include "player.cpp"
 using namespace std;
@@ -13,7 +15,7 @@ private:
 	int basic_mode = 0;
 	int random_mode = 1;
 	int item_numb;
-
+	Player play = Player(0,0);
 public:
 	Map() {
 		init_world();
@@ -63,8 +65,8 @@ public:
 	}
 	void player_init(int mode) {
 		if (mode == basic_mode) {
-			Player(0, 0);
-		}		
+			play = Player(0, 0);
+		}
 	}
 	void item_init() {
 		int tempx, tempy;
@@ -77,6 +79,17 @@ public:
 					map_arr[tempx][tempy] == item;
 					break;
 				}
+			}
+		}
+	}
+	
+	void player_move(int dir) {
+		int test_x, test_y;
+		test_x = play.move_test(dir).first;
+		test_y = play.move_test(dir).second;
+		if (test_x>=0 && test_x < map_size && test_y >= 0 && test_y <map_size) {
+			if (map_arr[test_x][test_y] != wall) {
+				move(dir);
 			}
 		}
 	}

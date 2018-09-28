@@ -6,6 +6,25 @@
 #include "player.cpp"
 using namespace std;
 
-void main(int argc, char **argv) {
+Map newmap;
 
+void main(int argc, char **argv) {
+	
+}
+
+void player_move_func(int key, int x, int y) {
+	switch (key) {
+	case GLUT_KEY_UP:
+		newmap.player_move(direction::up);
+		break;
+	case GLUT_KEY_DOWN:
+		newmap.player_move(direction::down);
+		break;
+	case GLUT_KEY_RIGHT:
+		newmap.player_move(direction::right);
+		break;
+	case GLUT_KEY_LEFT:
+		newmap.player_move(direction::left);
+		break;
+	}
 }
