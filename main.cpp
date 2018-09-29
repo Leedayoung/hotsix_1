@@ -121,8 +121,15 @@ void display() {
 	
 	glColor3f(0.0, 0.0, 0.0);
 	print(x + 7 * item_size, y+display_num+1, "Item List");
-	for(int i=1; i<=item_num;i++)
-		print(x + 7 * item_size+2, y+display_num-2*i, s+ to_string(i));
+	for (int i = 1; i <= item_num; i++)
+			glColor3f(0.0, 0.0, 0.0);
+	//Enemy Kills
+	int enemy_numb = newmap.get_numb_enemy();
+	int killed = enemy_numb-newmap.get_enem_vec().size();
+	string ss = "Killed Enemy ";
+	string dash = "/";
+	print( x+ 1, y+2*view_size-3, ss+to_string(killed)+dash+to_string(enemy_numb));
+
 	glutSwapBuffers();
 }
 //클래스 안에서 본 함수를 선언하면 Error 반환하기에 여기서 선언.

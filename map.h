@@ -20,7 +20,6 @@ private:
 	int basic_mode = 0;
 	int random_mode = 1;
 	int item_numb;
-
 public:
 	Map() {
 		map_size = 148;
@@ -120,6 +119,10 @@ public:
 		}
 	}
 	/*Done Initializing Functions*/
+
+	int get_numb_enemy() {
+		return numb_enemy;
+	}
 
 	vector<Enemy>& get_enem_vec() {
 		return enem_vec;
