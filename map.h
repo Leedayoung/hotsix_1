@@ -50,7 +50,6 @@ public:
 		for (int i = 0; i < (int)loc_wall.size(); ++i) {
 			map_arr[loc_wall[i]/ map_size][loc_wall[i] % map_size] = map_info::wall;
 		}
-
 	}
 	void object_init() {
 		enemy_init();
@@ -96,7 +95,13 @@ public:
 			}
 		}
 	}
-	/*Done Functions*/
+	/*Done Initializing Functions*/
+	
+	void movements() {
+		update_enemies();
+		update_bullets();
+	}
+
 	vector<Enemy>& get_enem_vec() {
 		return enem_vec;
 	}
@@ -124,9 +129,7 @@ public:
 		if (map_arr[pos.first][pos.second] == wall) return true;
 		else return false;
 	}
-
-	//false 반환시 게임 종료 --> 수정해야함, player와 만날 때에는 chase일 때만이기 때문에 Random에서 판별 불가, Chase 함수 짜야함
-	bool update_enemies_random() {
+	bool update_enemies() {
 		enem_vec;
 		int direction;
 		for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
@@ -163,7 +166,7 @@ public:
 		}
 		return kill;
 	}
-	bool update_bullets() {
+	void update_bullets() {
 		for (vector<Bullet>::iterator it = bull_vec.begin(); it != bull_vec.end(); ) {
 			pair<int, int> new_pos = it->move_test();
 			if (check_range(new_pos) == false || kill_enemies(new_pos) || 
@@ -176,7 +179,6 @@ public:
 			}
 		}
 	}
-
 	//Bullet 생성
 	void create_bullet() {
 		int _posx = player.get_x();

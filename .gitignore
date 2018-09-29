@@ -2,3 +2,10 @@ Debug/*
 *.vcxproj*
 x64/*
 dd.h
+.vs/
+Graphics Assn.sln
+Release/
+freeglut.dll
+glew32.dll
+test.cpp
+
