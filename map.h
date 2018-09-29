@@ -24,10 +24,13 @@ private:
 public:
 	Map() {
 		map_size = 100;
-		numb_enemy = 4;
+		numb_enemy = 10;
 		for (int i = 10; i < 30; ++i) {
 			loc_wall.push_back(i);
 		}
+		for (int i = 10; i < 30; i++)
+			loc_wall.push_back(i);
+		item_numb = 5;
 		world_init();
 		map_init();
 		object_init();
@@ -94,6 +97,16 @@ public:
 		}
 	}
 	/*Done Functions*/
+	vector<Enemy>& get_enem_vec() {
+		return enem_vec;
+	}
+	Player& get_player() {
+		return player;
+	}
+	vector<Bullet>& get_bullet_vec() {
+		return bull_vec;
+	}
+
 	int get_map_size() {
 		return map_size;
 	}
