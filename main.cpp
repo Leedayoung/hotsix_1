@@ -42,16 +42,6 @@ int main(int argc, char **argv) {
 void reshape(int w, int h) {
 	glLoadIdentity();
 	glViewport(0, 0, w, h);
-	/*pair<int, int> pos = newmap.get_player().get_position();
-	int x = pos.first, y = pos.second;
-	int view_size = newmap.get_map_size() / 4;
-	int map_size = newmap.get_map_size();
-	x -= view_size;
-	y -= view_size;
-	if (x < 0) x = 0;
-	if (y < 0) y = 0;
-	if (x + view_size > map_size) x = map_size - view_size;
-	if (y + view_size > map_size) y = map_size - view_size;*/
 	gluOrtho2D(0, newmap.get_map_size(), 0, newmap.get_map_size());
 }
 void display() {
