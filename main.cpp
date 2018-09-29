@@ -12,7 +12,6 @@
 using namespace std;
 
 Map newmap;
-bool flag = false;
 void player_move_func(int key, int x, int y);
 void bullet_make(unsigned char key, int x, int y);
 void move_enemies(int v);
@@ -31,15 +30,12 @@ int main(int argc, char **argv) {
 	glutCreateWindow("GAME");
 	glutReshapeFunc(reshape);
 	glutDisplayFunc(display);
-
-	if (!flag)
-	{
-		glutSpecialFunc(player_move_func);
-		glutKeyboardFunc(bullet_make);
-		glutTimerFunc(200, move_bullets, 1);
-		glutTimerFunc(1000, move_enemies, 1);
-		glutIdleFunc(endstate);
-	}
+	glutSpecialFunc(player_move_func);
+	glutKeyboardFunc(bullet_make);
+	glutTimerFunc(200, move_bullets, 1);
+	glutTimerFunc(1000, move_enemies, 1);
+	glutIdleFunc(endstate);
+	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 	glutMainLoop();
 	return 0;
 }
@@ -139,5 +135,5 @@ void move_bullets(int v) {
 	glutTimerFunc(200, move_bullets, 1);
 }
 void endstate() {
-	if (newmap.isEnd()) flag = true;
+	if (newmap.isEnd()) while (1); //glutLeaveMainLoop();
 }
