@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
 	newmap = Map();
 	glutInit(&argc, argv);
 	glutInitWindowPosition(-1,-1);
-	glutInitWindowSize(500, 500);//창 크기 설정
+	glutInitWindowSize(1000, 1000);//창 크기 설정
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
 	glutCreateWindow("GAME");
 	glutReshapeFunc(reshape);
@@ -46,21 +46,23 @@ void reshape(int w, int h) {
 }
 void display() {
 	
-	/*pair<int, int> pos = newmap.get_player().get_position();
-	int x = pos.first, y = pos.second;
-	int view_size = newmap.get_map_size() / 4;
-	int map_size = newmap.get_map_size();
-	x -= view_size;
-	y -= view_size;
-	if (x < 0) x = 0;
-	if (y < 0) y = 0;
-	if (x + view_size > map_size) x = map_size - view_size;
-	if (y + view_size > map_size) y = map_size - view_size;
-	gluOrtho2D(x, x + view_size, y, y + view_size);
-	*/
+	{
+		pair<int, int> pos = newmap.get_player().get_position();
+		int x = pos.first, y = pos.second;
+		int view_size = newmap.get_map_size() / 4;
+		int map_size = newmap.get_map_size();
+		x -= view_size;
+		y -= view_size;
+		if (x < 0) x = 0;
+		if (y < 0) y = 0;
+		if (x + 2*view_size > map_size) x = map_size - 2*view_size;
+		if (y + 2*view_size > map_size) y = map_size - 2*view_size;
+		glLoadIdentity();
+		gluOrtho2D(x, x+ 2 * view_size, y, y+2*view_size);
+	}
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
-
+	
 	int ** map_arr = newmap.get_map_arr();
 	double wall_len = 1.0 / newmap.get_map_size();
 	for (int y = 0; y < newmap.get_map_size(); y++) {
@@ -99,7 +101,8 @@ void display() {
 	int x = pos.first;
 	int y = pos.second;
 	glRectf(x, y + 1, x + 1, y);
-
+	
+	
 	glutSwapBuffers();
 }
 //클래스 안에서 본 함수를 선언하면 Error 반환하기에 여기서 선언.
