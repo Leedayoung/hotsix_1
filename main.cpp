@@ -20,6 +20,7 @@ void move_bullets(int v);
 void display();
 void reshape(int w, int h);
 void endstate();
+int print_result = 0;
 
 int main(int argc, char **argv) {
 	srand((unsigned)time(NULL));
@@ -40,6 +41,7 @@ int main(int argc, char **argv) {
 	glutMainLoop();
 	return 0;
 }
+
 void reshape(int w, int h) {
 	glLoadIdentity();
 	glViewport(0, 0, w, h);
@@ -66,8 +68,11 @@ void display() {
 	if (y < 0) y = 0;
 	if (x + 2*view_size > map_size) x = map_size - 2*view_size;
 	if (y + 2*view_size > map_size) y = map_size - 2*view_size;
+	
 	glLoadIdentity();
 	gluOrtho2D(x, x+ 2 * view_size, y, y+2*view_size);
+	
+	if (print_result) return;
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	
@@ -118,11 +123,11 @@ void display() {
 	int display_num = item_num > 3 ? item_num : 3;
 	display_num = display_num * 2 +1;
 	glRectf(x+7*item_size, y, x+8*item_size, y+display_num);
-	
 	glColor3f(0.0, 0.0, 0.0);
 	print(x + 7 * item_size, y+display_num+1, "Item List");
 	for (int i = 1; i <= item_num; i++)
-			glColor3f(0.0, 0.0, 0.0);
+		print(x + 7 * item_size + 2, y + display_num - 2 * i, s + to_string(i));
+
 	//Enemy Kills
 	int enemy_numb = newmap.get_numb_enemy();
 	int killed = enemy_numb-newmap.get_enem_vec().size();
@@ -130,6 +135,10 @@ void display() {
 	string dash = "/";
 	print( x+ 1, y+2*view_size-3, ss+to_string(killed)+dash+to_string(enemy_numb));
 
+	if (newmap.isEnd()) {
+		print(x+view_size, y +view_size, "You Lose");
+		print_result = 1;
+	}
 	glutSwapBuffers();
 }
 //클래스 안에서 본 함수를 선언하면 Error 반환하기에 여기서 선언.
@@ -157,16 +166,24 @@ void bullet_make(unsigned char key, int x, int y) {
 void move_enemies(int v) {
 	newmap.update_enemies();
 	glutPostRedisplay();
-	glutTimerFunc(1000, move_enemies, 1);
-}
+	if (!newmap.isEnd()) 
+		glutTimerFunc(1000, move_enemies, 1);
+	return;
+}	
 void move_bullets(int v) {
 	newmap.update_bullets();
 	glutPostRedisplay();
-	glutTimerFunc(150, move_bullets, 1);
+	if (!newmap.isEnd())
+		glutTimerFunc(150, move_bullets, 1);
+	return;
 }
 void endstate() {
-	if (newmap.isEnd())
-		glutLeaveMainLoop();
+	if (newmap.isEnd()) {
+		glutSpecialFunc(NULL);
+		glutKeyboardFunc(NULL);
+		glutIdleFunc(NULL);
+	}
+		//glutLeaveMainLoop();
 	//	while (1);
 
 }
