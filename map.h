@@ -24,9 +24,9 @@ private:
 public:
 	Map() {
 		map_size = 148;
-		numb_enemy = 10;
+		numb_enemy = 30;
 		wall_maker();
-		item_numb = 5;
+		item_numb = 6;
 		world_init();
 		map_init();
 		object_init();
@@ -39,6 +39,25 @@ public:
 		for (i = 0; i < 16; ++i) loc_wall.push_back(25+i + 14*map_size);
 		for (i = 15; i < 30; ++i) loc_wall.push_back(40 + map_size * i);
 		for (i = 0; i < 20; ++i) loc_wall.push_back(40 + i + 29*map_size);
+		for (i = 0;i < 35; ++i) loc_wall.push_back(i+map_size*50);
+		for (i = 0; i < 15; ++i) loc_wall.push_back(60 + map_size * i);
+		int len, x, y;
+		for (i = 0; i < 20; ++i) {
+			len = rand() % 25;
+			x = rand() % (map_size - 40);
+			y = rand() % (map_size);
+			for (int j = 0; j < len; ++j) {
+				loc_wall.push_back(x + j + map_size*y);
+			}
+		}
+		for (i = 0; i < 13; ++i) {
+			len = rand() % 25;
+			x = rand() % (map_size);
+			y = rand() % (map_size-40);
+			for (int j = 0; j < len; ++j) {
+				loc_wall.push_back(x + map_size*(y+j));
+			}
+		}
 		
 	}
 	void world_init() {

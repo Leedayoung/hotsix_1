@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
 	glutDisplayFunc(display);
 	glutSpecialFunc(player_move_func);
 	glutKeyboardFunc(bullet_make);
-	glutTimerFunc(200, move_bullets, 1);
+	glutTimerFunc(150, move_bullets, 1);
 	glutTimerFunc(1000, move_enemies, 1);
 	glutIdleFunc(endstate);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
@@ -49,7 +49,7 @@ void display() {
 	{
 		pair<int, int> pos = newmap.get_player().get_position();
 		int x = pos.first, y = pos.second;
-		int view_size = newmap.get_map_size() / 4;
+		int view_size = newmap.get_map_size()/4;
 		int map_size = newmap.get_map_size();
 		x -= view_size;
 		y -= view_size;
@@ -135,7 +135,7 @@ void move_enemies(int v) {
 void move_bullets(int v) {
 	newmap.update_bullets();
 	glutPostRedisplay();
-	glutTimerFunc(200, move_bullets, 1);
+	glutTimerFunc(150, move_bullets, 1);
 }
 void endstate() {
 	if (newmap.isEnd()) while (1); //glutLeaveMainLoop();
