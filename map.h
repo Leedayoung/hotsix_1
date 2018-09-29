@@ -23,19 +23,43 @@ private:
 
 public:
 	Map() {
-		map_size = 50;
-		numb_enemy = 10;
-		for (int i = 10; i < 30; ++i) {
-			loc_wall.push_back(i);
-		}
-		for (int i = 10; i < 30; i++)
-			loc_wall.push_back(i);
-		item_numb = 5;
+		map_size = 148;
+		numb_enemy = 30;
+		wall_maker();
+		item_numb = 6;
 		world_init();
 		map_init();
 		object_init();
 	}
 	/*Initializing Functions*/
+	void wall_maker() {
+		int i;
+		for (i = map_size-20; i < map_size; ++i) loc_wall.push_back(20+map_size*i);
+		for (i = 0; i < 15; ++i) loc_wall.push_back(25 +map_size * i);
+		for (i = 0; i < 16; ++i) loc_wall.push_back(25+i + 14*map_size);
+		for (i = 15; i < 30; ++i) loc_wall.push_back(40 + map_size * i);
+		for (i = 0; i < 20; ++i) loc_wall.push_back(40 + i + 29*map_size);
+		for (i = 0;i < 35; ++i) loc_wall.push_back(i+map_size*50);
+		for (i = 0; i < 15; ++i) loc_wall.push_back(60 + map_size * i);
+		int len, x, y;
+		for (i = 0; i < 20; ++i) {
+			len = rand() % 25;
+			x = rand() % (map_size - 40);
+			y = rand() % (map_size);
+			for (int j = 0; j < len; ++j) {
+				loc_wall.push_back(x + j + map_size*y);
+			}
+		}
+		for (i = 0; i < 13; ++i) {
+			len = rand() % 25;
+			x = rand() % (map_size);
+			y = rand() % (map_size-40);
+			for (int j = 0; j < len; ++j) {
+				loc_wall.push_back(x + map_size*(y+j));
+			}
+		}
+		
+	}
 	void world_init() {
 		map_arr = new int*[map_size];
 		for (int i = 0; i < map_size; ++i)
@@ -63,7 +87,7 @@ public:
 				tempx = rand() % map_size;
 				tempy = rand() % map_size;
 				bool flag = true;
-				if (map_arr[tempx][tempy] != wall) {
+				if (map_arr[tempy][tempx] != wall) {
 					for (int j = 0; j < i; ++j) {
 						if (enem_vec[j].get_x() == tempx && enem_vec[j].get_y() == tempy)
 							flag = false;
@@ -88,8 +112,8 @@ public:
 				tempx = rand() % map_size;
 				tempy = rand() % map_size;
 				bool flag = true;
-				if (map_arr[tempx][tempy] == map_info::empty) {
-					map_arr[tempx][tempy] = item;
+				if (map_arr[tempy][tempx] == map_info::empty) {
+					map_arr[tempy][tempx] = item;
 					break;
 				}
 			}
@@ -121,7 +145,7 @@ public:
 		return true;
 	}
 	bool check_wall(pair<int, int> pos) {
-		if (map_arr[pos.first][pos.second] == wall) return true;
+		if (map_arr[pos.second][pos.first] == wall) return true;
 		else return false;
 	}
 	bool update_enemies() {

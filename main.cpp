@@ -31,12 +31,12 @@ int main(int argc, char **argv) {
 	glutCreateWindow("GAME");
 	glutReshapeFunc(reshape);
 	glutDisplayFunc(display);
-
 	glutSpecialFunc(player_move_func);
 	glutKeyboardFunc(bullet_make);
-	glutTimerFunc(200, move_bullets, 1);
-	glutTimerFunc(1000, move_enemies,1);
+	glutTimerFunc(150, move_bullets, 1);
+	glutTimerFunc(1000, move_enemies, 1);
 	glutIdleFunc(endstate);
+	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 	glutMainLoop();
 	return 0;
 }
@@ -56,7 +56,6 @@ void print(int x, int y, string string)
 };
 void display() {
 	
-	
 	pair<int, int> pos = newmap.get_player().get_position();
 	int x = pos.first, y = pos.second;
 	int map_size = newmap.get_map_size();
@@ -69,7 +68,6 @@ void display() {
 	if (y + 2*view_size > map_size) y = map_size - 2*view_size;
 	glLoadIdentity();
 	gluOrtho2D(x, x+ 2 * view_size, y, y+2*view_size);
-	
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	
@@ -118,13 +116,13 @@ void display() {
 	string s = "item";
 	glColor3f(1.0, 1.0, 0.0);
 	int display_num = item_num > 3 ? item_num : 3;
-	display_num++;
+	display_num = display_num * 2 +1;
 	glRectf(x+7*item_size, y, x+8*item_size, y+display_num);
 	
 	glColor3f(0.0, 0.0, 0.0);
 	print(x + 7 * item_size, y+display_num+1, "Item List");
 	for(int i=1; i<=item_num;i++)
-		print(x + 7 * item_size, y+display_num-i, s+ to_string(i));
+		print(x + 7 * item_size+2, y+display_num-2*i, s+ to_string(i));
 	glutSwapBuffers();
 }
 //클래스 안에서 본 함수를 선언하면 Error 반환하기에 여기서 선언.
@@ -157,10 +155,11 @@ void move_enemies(int v) {
 void move_bullets(int v) {
 	newmap.update_bullets();
 	glutPostRedisplay();
-	glutTimerFunc(200, move_bullets, 1);
+	glutTimerFunc(150, move_bullets, 1);
 }
 void endstate() {
 	if (newmap.isEnd())
 		glutLeaveMainLoop();
 	//	while (1);
+
 }
