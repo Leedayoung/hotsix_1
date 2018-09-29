@@ -23,7 +23,7 @@ private:
 
 public:
 	Map() {
-		map_size = 100;
+		map_size = 50;
 		numb_enemy = 10;
 		for (int i = 10; i < 30; ++i) {
 			loc_wall.push_back(i);
@@ -96,11 +96,6 @@ public:
 		}
 	}
 	/*Done Initializing Functions*/
-	
-	void movements() {
-		update_enemies();
-		update_bullets();
-	}
 
 	vector<Enemy>& get_enem_vec() {
 		return enem_vec;
@@ -193,6 +188,7 @@ public:
 		if (check_range(test_pos) && map_arr[test_pos.second][test_pos.first] != wall) {
 			player.move(dir);
 			player.set_direction(dir);
+			get_item();
 		}
 	}
 	//현재 위치의 item을 주워 없앤 뒤 empty를 return함

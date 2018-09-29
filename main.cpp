@@ -14,7 +14,8 @@ using namespace std;
 Map newmap;
 void player_move_func(int key, int x, int y);
 void bullet_make(unsigned char key, int x, int y);
-void move_default(int v);
+void move_enemies(int v);
+void move_bullets(int v);
 void display();
 void reshape(int w, int h);
 
@@ -31,7 +32,8 @@ int main(int argc, char **argv) {
 
 	glutSpecialFunc(player_move_func);
 	glutKeyboardFunc(bullet_make);
-	glutTimerFunc(1000, move_default,1);
+	glutTimerFunc(200, move_bullets, 1);
+	glutTimerFunc(1000, move_enemies,1);
 	glutMainLoop();
 
 	return 0;
@@ -108,8 +110,13 @@ void bullet_make(unsigned char key, int x, int y) {
 	if (key == 32) newmap.create_bullet();
 	glutPostRedisplay();
 }
-void move_default(int v) {
-	newmap.movements();
+void move_enemies(int v) {
+	newmap.update_enemies();
 	glutPostRedisplay();
-	glutTimerFunc(1000, move_default, 1);
+	glutTimerFunc(1000, move_enemies, 1);
+}
+void move_bullets(int v) {
+	newmap.update_bullets();
+	glutPostRedisplay();
+	glutTimerFunc(200, move_bullets, 1);
 }
