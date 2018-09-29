@@ -9,6 +9,7 @@
 #include "bullet.h"
 #include "Enemy.h"
 #include "Entity.h"
+#include <string>
 using namespace std;
 
 Map newmap;
@@ -24,8 +25,8 @@ int main(int argc, char **argv) {
 	srand((unsigned)time(NULL));
 	newmap = Map();
 	glutInit(&argc, argv);
-	glutInitWindowPosition(-1,-1);
-	glutInitWindowSize(1000, 1000);//창 크기 설정
+	glutInitWindowPosition(0,0);
+	glutInitWindowSize(800, 800);//창 크기 설정
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
 	glutCreateWindow("GAME");
 	glutReshapeFunc(reshape);
@@ -44,22 +45,31 @@ void reshape(int w, int h) {
 	glViewport(0, 0, w, h);
 	gluOrtho2D(0, newmap.get_map_size(), 0, newmap.get_map_size());
 }
+void print(int x, int y, string string)
+{
+	//set the position of the text in the window using the x and y coordinates
+	glRasterPos2f(x, y);
+	//get the length of the string to display
+	//loop to display character by character
+	for (int i = 0; i < string.size(); i++)
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, string[i]);
+};
 void display() {
 	
-	{
-		pair<int, int> pos = newmap.get_player().get_position();
-		int x = pos.first, y = pos.second;
-		int view_size = newmap.get_map_size() / 4;
-		int map_size = newmap.get_map_size();
-		x -= view_size;
-		y -= view_size;
-		if (x < 0) x = 0;
-		if (y < 0) y = 0;
-		if (x + 2*view_size > map_size) x = map_size - 2*view_size;
-		if (y + 2*view_size > map_size) y = map_size - 2*view_size;
-		glLoadIdentity();
-		gluOrtho2D(x, x+ 2 * view_size, y, y+2*view_size);
-	}
+	
+	pair<int, int> pos = newmap.get_player().get_position();
+	int x = pos.first, y = pos.second;
+	int map_size = newmap.get_map_size();
+	int view_size = newmap.get_map_size() / 4;
+	x -= view_size;
+	y -= view_size;
+	if (x < 0) x = 0;
+	if (y < 0) y = 0;
+	if (x + 2*view_size > map_size) x = map_size - 2*view_size;
+	if (y + 2*view_size > map_size) y = map_size - 2*view_size;
+	glLoadIdentity();
+	gluOrtho2D(x, x+ 2 * view_size, y, y+2*view_size);
+	
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	
@@ -97,12 +107,24 @@ void display() {
 
 	Player player = newmap.get_player();
 	glColor3f(0.0, 1.0, 1.0);
-	pair<int,int> pos = player.get_position();
-	int x = pos.first;
-	int y = pos.second;
-	glRectf(x, y + 1, x + 1, y);
+	pos = player.get_position();
+	int p_x = pos.first;
+	int p_y = pos.second;
+	glRectf(p_x, p_y + 1, p_x + 1, p_y);
 	
+	//item inventory
+	int item_size = view_size / 4;
+	int item_num = player.get_num_i();
+	string s = "item";
+	glColor3f(1.0, 1.0, 0.0);
+	int display_num = item_num > 3 ? item_num : 3;
+	display_num++;
+	glRectf(x+7*item_size, y, x+8*item_size, y+display_num);
 	
+	glColor3f(0.0, 0.0, 0.0);
+	print(x + 7 * item_size, y+display_num+1, "Item List");
+	for(int i=1; i<=item_num;i++)
+		print(x + 7 * item_size, y+display_num-i, s+ to_string(i));
 	glutSwapBuffers();
 }
 //클래스 안에서 본 함수를 선언하면 Error 반환하기에 여기서 선언.
@@ -138,5 +160,7 @@ void move_bullets(int v) {
 	glutTimerFunc(200, move_bullets, 1);
 }
 void endstate() {
-	if (newmap.isEnd()) while (1);
+	if (newmap.isEnd())
+		glutLeaveMainLoop();
+	//	while (1);
 }
