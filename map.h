@@ -19,10 +19,12 @@ private:
 	int basic_mode = 0;
 	int random_mode = 1;
 	int item_numb;
+	int enem_num;
 
 public:
 	Map() {
 		map_size = 100;
+		enem_num = 10;
 		world_init();
 		map_init();
 		object_init();
@@ -51,7 +53,7 @@ public:
 	}
 	void enemy_init() {
 		int tempx, tempy;
-		for (int i = 0; i < (int)enem_vec.size(); ++i) {
+		for (int i = 0; i < enem_num; ++i) {
 			while (true) {
 				tempx = rand() % map_size;
 				tempy = rand() % map_size;
