@@ -135,9 +135,6 @@ public:
 				else if (x < 0 && !check_wall(it->move_test(direction::left))) it->move(direction::left);
 				else if (y > 0 && !check_wall(it->move_test(direction::up))) it->move(direction::up);
 				else if (y < 0 && !check_wall(it->move_test(direction::down))) it->move(direction::down);
-				if (player.get_position() == it->get_position()) {
-					return false;
-				}
 			}
 			else {
 				direction = rand() % 4;
@@ -189,6 +186,7 @@ public:
 			player.move(dir);
 			player.set_direction(dir);
 			get_item();
+			
 		}
 	}
 	//현재 위치의 item을 주워 없앤 뒤 empty를 return함
@@ -201,10 +199,17 @@ public:
 		}
 		return false;
 	}
-	//Enemy를 다 잡아서 끝나면 True를 Return함
 	bool isEnd() {
-		if (enem_vec.size() == 0) return true;
+		for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
+			if (player.get_position() == it->get_position()) {
+				cout << "You lose";
+				return true;
+			}
+		}
+		if (enem_vec.size() == 0) {
+			cout << "You win";
+			return true;
+		}
 		return false;
 	}
-
 };
