@@ -12,6 +12,7 @@ class Map {
 private:
 	int map_size;
 	int** map_arr;
+	int numb_enemy;
 	vector <int> loc_wall;
 	vector<Enemy> enem_vec;
 	vector<Bullet> bull_vec;
@@ -23,6 +24,10 @@ private:
 public:
 	Map() {
 		map_size = 100;
+		numb_enemy = 4;
+		for (int i = 10; i < 30; ++i) {
+			loc_wall.push_back(i);
+		}
 		world_init();
 		map_init();
 		object_init();
@@ -36,11 +41,11 @@ public:
 	void map_init() {
 		for (int i = 0; i < map_size; ++i) {
 			for (int j = 0; j < map_size; ++j) {
-				map_arr[i][j] = map_info::empty;
+				map_arr[j][i] = map_info::empty;
 			}
 		}
 		for (int i = 0; i < (int)loc_wall.size(); ++i) {
-			map_arr[loc_wall[i] % map_size][loc_wall[i] / map_size] = wall;
+			map_arr[loc_wall[i]/ map_size][loc_wall[i] % map_size] = map_info::wall;
 		}
 
 	}
@@ -51,7 +56,7 @@ public:
 	}
 	void enemy_init() {
 		int tempx, tempy;
-		for (int i = 0; i < (int)enem_vec.size(); ++i) {
+		for (int i = 0; i < numb_enemy; ++i) {
 			while (true) {
 				tempx = rand() % map_size;
 				tempy = rand() % map_size;

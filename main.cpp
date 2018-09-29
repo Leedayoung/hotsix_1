@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
 
 	glutSpecialFunc(player_move_func);
 	glutKeyboardFunc(bullet_make);
-	glutTimerFunc(1000, move_default,1);
+	//glutTimerFunc(1000, move_default,1);
 	glutMainLoop();
 
 	return 0;
@@ -36,24 +36,19 @@ void reshape(int w, int h) {
 	glViewport(0, 0, w, h);
 	gluOrtho2D(0, newmap.get_map_size(), 0, newmap.get_map_size());
 }
-void display() {
-	
+void display() {	
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	int ** map_arr = newmap.get_map_arr();
+	double wall_len = 1.0 / newmap.get_map_size();
 	for (int y = 0; y < newmap.get_map_size(); y++) {
 		for (int x = 0; x < newmap.get_map_size(); x++) {
 			if (map_arr[y][x] == map_info::wall) {
-				
-			}
 
+			}
 		}
 	}
-	/*
-	glColor3f(0.0, 0.0, 0.0);
-				glRectf(x, y + 1, x + 1, y);
-	*/
 	glColor3f(0.0, 1.0, 0.0);
 	glutSwapBuffers();
 }
@@ -79,5 +74,5 @@ void bullet_make(unsigned char key, int x, int y) {
 }
 void move_default(int v) {
 	//Have to implement
-	//glutTimerFunc(1000, move_default, 1);
+	glutTimerFunc(1000, move_default, 1);
 }
