@@ -28,7 +28,7 @@ public:
 	Map() {
 		win = false;
 		map_size = 148;
-		numb_enemy = 30;
+		numb_enemy = 3;
 		wall_maker();
 		item_numb = 6;
 		world_init();

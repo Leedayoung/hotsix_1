@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <vector>
+#include <cstdio>
 #include "time.h"
 #include "map.h"
 #include "player.h"
@@ -10,6 +11,7 @@
 #include "Enemy.h"
 #include "Entity.h"
 #include <string>
+#include <fstream>
 using namespace std;
 
 Map newmap;
@@ -22,10 +24,97 @@ void reshape(int w, int h);
 void endstate();
 int print_result = 0;
 
+
+int LoadBMP(const char* location, GLuint &texture) {
+	
+	unsigned char* pixels; //[number of lines][number of columns *3 (because in row is bytes (3 per pixel))]
+	unsigned char* datBuff[2] = { nullptr, nullptr }; // Header buffers
+
+	BITMAPFILEHEADER* bmpHeader = nullptr; // Header
+	BITMAPINFOHEADER* bmpInfo = nullptr; // Info 
+
+	ifstream file(location, ios::binary);
+	if (!file)
+	{
+		std::cout << "Failure to open bitmap file.\n";
+		return 0;
+	}
+
+	datBuff[0] = new unsigned char[sizeof(BITMAPFILEHEADER)];
+	datBuff[1] = new unsigned char[sizeof(BITMAPINFOHEADER)];
+
+	file.read((char*)datBuff[0], sizeof(BITMAPFILEHEADER));
+	file.read((char*)datBuff[1], sizeof(BITMAPINFOHEADER));
+
+	bmpHeader = (BITMAPFILEHEADER*)datBuff[0];
+	bmpInfo = (BITMAPINFOHEADER*)datBuff[1];
+
+	if (bmpHeader->bfType != 0x4D42)
+	{
+		std::cout << "File \"" << location << "\" isn't a bitmap file\n";
+		return 0;
+	}
+	pixels = new unsigned char[bmpInfo->biHeight*bmpInfo->biWidth * 3];
+	file.read((char*)pixels, bmpInfo->biHeight*bmpInfo->biWidth * 3);
+	// Set width and height to the values loaded from the file
+	int width = bmpInfo->biWidth;
+	int height = bmpInfo->biHeight;
+	for (int i = 0; i < width*height*3; i += 3)
+	{
+		unsigned char tmp = pixels[i];
+		pixels[i] = pixels[i + 2];
+		pixels[i + 2] = tmp;
+	}
+	cout << " COMPLETED. " << endl;
+	// Set width and height to the values loaded from the file
+	GLuint w = bmpInfo->biWidth;
+	GLuint h = bmpInfo->biHeight;
+
+	glGenTextures(1, &texture);             // Generate a texture
+	glBindTexture(GL_TEXTURE_2D, texture); // Bind that texture temporarily
+
+	GLint mode = GL_RGB;                   // Set the mode
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	// Create the texture. We get the offsets from the image, then we use it with the image's
+	// pixel data to create it.
+	glTexImage2D(GL_TEXTURE_2D, 0, mode, w, h, 0, mode, GL_UNSIGNED_BYTE, pixels);
+
+	// Unbind the texture
+	glBindTexture(GL_TEXTURE_2D, NULL);
+
+	// Output a successful message
+	std::cout << "Texture \"" << location << "\" successfully loaded.\n";
+
+	// Delete the two buffers.
+	return 0; // Return success code 
+	
+}
+/*
+void displa2() {
+	
+	LoadBMP("resource/bullet.bmp", texture);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	int w = 100;
+	int h = 100;
+	
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0, 0.0); glVertex2f(0, 0);
+	glTexCoord2f(1.0, 0.0); glVertex2f(w, 0);
+	glTexCoord2f(1.0, 1.0); glVertex2f(w, h);
+	glTexCoord2f(0.0, 1.0); glVertex2f(0, h);
+	glEnd();
+
+	glutSwapBuffers();
+}*/
 int main(int argc, char **argv) {
 	srand((unsigned)time(NULL));
-	newmap = Map();
+	//newmap = Map();
 	glutInit(&argc, argv);
+//	LoadBMP("resource/RAY.bmp", texture);
 	glutInitWindowPosition(0,0);
 	glutInitWindowSize(800, 800);//창 크기 설정
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
@@ -61,7 +150,7 @@ void display() {
 	pair<int, int> pos = newmap.get_player().get_position();
 	int x = pos.first, y = pos.second;
 	int map_size = newmap.get_map_size();
-	int view_size = newmap.get_map_size() / 4;
+	int view_size = newmap.get_map_size() / 8;
 	x -= view_size;
 	y -= view_size;
 	if (x < 0) x = 0;
@@ -98,14 +187,25 @@ void display() {
 		int y = pos.second;
 		glRectf(x, y + 1, x + 1, y);
 	}
-
 	vector<Bullet> bull_vec = newmap.get_bullet_vec();
-	glColor3f(0.0, 0.0, 1.0);
+	glColor3f(1.0, 1.0, 1.0);
 	for (vector<Bullet>::iterator it = bull_vec.begin(); it != bull_vec.end(); it++) {
 		pair<int, int> pos = it->get_position();
 		int x = pos.first;
 		int y = pos.second;
-		glRectf(x, y + 1, x + 1, y);
+		GLuint texture;
+		LoadBMP("resource/bullet.bmp", texture);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		int w = 100;
+		int h = 100;
+		glBegin(GL_QUADS);
+			glTexCoord2f(0.0, 0.0); glVertex2f(x, y);
+			glTexCoord2f(1.0, 0.0); glVertex2f(x+1, y);
+			glTexCoord2f(1.0, 1.0); glVertex2f(x+1, y+1);
+			glTexCoord2f(0.0, 1.0); glVertex2f(x, y+1);
+		glEnd();
+		//glRectf(x, y + 1, x + 1, y);
 	}
 
 	Player player = newmap.get_player();
