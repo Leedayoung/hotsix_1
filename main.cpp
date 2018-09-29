@@ -136,7 +136,12 @@ void display() {
 	print( x+ 1, y+2*view_size-3, ss+to_string(killed)+dash+to_string(enemy_numb));
 
 	if (newmap.isEnd()) {
-		print(x+view_size, y +view_size, "You Lose");
+		if (newmap.get_win()) {
+			print(x + view_size, y + view_size, "You Win");
+		}
+		else {
+			print(x + view_size, y + view_size, "You Lose");
+		}
 		print_result = 1;
 	}
 	glutSwapBuffers();

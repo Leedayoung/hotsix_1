@@ -1,3 +1,5 @@
+///이겼는지 졌는지 하기
+
 #pragma once
 #include <iostream>
 #include <GL/glew.h>
@@ -21,8 +23,10 @@ private:
 	int random_mode = 1;
 	int item_numb;
 	int bull_length = 3;
+	bool win;
 public:
 	Map() {
+		win = false;
 		map_size = 148;
 		numb_enemy = 30;
 		wall_maker();
@@ -222,7 +226,7 @@ public:
 		if (map_arr[current.second][current.first] == item) {
 			map_arr[current.second][current.first] = map_info::empty;
 			player.add_num_i();
-			bull_length = bull_length + 2;
+			bull_length = bull_length + 3;
 			return true;
 		}
 		return false;
@@ -236,8 +240,12 @@ public:
 		}
 		if (enem_vec.size() == 0) {
 			cout << "You win";
+			win = true;
 			return true;
 		}
 		return false;
+	}
+	bool get_win() {
+		return win;
 	}
 };
