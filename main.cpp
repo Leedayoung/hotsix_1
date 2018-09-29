@@ -41,9 +41,32 @@ int main(int argc, char **argv) {
 void reshape(int w, int h) {
 	glLoadIdentity();
 	glViewport(0, 0, w, h);
+	/*pair<int, int> pos = newmap.get_player().get_position();
+	int x = pos.first, y = pos.second;
+	int view_size = newmap.get_map_size() / 4;
+	int map_size = newmap.get_map_size();
+	x -= view_size;
+	y -= view_size;
+	if (x < 0) x = 0;
+	if (y < 0) y = 0;
+	if (x + view_size > map_size) x = map_size - view_size;
+	if (y + view_size > map_size) y = map_size - view_size;*/
 	gluOrtho2D(0, newmap.get_map_size(), 0, newmap.get_map_size());
 }
-void display() {	
+void display() {
+	
+	/*pair<int, int> pos = newmap.get_player().get_position();
+	int x = pos.first, y = pos.second;
+	int view_size = newmap.get_map_size() / 4;
+	int map_size = newmap.get_map_size();
+	x -= view_size;
+	y -= view_size;
+	if (x < 0) x = 0;
+	if (y < 0) y = 0;
+	if (x + view_size > map_size) x = map_size - view_size;
+	if (y + view_size > map_size) y = map_size - view_size;
+	gluOrtho2D(x, x + view_size, y, y + view_size);
+	*/
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -81,7 +104,7 @@ void display() {
 
 	Player player = newmap.get_player();
 	glColor3f(0.0, 1.0, 1.0);
-	pair<int, int> pos = player.get_position();
+	pair<int,int> pos = player.get_position();
 	int x = pos.first;
 	int y = pos.second;
 	glRectf(x, y + 1, x + 1, y);
