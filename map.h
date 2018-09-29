@@ -24,7 +24,11 @@ private:
 public:
 	Map() {
 		map_size = 100;
+		for (int i = 10; i < 30; i++)
+			loc_wall.push_back(i);
+
 		enem_num = 10;
+		item_numb = 5;
 		world_init();
 		map_init();
 		object_init();
@@ -42,7 +46,7 @@ public:
 			}
 		}
 		for (int i = 0; i < (int)loc_wall.size(); ++i) {
-			map_arr[loc_wall[i] % map_size][loc_wall[i] / map_size] = wall;
+			map_arr[loc_wall[i] / map_size][loc_wall[i] % map_size] = wall;
 		}
 
 	}
@@ -91,6 +95,16 @@ public:
 		}
 	}
 	/*Done Functions*/
+	vector<Enemy>& get_enem_vec() {
+		return enem_vec;
+	}
+	Player& get_player() {
+		return player;
+	}
+	vector<Bullet>& get_bullet_vec() {
+		return bull_vec;
+	}
+
 	int get_map_size() {
 		return map_size;
 	}
