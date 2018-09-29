@@ -145,7 +145,7 @@ public:
 				direction = rand() % 4;
 				pair<int, int> new_pos = it->move_test(direction);
 				if (check_range(new_pos) == false) continue;
-				if (map_arr[new_pos.first][new_pos.second] == wall) continue;
+				if (map_arr[new_pos.second][new_pos.first] == wall) continue;
 				it->move(direction);
 			}
 		}
@@ -167,7 +167,7 @@ public:
 		for (vector<Bullet>::iterator it = bull_vec.begin(); it != bull_vec.end(); ) {
 			pair<int, int> new_pos = it->move_test();
 			if (check_range(new_pos) == false || kill_enemies(new_pos) || 
-					map_arr[new_pos.first][new_pos.second] == wall) {
+					map_arr[new_pos.second][new_pos.first] == wall) {
 				it = bull_vec.erase(it);
 			}
 			else {
@@ -188,16 +188,16 @@ public:
 	//Player에 대하여 Valid한 Move후 Direction update
 	void valid_move(int dir) {
 		pair<int, int> test_pos = player.move_test(dir);
-		if (check_range(test_pos) && map_arr[test_pos.first][test_pos.second] != wall) {
-			move(dir);
+		if (check_range(test_pos) && map_arr[test_pos.second][test_pos.first] != wall) {
+			player.move(dir);
 			player.set_direction(dir);
 		}
 	}
 	//현재 위치의 item을 주워 없앤 뒤 empty를 return함
 	bool get_item() {
 		pair<int, int> current = player.get_position();
-		if (map_arr[current.first][current.second] == item) {
-			map_arr[current.first][current.second] = map_info::empty;
+		if (map_arr[current.second][current.first] == item) {
+			map_arr[current.second][current.first] = map_info::empty;
 			player.add_num_i();
 			return true;
 		}

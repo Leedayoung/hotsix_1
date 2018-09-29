@@ -60,8 +60,6 @@ void display() {
 		}
 	}
 	vector<Enemy> enem_vec = newmap.get_enem_vec();
-	
-
 	glColor3f(0.0, 1.0, 0.0);
 	for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
 		pair<int, int> pos = it->get_position();
@@ -70,8 +68,8 @@ void display() {
 		glRectf(x, y + 1, x + 1, y);
 	}
 
-	glColor3f(0.0, 0.0, 1.0);
 	vector<Bullet> bull_vec = newmap.get_bullet_vec();
+	glColor3f(0.0, 0.0, 1.0);
 	for (vector<Bullet>::iterator it = bull_vec.begin(); it != bull_vec.end(); it++) {
 		pair<int, int> pos = it->get_position();
 		int x = pos.first;
@@ -104,6 +102,7 @@ void player_move_func(int key, int x, int y) {
 		newmap.valid_move(direction::left);
 		break;
 	}
+	glutPostRedisplay();
 }
 void bullet_make(unsigned char key, int x, int y) {
 	if(key == 32) newmap.create_bullet();

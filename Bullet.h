@@ -10,7 +10,7 @@ public:
 	Bullet(int _pos_x, int _pos_y, int _direction) {
 		pos_x = _pos_x;
 		pos_y = _pos_y;
-		direction = _direction;
+		direction = _direction;	
 	}
 	int get_direction() {
 		return direction;

@@ -19,9 +19,9 @@ public:
 	pair<int, int> move_test(int direc) {
 		switch (direc) {
 			case direction::up:
-				return make_pair(pos_x, pos_y - 1);
-			case direction::down:
 				return make_pair(pos_x, pos_y + 1);
+			case direction::down:
+				return make_pair(pos_x, pos_y - 1);
 			case direction::left:
 				return make_pair(pos_x - 1, pos_y);
 			case direction::right:
@@ -32,10 +32,10 @@ public:
 	void move(int direc) {
 		switch (direc) {
 			case direction::up:
-			pos_y--;
+			pos_y++;
 			break;
 			case direction::down:
-			pos_y++;
+			pos_y--;
 			break;
 			case direction::left:
 			pos_x--;
