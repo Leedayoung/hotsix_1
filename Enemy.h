@@ -4,13 +4,10 @@
 #include "Entity.h"
 using namespace std;
 
-extern int chase_distance;
-
 class Enemy : public Entity {
 private:
 	int id;
 	bool player;
-	int chase_distance;
 public:
 	Enemy(int _id, int _pos_x, int _pos_y);
 	int get_id();

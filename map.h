@@ -20,6 +20,7 @@ private:
 	int basic_mode = 0;
 	int random_mode = 1;
 	int item_numb;
+	int bull_length = 3;
 public:
 	Map() {
 		map_size = 148;
@@ -189,11 +190,10 @@ public:
 		for (vector<Bullet>::iterator it = bull_vec.begin(); it != bull_vec.end(); ) {
 			pair<int, int> new_pos = it->move_test();
 			if (check_range(new_pos) == false || kill_enemies(new_pos) || 
-					map_arr[new_pos.second][new_pos.first] == wall) {
+					map_arr[new_pos.second][new_pos.first] == wall || !(it->move())) {
 				it = bull_vec.erase(it);
 			}
 			else {
-				it->move();
 				it++;
 			}
 		}
@@ -203,7 +203,7 @@ public:
 		int _posx = player.get_x();
 		int _posy = player.get_y();
 		int _direction = player.get_direction();
-		Bullet newbullet = Bullet(_posx, _posy, _direction);
+		Bullet newbullet = Bullet(_posx, _posy, _direction, bull_length);
 		bull_vec.push_back(newbullet);
 	}
 	//Player에 대하여 Valid한 Move후 Direction update
@@ -222,6 +222,7 @@ public:
 		if (map_arr[current.second][current.first] == item) {
 			map_arr[current.second][current.first] = map_info::empty;
 			player.add_num_i();
+			bull_length = bull_length + 2;
 			return true;
 		}
 		return false;

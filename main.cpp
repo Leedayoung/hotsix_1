@@ -183,7 +183,4 @@ void endstate() {
 		glutKeyboardFunc(NULL);
 		glutIdleFunc(NULL);
 	}
-		//glutLeaveMainLoop();
-	//	while (1);
-
 }
