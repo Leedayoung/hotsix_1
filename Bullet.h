@@ -11,6 +11,7 @@ public:
 		pos_x = _pos_x;
 		pos_y = _pos_y;
 		direction = _direction;
+		move();
 	}
 	int get_direction() {
 		return direction;

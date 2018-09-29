@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
 
 	glutSpecialFunc(player_move_func);
 	glutKeyboardFunc(bullet_make);
-	//glutTimerFunc(1000, move_default,1);
+	glutTimerFunc(1000, move_default,1);
 	glutMainLoop();
 
 	return 0;
@@ -104,11 +104,14 @@ void player_move_func(int key, int x, int y) {
 		newmap.valid_move(direction::left);
 		break;
 	}
+	glutPostRedisplay();
 }
 void bullet_make(unsigned char key, int x, int y) {
-	if(key == 32) newmap.create_bullet();
+	if (key == 32) newmap.create_bullet();
+	glutPostRedisplay();
 }
 void move_default(int v) {
-	//Have to implement
+	newmap.movements();
+	glutPostRedisplay();
 	glutTimerFunc(1000, move_default, 1);
 }
