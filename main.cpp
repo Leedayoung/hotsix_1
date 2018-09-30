@@ -65,7 +65,7 @@ int main(int argc, char **argv) {
 	glutDisplayFunc(display);
 	glutSpecialFunc(player_move_func);
 	glutKeyboardFunc(bullet_make);
-	glutTimerFunc(150, move_bullets, 1);
+	glutTimerFunc(147, move_bullets, 1);
 	glutTimerFunc(1000, move_enemies, 1);
 	glutIdleFunc(endstate);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
@@ -95,7 +95,7 @@ void display() {
 	pair<int, int> pos = newmap.get_player().get_position();
 	int x = pos.first, y = pos.second;
 	int map_size = newmap.get_map_size();
-	int view_size = newmap.get_map_size() / 8;
+	int view_size = newmap.get_map_size() / 12;
 	x -= view_size;
 	y -= view_size;
 	if (x < 0) x = 0;
@@ -167,19 +167,19 @@ void display() {
 	string s = " item";
 	glColor3f(1.0, 1.0, 0.0);
 	int display_num = item_num > 3 ? item_num : 3;
-	display_num = display_num * 2 +1;
+	display_num = display_num * 1 +1;
 	glRectf(x+7*item_size, y, x+8*item_size, y+display_num);
 	glColor3f(0.0, 0.0, 0.0);
 	print(x + 7 * item_size, y+display_num+1, "Item List");
 	for (int i = 1; i <= item_num; i++)
-		print(x + 7 * item_size, y + display_num - 2 * i, s + to_string(i));
+		print(x + 7 * item_size, y + display_num - 1 * i, s + to_string(i));
 
 	//Enemy Kills
 	int enemy_numb = newmap.get_numb_enemy();
 	int killed = enemy_numb-newmap.get_enem_vec().size();
 	string ss = "Killed Enemy ";
 	string dash = "/";
-	print( x+ 1, y+2*view_size-3, ss+to_string(killed)+dash+to_string(enemy_numb));
+	print( x+ 1, y+2*view_size-1, ss+to_string(killed)+dash+to_string(enemy_numb));
 
 	if (newmap.isEnd()) {
 		if (newmap.get_win()) {
@@ -226,7 +226,7 @@ void move_bullets(int v) {
 	newmap.update_bullets();
 	glutPostRedisplay();
 	if (!newmap.isEnd())
-		glutTimerFunc(150, move_bullets, 1);
+		glutTimerFunc(147, move_bullets, 1);
 	return;
 }
 void endstate() {

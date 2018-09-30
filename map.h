@@ -22,13 +22,13 @@ private:
 	int basic_mode = 0;
 	int random_mode = 1;
 	int item_numb;
-	int bull_length = 3;
+	int bull_length = 4;
 	bool win;
 public:
 	Map() {
 		win = false;
 		map_size = 148;
-		numb_enemy = 3;
+		numb_enemy = 15;
 		wall_maker();
 		item_numb = 6;
 		world_init();
@@ -38,6 +38,10 @@ public:
 	/*Initializing Functions*/
 	void wall_maker() {
 		int i;
+		for (i=0;i<map_size;++i)loc_wall.push_back(0 + map_size*i);
+		for (i = 0; i<map_size; ++i)loc_wall.push_back(map_size-1 + map_size*i);
+		for (i = 0; i<map_size; ++i)loc_wall.push_back(i + map_size*0);
+		for (i = 0; i<map_size; ++i)loc_wall.push_back(i + map_size * (map_size-1));
 		for (i = map_size-20; i < map_size; ++i) loc_wall.push_back(20+map_size*i);
 		for (i = 0; i < 15; ++i) loc_wall.push_back(25 +map_size * i);
 		for (i = 0; i < 16; ++i) loc_wall.push_back(25+i + 14*map_size);
@@ -54,7 +58,7 @@ public:
 				loc_wall.push_back(x + j + map_size*y);
 			}
 		}
-		for (i = 0; i < 13; ++i) {
+		for (i = 0; i < 15; ++i) {
 			len = rand() % 25;
 			x = rand() % (map_size);
 			y = rand() % (map_size-40);
@@ -106,7 +110,7 @@ public:
 	}
 	void player_init(int mode) {
 		if (mode == basic_mode) {
-			player = Player(0, 0);
+			player = Player(2, 2);
 		}
 	}
 	void item_init() {
