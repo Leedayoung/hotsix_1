@@ -9,6 +9,7 @@ Enemy::Enemy(int _id, int _pos_x, int _pos_y) {
 	pos_x = _pos_x;
 	pos_y = _pos_y;
 	player = false;
+	direc = direction::down;
 }
 int Enemy::get_id() {
 	return id;
@@ -16,8 +17,12 @@ int Enemy::get_id() {
 void Enemy::set_player(bool _player) {
 	player = _player;
 }
-void Enemy::move(int direc) {
-	Entity::move(direc);
+void Enemy::move(int _direc) {
+	direc = _direc;
+	Entity::move(_direc);
+}
+int  Enemy::get_direction() {
+	return direc;
 }
 bool Enemy::check_chase(pair<int, int> player_pos) {
 	int player_x = player_pos.first;

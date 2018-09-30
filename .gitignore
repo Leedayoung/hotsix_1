@@ -8,4 +8,4 @@ Release/
 freeglut.dll
 glew32.dll
 test.cpp
-
+store/*
