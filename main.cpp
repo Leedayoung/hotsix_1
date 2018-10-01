@@ -56,6 +56,7 @@ void load_images() {
 
 int main(int argc, char **argv) {
 	srand((unsigned)time(NULL));
+	newmap = Map();
 	glutInit(&argc, argv);
 	glutInitWindowPosition(0,0);
 	glutInitWindowSize(800, 800);//창 크기 설정
