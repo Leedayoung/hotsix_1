@@ -84,7 +84,7 @@ void Map::enemy_init() {
 						flag = false;
 				}
 				if (flag) {
-					enem_vec.push_back(Enemy(i, tempx, tempy));
+					enem_vec.push_back(Enemy(tempx, tempy));
 					break;
 				}
 			}

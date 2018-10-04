@@ -5,15 +5,11 @@
 #include "Enemy.h"
 using namespace std;
 
-Enemy::Enemy(int _id, int _pos_x, int _pos_y) {
-	id = _id;
+Enemy::Enemy(int _pos_x, int _pos_y) {
 	pos_x = _pos_x;
 	pos_y = _pos_y;
 	player = false;
 	direc = direction::down;
-}
-int Enemy::get_id() {
-	return id;
 }
 void Enemy::set_player(bool _player) {
 	player = _player;
