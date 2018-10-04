@@ -12,6 +12,8 @@ class Entity {
 public:
 	int pos_x;
 	int pos_y;
+	int direc;
+	int get_direction();
 	int get_x();
 	int get_y();
 	pair<int, int> get_position();

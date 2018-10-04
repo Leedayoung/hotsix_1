@@ -22,9 +22,6 @@ void Enemy::move(int _direc) {
 	direc = _direc;
 	Entity::move(_direc);
 }
-int  Enemy::get_direction() {
-	return direc;
-}
 bool Enemy::check_chase(pair<int, int> player_pos) {
 	int player_x = player_pos.first;
 	int player_y = player_pos.second;

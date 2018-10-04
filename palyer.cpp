@@ -9,13 +9,10 @@ Player::Player(int _pos_x, int _pos_y) {
 	pos_x = _pos_x;
 	pos_y = _pos_y;
 	num_i = 0;
-	direction = direction::down;
-}
-int Player::get_direction() {
-	return direction;
+	direc = direction::down;
 }
 void Player::set_direction(int dir) {
-	direction = dir;
+	direc = dir;
 	return;
 }
 int Player::get_num_i() {
@@ -25,6 +22,6 @@ void Player::add_num_i() {
 	num_i++;
 }
 void Player::display() {
-	glBindTexture(GL_TEXTURE_2D, texture[player_u + direction]);
+	glBindTexture(GL_TEXTURE_2D, texture[player_u + direc]);
 	Entity::display(pos_x, pos_y, pos_x + 1, pos_y + 1);
 }

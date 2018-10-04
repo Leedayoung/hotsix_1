@@ -4,6 +4,9 @@
 using namespace std;
 GLuint texture[16];
 
+int Entity::get_direction() {
+	return direc;
+}
 int Entity::get_x() {
 	return pos_x;
 }
