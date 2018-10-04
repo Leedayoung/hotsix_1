@@ -163,7 +163,7 @@ public:
 	bool update_enemies() {
 		enem_vec;
 		int direction;
-		for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
+		for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end();it++) {
 			if (it->check_chase(player.get_position())) {
 				int x = player.get_x() - it->get_x();
 				int y = player.get_y() - it->get_y();
@@ -171,6 +171,13 @@ public:
 				else if (x < 0 && !check_wall(it->move_test(direction::left))) it->move(direction::left);
 				else if (y > 0 && !check_wall(it->move_test(direction::up))) it->move(direction::up);
 				else if (y < 0 && !check_wall(it->move_test(direction::down))) it->move(direction::down);
+				for (vector<Bullet>::iterator bl = bull_vec.begin(); bl != bull_vec.end(); bl++) {
+					pair<int, int> bull_pos = bl->get_position();
+					if (it->get_position() == bull_pos) {
+						it = enem_vec.erase(it);
+						it--;
+					}
+				}
 			}
 			else {
 				direction = rand() % 4;
@@ -178,6 +185,13 @@ public:
 				if (check_range(new_pos) == false) continue;
 				if (map_arr[new_pos.second][new_pos.first] == wall) continue;
 				it->move(direction);
+				for (vector<Bullet>::iterator bl = bull_vec.begin(); bl != bull_vec.end(); bl++) {
+					pair<int, int> bull_pos = bl->get_position();
+					if (new_pos == bull_pos) {
+						it = enem_vec.erase(it);
+						it--;
+					}
+				}
 			}
 		}
 		return true;

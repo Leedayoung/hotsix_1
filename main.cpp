@@ -184,10 +184,10 @@ void display() {
 
 	if (newmap.isEnd()) {
 		if (newmap.get_win()) {
-			print(x + view_size, y + view_size, "You Win");
+			print(x + view_size, y + view_size+2, "You Win");
 		}
 		else {
-			print(x + view_size, y + view_size, "You Lose");
+			print(x + view_size, y + view_size+2, "You Lose");
 		}
 		print_result = 1;
 	}
