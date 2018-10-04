@@ -8,11 +8,7 @@ using namespace std;
 Enemy::Enemy(int _pos_x, int _pos_y) {
 	pos_x = _pos_x;
 	pos_y = _pos_y;
-	player = false;
 	direc = direction::down;
-}
-void Enemy::set_player(bool _player) {
-	player = _player;
 }
 void Enemy::move(int _direc) {
 	direc = _direc;
