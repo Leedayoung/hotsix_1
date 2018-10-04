@@ -16,4 +16,5 @@ public:
 	void move(int direc);
 	bool check_chase(pair<int, int> player_pos);
 	int get_direction();
+	void display();
 };

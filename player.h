@@ -14,5 +14,6 @@ public:
 	void set_direction(int dir);
 	int get_num_i();
 	void add_num_i();
+	void display();
 };
 

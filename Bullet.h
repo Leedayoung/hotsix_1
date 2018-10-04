@@ -12,4 +12,5 @@ public:
 	int get_direction();
 	pair<int, int> move_test();
 	bool move();
+	void display();
 };

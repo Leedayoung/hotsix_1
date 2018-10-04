@@ -2,15 +2,20 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+#include <string>
 #include <vector>
 #include "player.h"
 #include "bullet.h"
 #include "Enemy.h"
+#include "Enemy.h"
 using namespace std;
 enum map_info { wall, empty, item };
+extern GLuint texture[16];
+
 class Map {
 private:
 	int map_size;
+	int view_size;
 	int** map_arr;
 	int numb_enemy;
 	vector <int> loc_wall;
@@ -22,8 +27,13 @@ private:
 	int item_numb;
 	int bull_length = 4;
 	bool win;
+	int print_result;
+	
 public:
 	Map();
+	void print(int x, int y, string string);
+	void draw_rec(int x1, int y1, int x2, int y2);
+	void display();
 	void wall_maker();
 	void world_init();
 	void map_init();

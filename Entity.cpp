@@ -2,6 +2,7 @@
 #include <iostream>
 #include "Entity.h"
 using namespace std;
+GLuint texture[16];
 
 int Entity::get_x() {
 	return pos_x;
@@ -40,4 +41,12 @@ void Entity::move(int direc) {
 		pos_x++;
 		break;
 	}
+}
+void Entity::display(int x1, int y1, int x2, int y2) {
+	glBegin(GL_QUADS);
+	glTexCoord2i(0, 0); glVertex2i(x1, y1);
+	glTexCoord2i(1, 0); glVertex2i(x2, y1);
+	glTexCoord2i(1, 1); glVertex2i(x2, y2);
+	glTexCoord2i(0, 1); glVertex2i(x1, y2);
+	glEnd();
 }

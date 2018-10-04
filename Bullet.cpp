@@ -23,3 +23,7 @@ bool Bullet::move() {
 	length--;
 	return true;
 }
+void Bullet::display() {
+	glBindTexture(GL_TEXTURE_2D, texture[bullet_u + direction]);
+	Entity::display(pos_x, pos_y, pos_x + 1, pos_y + 1);
+}

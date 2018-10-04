@@ -24,3 +24,7 @@ int Player::get_num_i() {
 void Player::add_num_i() {
 	num_i++;
 }
+void Player::display() {
+	glBindTexture(GL_TEXTURE_2D, texture[player_u + direction]);
+	Entity::display(pos_x, pos_y, pos_x + 1, pos_y + 1);
+}

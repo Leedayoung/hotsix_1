@@ -34,3 +34,7 @@ bool Enemy::check_chase(pair<int, int> player_pos) {
 	else 
 		return false;
 }
+void Enemy::display() {
+	glBindTexture(GL_TEXTURE_2D, texture[image::enemy_u + direc]);
+	Entity::display(pos_x, pos_y, pos_x + 1, pos_y + 1);
+}

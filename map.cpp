@@ -10,7 +10,9 @@ using namespace std;
 Map::Map() {
 	win = false;
 	map_size = 148;
+	view_size = map_size / 12;
 	numb_enemy = 15;
+	print_result = 0;
 	wall_maker();
 	item_numb = 6;
 	world_init();
@@ -139,7 +141,7 @@ bool Map::check_wall(pair<int, int> pos) {
 }
 bool Map::update_enemies() {
 	int direction;
-	for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
+	for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); ) {
 		if (it->check_chase(player.get_position())) {
 			int x = player.get_x() - it->get_x();
 			int y = player.get_y() - it->get_y();
@@ -147,17 +149,17 @@ bool Map::update_enemies() {
 			else if (x < 0 && !check_wall(it->move_test(direction::left))) it->move(direction::left);
 			else if (y > 0 && !check_wall(it->move_test(direction::up))) it->move(direction::up);
 			else if (y < 0 && !check_wall(it->move_test(direction::down))) it->move(direction::down);
-			for (vector<Bullet>::iterator bl = bull_vec.begin(); bl != bull_vec.end();) {
+			bool die = false;
+			for (vector<Bullet>::iterator bl = bull_vec.begin(); bl != bull_vec.end();bl++) {
 				pair<int, int> bull_pos = bl->get_position();
 				if (it->get_position() == bull_pos) {
-					it = enem_vec.erase(it);
+					die = true;
 					bl = bull_vec.erase(bl);
-					it--;
-				}
-				else {
-					bl++;
+					break;
 				}
 			}
+			if (die) it = enem_vec.erase(it);
+			else it++;
 		}
 		else {
 			direction = rand() % 4;
@@ -165,15 +167,17 @@ bool Map::update_enemies() {
 			if (check_range(new_pos) == false) continue;
 			if (map_arr[new_pos.second][new_pos.first] == wall) continue;
 			it->move(direction);
-			for (vector<Bullet>::iterator bl = bull_vec.begin(); bl != bull_vec.end();) {
+			bool die = false;
+			for (vector<Bullet>::iterator bl = bull_vec.begin(); bl != bull_vec.end();bl++) {
 				pair<int, int> bull_pos = bl->get_position();
 				if (new_pos == bull_pos) {
-					it = enem_vec.erase(it);
 					bl = bull_vec.erase(bl);
-					it--;
+					die = true;
+					break;
 				}
-				else bl++;
 			}
+			if (die) it = enem_vec.erase(it);
+			else it++;
 		}
 	}
 	return true;
@@ -248,3 +252,96 @@ bool Map::isEnd() {
 bool Map::get_win() {
 	return win;
 }
+void Map::display() {
+	pair<int, int> pos = player.get_position();
+	int x = pos.first, y = pos.second;
+	x -= view_size;
+	y -= view_size;
+	if (x < 0) x = 0;
+	if (y < 0) y = 0;
+	if (x + 2 * view_size > map_size) x = map_size - 2 * view_size;
+	if (y + 2 * view_size > map_size) y = map_size - 2 * view_size;
+
+	glLoadIdentity();
+	gluOrtho2D(x, x + 2 * view_size, y, y + 2 * view_size);
+
+	if (print_result) return;
+	glClearColor(1.0, 1.0, 1.0, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	//map display
+	glColor3f(1.0, 1.0, 1.0);
+	glEnable(GL_TEXTURE_2D);
+	double wall_len = 1.0 / map_size;
+	for (int y = 0; y < map_size; y++) {
+		for (int x = 0; x < map_size; x++) {
+			if (map_arr[y][x] == map_info::wall) {
+				glBindTexture(GL_TEXTURE_2D, texture[image::wall_p]);
+				draw_rec(x, y, x + 1, y + 1);
+			}
+			else if (map_arr[y][x] == map_info::item) {
+				glBindTexture(GL_TEXTURE_2D, texture[image::item_p]);
+				draw_rec(x, y, x + 1, y + 1);
+			}
+		}
+	}
+	//enemy display
+	for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
+		it->display();
+	}
+
+	//display bullet
+	for (vector<Bullet>::iterator it = bull_vec.begin(); it != bull_vec.end(); it++) {
+		it->display();
+	}
+
+	//display player
+	player.display();
+
+	//item inventory
+	int item_size = view_size / 4;
+	int item_num = player.get_num_i();
+	string s = " item";
+	glColor3f(1.0, 1.0, 0.0);
+	int display_num = item_num > 3 ? item_num : 3;
+	display_num = display_num * 1 + 1;
+	glRecti(x + 7 * item_size, y, x + 8 * item_size, y + display_num);
+	glColor3f(0.0, 0.0, 0.0);
+	print(x + 7 * item_size, y + display_num + 1, "Item List");
+	for (int i = 1; i <= item_num; i++)
+		print(x + 7 * item_size, y + display_num - 1 * i, s + to_string(i));
+
+	//Enemy Kills
+	int killed = numb_enemy - enem_vec.size();
+	string ss = "Killed Enemy ";
+	string dash = "/";
+	print(x + 1, y + 2 * view_size - 1, ss + to_string(killed) + dash + to_string(numb_enemy));
+
+	if (isEnd()) {
+		if (win) {
+			print(x + view_size, y + view_size + 2, "You Win");
+		}
+		else {
+			print(x + view_size, y + view_size + 2, "You Lose");
+		}
+		print_result = 1;
+	}
+	glutSwapBuffers();
+}
+void Map::draw_rec(int x1, int y1, int x2, int y2) {
+	glBegin(GL_QUADS);
+	glTexCoord2i(0, 0); glVertex2i(x1, y1);
+	glTexCoord2i(1, 0); glVertex2i(x2, y1);
+	glTexCoord2i(1, 1); glVertex2i(x2, y2);
+	glTexCoord2i(0, 1); glVertex2i(x1, y2);
+	glEnd();
+}
+void Map::print(int x, int y, string string)
+{
+	//set the position of the text in the window using the x and y coordinates
+	glRasterPos2i(x, y);
+	//get the length of the string to display
+	//loop to display character by character
+	for (int i = 0; i < int(string.size()); i++)
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, string[i]);
+};
