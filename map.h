@@ -171,11 +171,15 @@ public:
 				else if (x < 0 && !check_wall(it->move_test(direction::left))) it->move(direction::left);
 				else if (y > 0 && !check_wall(it->move_test(direction::up))) it->move(direction::up);
 				else if (y < 0 && !check_wall(it->move_test(direction::down))) it->move(direction::down);
-				for (vector<Bullet>::iterator bl = bull_vec.begin(); bl != bull_vec.end(); bl++) {
+				for (vector<Bullet>::iterator bl = bull_vec.begin(); bl != bull_vec.end();) {
 					pair<int, int> bull_pos = bl->get_position();
 					if (it->get_position() == bull_pos) {
 						it = enem_vec.erase(it);
+						bl = bull_vec.erase(bl);
 						it--;
+					}
+					else {
+						bl++;
 					}
 				}
 			}
