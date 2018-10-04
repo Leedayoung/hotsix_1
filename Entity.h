@@ -20,4 +20,5 @@ public:
 	pair<int, int> move_test(int direc);
 	void move(int direc);
 	void display(int x1, int y1, int x2, int y2);
+	void set_direction(int direc);
 };

@@ -113,15 +113,6 @@ void Map::item_init() {
 int Map::get_numb_enemy() {
 	return numb_enemy;
 }
-vector<Enemy>& Map::get_enem_vec() {
-	return enem_vec;
-}
-Player& Map::get_player() {
-	return player;
-}
-vector<Bullet>& Map::get_bullet_vec() {
-	return bull_vec;
-}
 int Map::get_map_size() {
 	return map_size;
 }

@@ -11,10 +11,6 @@ Player::Player(int _pos_x, int _pos_y) {
 	num_i = 0;
 	direc = direction::down;
 }
-void Player::set_direction(int dir) {
-	direc = dir;
-	return;
-}
 int Player::get_num_i() {
 	return num_i;
 }
