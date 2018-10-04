@@ -8,25 +8,11 @@ private:
 	int direction;
 	int num_i;
 public:
-	Player() {}
-	Player(int _pos_x, int _pos_y) {
-		pos_x = _pos_x;
-		pos_y = _pos_y;
-		num_i = 0;
-		direction = direction::down;
-	}
-	int get_direction() {
-		return direction;
-	}
-	void set_direction(int dir) {
-		direction = dir;
-		return;
-	}
-	int get_num_i() {
-		return num_i;
-	}
-	void add_num_i() {
-		num_i++;
-	}
+	Player();
+	Player(int _pos_x, int _pos_y);
+	int get_direction();
+	void set_direction(int dir);
+	int get_num_i();
+	void add_num_i();
 };
 

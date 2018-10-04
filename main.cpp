@@ -29,30 +29,6 @@ int print_result = 0;
 void load_images();
 enum image { bullet_u=0, bullet_d, bullet_l, bullet_r,player_u,player_d,player_l,player_r,item_p,wall_p,enemy_u,enemy_d,enemy_l,enemy_r};
 GLuint texture[16];
-void load_images() {
-	//load bullet images
-	LoadBMP("resource/bullet_up.bmp",texture[bullet_u]);
-	LoadBMP("resource/bullet_down.bmp", texture[bullet_d]);
-	LoadBMP("resource/bullet_right.bmp", texture[bullet_r]);
-	LoadBMP("resource/bullet_left.bmp", texture[bullet_l]);
-
-	//load player images
-	LoadBMP("resource/player_u.bmp", texture[player_u]);
-	LoadBMP("resource/player_d.bmp", texture[player_d]);
-	LoadBMP("resource/player_l.bmp", texture[player_l]);
-	LoadBMP("resource/player_r.bmp", texture[player_r]);
-
-	//load item image
-	LoadBMP("resource/item_p.bmp", texture[image::item_p]);
-	LoadBMP("resource/wall.bmp", texture[image::wall_p]);
-
-	//load enemy images
-	LoadBMP("resource/enemy_u.bmp", texture[image::enemy_u]);
-	LoadBMP("resource/enemy_d.bmp", texture[image::enemy_d]);
-	LoadBMP("resource/enemy_l.bmp", texture[image::enemy_l]);
-	LoadBMP("resource/enemy_r.bmp", texture[image::enemy_r]);
-	
-}
 
 int main(int argc, char **argv) {
 	srand((unsigned)time(NULL));
@@ -85,10 +61,10 @@ void reshape(int w, int h) {
 void print(int x, int y, string string)
 {
 	//set the position of the text in the window using the x and y coordinates
-	glRasterPos2f(x, y);
+	glRasterPos2i(x, y);
 	//get the length of the string to display
 	//loop to display character by character
-	for (int i = 0; i < string.size(); i++)
+	for (int i = 0; i < int(string.size()); i++)
 		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, string[i]);
 };
 void display() {
@@ -169,7 +145,7 @@ void display() {
 	glColor3f(1.0, 1.0, 0.0);
 	int display_num = item_num > 3 ? item_num : 3;
 	display_num = display_num * 1 +1;
-	glRectf(x+7*item_size, y, x+8*item_size, y+display_num);
+	glRecti(x+7*item_size, y, x+8*item_size, y+display_num);
 	glColor3f(0.0, 0.0, 0.0);
 	print(x + 7 * item_size, y+display_num+1, "Item List");
 	for (int i = 1; i <= item_num; i++)
@@ -218,16 +194,17 @@ void bullet_make(unsigned char key, int x, int y) {
 }
 void move_enemies(int v) {
 	newmap.update_enemies();
-	glutPostRedisplay();
-	if (!newmap.isEnd()) 
+	if (!newmap.isEnd())
 		glutTimerFunc(1000, move_enemies, 1);
+	glutPostRedisplay();
+	
 	return;
 }	
 void move_bullets(int v) {
 	newmap.update_bullets();
-	glutPostRedisplay();
 	if (!newmap.isEnd())
 		glutTimerFunc(147, move_bullets, 1);
+	glutPostRedisplay();	
 	return;
 }
 void endstate() {
@@ -309,9 +286,33 @@ int LoadBMP(const char* location, GLuint &texture) {
 }
 void draw_rec(int x1, int y1, int x2, int y2) {
 	glBegin(GL_QUADS);
-		glTexCoord2f(0.0, 0.0); glVertex2f(x1, y1);
-		glTexCoord2f(1.0, 0.0); glVertex2f(x2, y1);
-		glTexCoord2f(1.0, 1.0); glVertex2f(x2, y2);
-		glTexCoord2f(0.0, 1.0); glVertex2f(x1, y2);
+		glTexCoord2i(0, 0); glVertex2i(x1, y1);
+		glTexCoord2i(1, 0); glVertex2i(x2, y1);
+		glTexCoord2i(1, 1); glVertex2i(x2, y2);
+		glTexCoord2i(0, 1); glVertex2i(x1, y2);
 	glEnd();
+}
+void load_images() {
+	//load bullet images
+	LoadBMP("resource/bullet_up.bmp", texture[bullet_u]);
+	LoadBMP("resource/bullet_down.bmp", texture[bullet_d]);
+	LoadBMP("resource/bullet_right.bmp", texture[bullet_r]);
+	LoadBMP("resource/bullet_left.bmp", texture[bullet_l]);
+
+	//load player images
+	LoadBMP("resource/player_u.bmp", texture[player_u]);
+	LoadBMP("resource/player_d.bmp", texture[player_d]);
+	LoadBMP("resource/player_l.bmp", texture[player_l]);
+	LoadBMP("resource/player_r.bmp", texture[player_r]);
+
+	//load item image
+	LoadBMP("resource/item_p.bmp", texture[image::item_p]);
+	LoadBMP("resource/wall.bmp", texture[image::wall_p]);
+
+	//load enemy images
+	LoadBMP("resource/enemy_u.bmp", texture[image::enemy_u]);
+	LoadBMP("resource/enemy_d.bmp", texture[image::enemy_d]);
+	LoadBMP("resource/enemy_l.bmp", texture[image::enemy_l]);
+	LoadBMP("resource/enemy_r.bmp", texture[image::enemy_r]);
+
 }
