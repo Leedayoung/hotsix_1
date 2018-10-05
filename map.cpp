@@ -67,8 +67,8 @@ void Map::map_init() {
 	}
 }
 void Map::object_init() {
-	enemy_init();
 	player_init(basic_mode);
+	enemy_init();
 	item_init();
 }
 void Map::enemy_init() {
@@ -103,7 +103,7 @@ void Map::item_init() {
 			tempx = rand() % map_size;
 			tempy = rand() % map_size;
 			bool flag = true;
-			if (map_arr[tempy][tempx] == map_info::empty) {
+			if (map_arr[tempy][tempx] == map_info::empty && tempx!=2 && tempy!=2) {
 				map_arr[tempy][tempx] = item;
 				break;
 			}
