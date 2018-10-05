@@ -27,8 +27,7 @@ private:
 	int item_numb;
 	int bull_length = 4;
 	bool win;
-	int print_result;
-	
+		
 public:
 	Map();
 	void print(int x, int y, string string);

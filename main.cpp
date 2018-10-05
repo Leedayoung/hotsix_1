@@ -77,18 +77,19 @@ void bullet_make(unsigned char key, int x, int y) {
 	glutPostRedisplay();
 }
 void move_enemies(int v) {
+	if (newmap.isEnd())
+		return;
 	newmap.update_enemies();
-	if (!newmap.isEnd())
-		glutTimerFunc(1000, move_enemies, 1);
 	glutPostRedisplay();
-	
+	glutTimerFunc(1000, move_enemies, 1);
 	return;
 }	
 void move_bullets(int v) {
+	if (newmap.isEnd())
+		return;
 	newmap.update_bullets();
-	if (!newmap.isEnd())
-		glutTimerFunc(147, move_bullets, 1);
-	glutPostRedisplay();	
+	glutPostRedisplay();
+	glutTimerFunc(147, move_bullets, 1);
 	return;
 }
 void endstate() {

@@ -12,7 +12,6 @@ Map::Map() {
 	map_size = 148;
 	view_size = map_size / 12;
 	numb_enemy = 15;
-	print_result = 0;
 	wall_maker();
 	item_numb = 6;
 	world_init();
@@ -256,7 +255,6 @@ void Map::display() {
 	glLoadIdentity();
 	gluOrtho2D(x, x + 2 * view_size, y, y + 2 * view_size);
 
-	if (print_result) return;
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -315,7 +313,6 @@ void Map::display() {
 		else {
 			print(x + view_size, y + view_size + 2, "You Lose");
 		}
-		print_result = 1;
 	}
 	glutSwapBuffers();
 }
