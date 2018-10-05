@@ -9,7 +9,6 @@ private:
 public:
 	Player();
 	Player(int _pos_x, int _pos_y);
-	void set_direction(int dir);
 	int get_num_i();
 	void add_num_i();
 	void display();

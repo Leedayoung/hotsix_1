@@ -42,9 +42,6 @@ public:
 	void player_init(int mode);
 	void item_init();
 	int get_numb_enemy();
-	vector<Enemy>& get_enem_vec();
-	Player& get_player();
-	vector<Bullet>& get_bullet_vec();
 	int get_map_size();
 	int** get_map_arr();
 	bool check_range(pair<int, int> pos);

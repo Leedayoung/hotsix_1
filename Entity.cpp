@@ -7,6 +7,9 @@ GLuint texture[16];
 int Entity::get_direction() {
 	return direc;
 }
+void Entity::set_direction(int _direc) {
+	direc = _direc;
+}
 int Entity::get_x() {
 	return pos_x;
 }
