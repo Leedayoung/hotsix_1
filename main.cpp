@@ -39,7 +39,7 @@ GLuint InitShader(const char* vShaderFile, const char* fShaderFile);
 
 int main(int argc, char **argv) {
 	srand((unsigned)time(NULL));
-	
+	Player::image_setting();
 	newmap = Map();
 	glutInit(&argc, argv);
 	glutInitDisplayMode( GLUT_RGBA );

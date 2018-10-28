@@ -15,5 +15,8 @@ public:
 	int get_life();
 	void die();
 	void display();
+	static void image_setting() {
+		cout << "???" << endl;
+	}
 };
 
