@@ -224,6 +224,7 @@ void bullet_make(unsigned char key, int x, int y) {
 }
 void move_enemies(int v) {
 	newmap.update_enemies();
+	newmap.timer();
 	if (newmap.isEnd()) {
 		glutSpecialFunc(NULL);
 		glutKeyboardFunc(NULL);

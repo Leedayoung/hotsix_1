@@ -14,6 +14,7 @@ Map::Map() {
 	numb_enemy = 15;
 	wall_maker();
 	item_numb = 6;
+	time_limit = 30;
 	world_init();
 	map_init();
 	object_init();
@@ -244,7 +245,15 @@ bool Map::get_item() {
 	}
 	return false;
 }
+void Map::timer() {
+	time_limit--;
+}
 bool Map::isEnd() {
+	if (time_limit == 0) {
+		cout << "You lose";
+		end = true;
+		return true;
+	}
 	for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
 		if (player.get_position() == it->get_position()) {
 			player.die();
@@ -268,7 +277,6 @@ bool Map::isEnd() {
 bool Map::get_win() {
 	return win;
 }
-
 bool Map::get_end() {
 	return end;
 }
@@ -332,9 +340,15 @@ void Map::display() {
 		print(x + 7 * item_size, y + display_num - 1 * i, s + to_string(i));
 
 	int life_remained = player.get_life();
+	//Life
 	string ss = "Remaining Life ";
-	print(x + 1, y + 2 * view_size - 1, ss + to_string(life_remained));
+	print(x, y + 2 * view_size - 1, ss + to_string(life_remained));
 
+	string tt= "Remaining Time ";
+	string colon = ":";
+	print(x, y + 2 * view_size - 2, tt + to_string(time_limit/60)+colon+ to_string(time_limit %60));
+
+	//End
 	if (end) {
 		if (win) {
 			print(x + view_size, y + view_size + 2, "You Win");
