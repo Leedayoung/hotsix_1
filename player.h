@@ -12,6 +12,7 @@ public:
 	int get_num_i();
 	void add_num_i();
 	void display();
+	void draw_down();
 	static void image_setting() {
 		cout << "???" << endl;
 	}

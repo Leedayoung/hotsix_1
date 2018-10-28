@@ -5,7 +5,159 @@
 #include "bullet.h"
 #include "Enemy.h"
 #include "map.h"
+#include <glm/mat4x4.hpp>
+#include <glm/matrix.hpp>
+#include <glm/ext/matrix_transform.hpp>
+#include <GL/glew.h>
+#include <GL/freeglut.h>
+#include <GL/freeglut_ext.h>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include "display.h"
 using namespace std;
+using namespace glm;
+void Map::display(GLuint program) {
+	pair<int, int> pos = player.get_position();
+	int x = pos.first, y = pos.second;
+	x -= view_size;
+	y -= view_size;
+	if (x < 0) x = 0;
+	if (y < 0) y = 0;
+	if (x + 2 * view_size > map_size) x = map_size - 2 * view_size;
+	if (y + 2 * view_size > map_size) y = map_size - 2 * view_size;
+	
+	ortho_mat = glm::ortho((float)x, (float)x + 2 * view_size, (float)y, (float)y + 2 * view_size);
+	glClearColor(1.0, 1.0, 1.0, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	int NumPoints = 4;
+
+	//glm::lookAtRH(vec3(0, 0, 0), vec3(0, 0, 0), vec3(0, 0, 1));
+	//map_display
+	double wall_len = 1.0 / map_size;
+	for (int y = 0; y < map_size; y++) {
+		for (int x = 0; x < map_size; x++) {
+			if (map_arr[y][x] == map_info::wall) {
+				mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0));
+				mat4 final_mat = ortho_mat * trans;
+				vec4 vec_color = vec4(0.0, 0.0, 0.0, 1.0);
+				glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
+				glUniform4fv(vColor, 1, &vec_color[0]);
+				glDrawArrays(GL_TRIANGLE_FAN, 0, NumPoints);
+			}
+			else if (map_arr[y][x] == map_info::item) {
+				mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0));
+				mat4 final_mat = ortho_mat * trans;
+				vec4 vec_color = vec4(1.0, 0.0, 0.0, 1.0);
+				glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
+				glUniform4fv(vColor, 1, &vec_color[0]);
+				glDrawArrays(GL_TRIANGLE_FAN, 0, NumPoints);
+			}
+		}
+	}
+	player.display();
+	
+	//enemy display
+	for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
+		it->display();
+	}
+
+	//display bullet
+	for (vector<Bullet>::iterator it = bull_vec.begin(); it != bull_vec.end(); it++) {
+		it->display();
+	}
+
+	/*pair<int, int> pos = player.get_position();
+	int x = pos.first, y = pos.second;
+	x -= view_size;
+	y -= view_size;
+	if (x < 0) x = 0;
+	if (y < 0) y = 0;
+	if (x + 2 * view_size > map_size) x = map_size - 2 * view_size;
+	if (y + 2 * view_size > map_size) y = map_size - 2 * view_size;
+	*/
+	//glm::translate(glm::mat4(), glm::vec3(pos_x, pos_y, 0.0f));
+	
+		//glDrawArrays(GL_LINES, 1, NumPoints);
+		//glDrawArrays(GL_LINES, 2, NumPoints);
+		
+	/*pair<int, int> pos = player.get_position();
+	int x = pos.first, y = pos.second;
+	x -= view_size;
+	y -= view_size;
+	if (x < 0) x = 0;
+	if (y < 0) y = 0;
+	if (x + 2 * view_size > map_size) x = map_size - 2 * view_size;
+	if (y + 2 * view_size > map_size) y = map_size - 2 * view_size;
+
+	glLoadIdentity();
+	gluOrtho2D(x, x + 2 * view_size, y, y + 2 * view_size);
+
+	glClearColor(1.0, 1.0, 1.0, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	//map display
+	glColor3f(1.0, 1.0, 1.0);
+	glEnable(GL_TEXTURE_2D);
+	double wall_len = 1.0 / map_size;
+	for (int y = 0; y < map_size; y++) {
+	for (int x = 0; x < map_size; x++) {
+	if (map_arr[y][x] == map_info::wall) {
+	glBindTexture(GL_TEXTURE_2D, texture[image::wall_p]);
+	draw_rec(x, y, x + 1, y + 1);
+	}
+	else if (map_arr[y][x] == map_info::item) {
+	glBindTexture(GL_TEXTURE_2D, texture[image::item_p]);
+	draw_rec(x, y, x + 1, y + 1);
+	}
+	}
+	}
+	//enemy display
+	for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
+	it->display();
+	}
+
+	//display bullet
+	for (vector<Bullet>::iterator it = bull_vec.begin(); it != bull_vec.end(); it++) {
+	it->display();
+	}
+
+	//display player
+	player.display();
+
+	//item inventory
+	int item_size = view_size / 4;
+	int item_num = player.get_num_i();
+	string s = " item";
+	glColor3f(1.0, 1.0, 0.0);
+	int display_num = item_num > 3 ? item_num : 3;
+	display_num = display_num * 1 + 1;
+	glRecti(x + 7 * item_size, y, x + 8 * item_size, y + display_num);
+	glColor3f(0.0, 0.0, 0.0);
+	print(x + 7 * item_size, y + display_num + 1, "Item List");
+	for (int i = 1; i <= item_num; i++)
+	print(x + 7 * item_size, y + display_num - 1 * i, s + to_string(i));
+
+	//Enemy Kills
+	int killed = numb_enemy - enem_vec.size();
+	string ss = "Killed Enemy ";
+	string dash = "/";
+	print(x + 1, y + 2 * view_size - 1, ss + to_string(killed) + dash + to_string(numb_enemy));
+
+	if (isEnd()) {
+	if (win) {
+	print(x + view_size, y + view_size + 2, "You Win");
+	}
+	else {
+	print(x + view_size, y + view_size + 2, "You Lose");
+	}
+	}
+	glutSwapBuffers();*/
+	glFlush();
+}
+
+
 
 Map::Map() {
 	win = false;
@@ -242,80 +394,7 @@ bool Map::isEnd() {
 bool Map::get_win() {
 	return win;
 }
-void Map::display() {
-	pair<int, int> pos = player.get_position();
-	int x = pos.first, y = pos.second;
-	x -= view_size;
-	y -= view_size;
-	if (x < 0) x = 0;
-	if (y < 0) y = 0;
-	if (x + 2 * view_size > map_size) x = map_size - 2 * view_size;
-	if (y + 2 * view_size > map_size) y = map_size - 2 * view_size;
 
-	glLoadIdentity();
-	gluOrtho2D(x, x + 2 * view_size, y, y + 2 * view_size);
-
-	glClearColor(1.0, 1.0, 1.0, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	//map display
-	glColor3f(1.0, 1.0, 1.0);
-	glEnable(GL_TEXTURE_2D);
-	double wall_len = 1.0 / map_size;
-	for (int y = 0; y < map_size; y++) {
-		for (int x = 0; x < map_size; x++) {
-			if (map_arr[y][x] == map_info::wall) {
-				glBindTexture(GL_TEXTURE_2D, texture[image::wall_p]);
-				draw_rec(x, y, x + 1, y + 1);
-			}
-			else if (map_arr[y][x] == map_info::item) {
-				glBindTexture(GL_TEXTURE_2D, texture[image::item_p]);
-				draw_rec(x, y, x + 1, y + 1);
-			}
-		}
-	}
-	//enemy display
-	for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
-		it->display();
-	}
-
-	//display bullet
-	for (vector<Bullet>::iterator it = bull_vec.begin(); it != bull_vec.end(); it++) {
-		it->display();
-	}
-
-	//display player
-	player.display();
-
-	//item inventory
-	int item_size = view_size / 4;
-	int item_num = player.get_num_i();
-	string s = " item";
-	glColor3f(1.0, 1.0, 0.0);
-	int display_num = item_num > 3 ? item_num : 3;
-	display_num = display_num * 1 + 1;
-	glRecti(x + 7 * item_size, y, x + 8 * item_size, y + display_num);
-	glColor3f(0.0, 0.0, 0.0);
-	print(x + 7 * item_size, y + display_num + 1, "Item List");
-	for (int i = 1; i <= item_num; i++)
-		print(x + 7 * item_size, y + display_num - 1 * i, s + to_string(i));
-
-	//Enemy Kills
-	int killed = numb_enemy - enem_vec.size();
-	string ss = "Killed Enemy ";
-	string dash = "/";
-	print(x + 1, y + 2 * view_size - 1, ss + to_string(killed) + dash + to_string(numb_enemy));
-
-	if (isEnd()) {
-		if (win) {
-			print(x + view_size, y + view_size + 2, "You Win");
-		}
-		else {
-			print(x + view_size, y + view_size + 2, "You Lose");
-		}
-	}
-	glutSwapBuffers();
-}
 void Map::draw_rec(int x1, int y1, int x2, int y2) {
 	glBegin(GL_QUADS);
 	glTexCoord2i(0, 0); glVertex2i(x1, y1);

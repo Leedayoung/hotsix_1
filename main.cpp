@@ -15,13 +15,14 @@
 #include "bullet.h"
 #include "Enemy.h"
 #include "Entity.h"
+#include "display.h"
 #include <string>
 #include <fstream>
 using namespace std;
 using namespace glm;
 
 #define BUFFER_OFFSET( offset ) ((GLvoid*) (offset))
-const int NumPoints = 3;
+const int NumPoints = 4;
 
 Map newmap;
 void player_move_func(int key, int x, int y);
@@ -64,13 +65,16 @@ int main(int argc, char **argv) {
 }
 
 void init(void) {
-	vec2 points[NumPoints];
-	vec2 vertices[3] = {
-		vec2(0, 0), vec2(0.1, 0), vec2(0.1,0.1)
+	//vec2 points[NumPoints];
+	/*vec2 points[NumPoints] = {
+		vec2(0, 0), vec2(0.1, 0), vec2(0.1,0.1), vec2(0, 0.1)
+	};*/
+	vec4 points[NumPoints] = {
+		vec4(0, 0,0, 1), vec4(1, 0,0,1), vec4(1,1,0,1), vec4(0, 1,0,1)
 	};
-	for (int i = 0; i < NumPoints; ++i) {
+	/*for (int i = 0; i < NumPoints; ++i) {
 		points[i] = vertices[i];
-	}
+	}*/
 	//Vertex array object
 	GLuint vao;
 	glGenVertexArrays(1, &vao);
@@ -82,13 +86,16 @@ void init(void) {
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
 
-	GLuint program = InitShader("vshader1.glsl", "fshader1.glsl");
+	program = InitShader("vshader1.glsl", "fshader1.glsl");
 	glUseProgram(program);
 
 	GLuint loc = glGetAttribLocation(program, "vPosition");
 	glEnableVertexAttribArray(loc);
-	glVertexAttribPointer(loc, 2 , GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+	glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 
+	ctmParam = glGetUniformLocation(program, "ctm");
+	vColor = glGetUniformLocation(program, "color");
+	
 	glClearColor(1.0, 1.0, 0.0, 1.0);
 
 }
@@ -185,11 +192,12 @@ void reshape(int w, int h) {
 	gluOrtho2D(0, newmap.get_map_size(), 0, newmap.get_map_size());
 }
 void display() {
-	glClear(GL_COLOR_BUFFER_BIT);   
+	newmap.display(program);
+	/*glClear(GL_COLOR_BUFFER_BIT);   
 	glDrawArrays(GL_LINES, 0, NumPoints);  
 	glDrawArrays(GL_LINES, 1, NumPoints);
 	glDrawArrays(GL_LINES, 2, NumPoints);
-	glFlush();
+	glFlush();*/
 }
 /*
 void display() {

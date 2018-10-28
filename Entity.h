@@ -2,7 +2,18 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+#include <glm/mat4x4.hpp>
+#include <glm/matrix.hpp>
+#include <glm/ext/matrix_transform.hpp>
+#include <GL/glew.h>
+#include <GL/freeglut.h>
+#include <GL/freeglut_ext.h>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
+#include <glm/gtc/type_ptr.hpp>
 using namespace std;
+using namespace glm;
 
 enum direction { up = 0, down, left, right };
 enum image { bullet_u = 0, bullet_d, bullet_l, bullet_r, player_u, player_d, player_l, player_r, item_p, wall_p, enemy_u, enemy_d, enemy_l, enemy_r };
