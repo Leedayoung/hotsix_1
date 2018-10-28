@@ -27,9 +27,11 @@ private:
 	int item_numb;
 	int bull_length = 4;
 	bool win;
+	bool end;
 		
 public:
 	Map();
+	bool get_end();
 	void print(int x, int y, string string);
 	void draw_rec(int x1, int y1, int x2, int y2);
 	void display();

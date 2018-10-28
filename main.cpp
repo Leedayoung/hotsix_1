@@ -30,7 +30,7 @@ void move_enemies(int v);
 void move_bullets(int v);
 void display();
 void reshape(int w, int h);
-void endstate();
+void endstate(int v);
 int LoadBMP(const char* location, GLuint &texture);
 void load_images();
 void init(void);
@@ -44,21 +44,21 @@ int main(int argc, char **argv) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode( GLUT_RGBA );
 	glutInitWindowPosition(0,0);
-	glutInitWindowSize(700, 700);//창 크기 설정
+	glutInitWindowSize(800, 800);//창 크기 설정
 	glutCreateWindow("GAME");
 
-	glewInit();
-	init();
+	//glewInit();
+	//init();
 
 	glutReshapeFunc(reshape);
 	glutDisplayFunc(display);
 	glutSpecialFunc(player_move_func);
 	glutKeyboardFunc(bullet_make);
-	glutTimerFunc(147, move_bullets, 1);
+	glutTimerFunc(150, move_bullets, 1);
 	glutTimerFunc(1000, move_enemies, 1);
-	glutIdleFunc(endstate);
+	//glutTimerFunc(300, endstate, 1);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
-	//load_images();
+	load_images();
 	glutMainLoop();
 	return 0;
 }
@@ -184,17 +184,18 @@ void reshape(int w, int h) {
 	glViewport(0, 0, w, h);
 	gluOrtho2D(0, newmap.get_map_size(), 0, newmap.get_map_size());
 }
+/*
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT);   
 	glDrawArrays(GL_LINES, 0, NumPoints);  
 	glDrawArrays(GL_LINES, 1, NumPoints);
 	glDrawArrays(GL_LINES, 2, NumPoints);
 	glFlush();
-}
-/*
+}*/
+
 void display() {
 	newmap.display();
-}*/
+}
 void player_move_func(int key, int x, int y) {
 	switch (key) {
 	case GLUT_KEY_UP:
@@ -210,6 +211,11 @@ void player_move_func(int key, int x, int y) {
 		newmap.valid_move(direction::left);
 		break;
 	}
+	if (newmap.isEnd()) {
+		glutSpecialFunc(NULL);
+		glutKeyboardFunc(NULL);
+		glutPostRedisplay();
+	}
 	glutPostRedisplay();
 }
 void bullet_make(unsigned char key, int x, int y) {
@@ -217,27 +223,33 @@ void bullet_make(unsigned char key, int x, int y) {
 	glutPostRedisplay();
 }
 void move_enemies(int v) {
-	if (newmap.isEnd())
-		return;
 	newmap.update_enemies();
+	if (newmap.isEnd()) {
+		glutSpecialFunc(NULL);
+		glutKeyboardFunc(NULL);
+		glutPostRedisplay();
+		return;
+	}
 	glutPostRedisplay();
 	glutTimerFunc(1000, move_enemies, 1);
 	return;
 }	
 void move_bullets(int v) {
-	if (newmap.isEnd())
+	if (newmap.get_end())
 		return;
 	newmap.update_bullets();
 	glutPostRedisplay();
 	glutTimerFunc(147, move_bullets, 1);
 	return;
 }
-void endstate() {
+void endstate(int v) {
 	if (newmap.isEnd()) {
 		glutSpecialFunc(NULL);
 		glutKeyboardFunc(NULL);
-		glutIdleFunc(NULL);
+		glutPostRedisplay();
+		return;
 	}
+	glutTimerFunc(300, endstate, 1);
 }
 int LoadBMP(const char* location, GLuint &texture) {
 

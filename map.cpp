@@ -9,7 +9,7 @@ using namespace std;
 
 Map::Map() {
 	win = false;
-	map_size = 148;
+	map_size = 96;
 	view_size = map_size / 12;
 	numb_enemy = 15;
 	wall_maker();
@@ -17,6 +17,7 @@ Map::Map() {
 	world_init();
 	map_init();
 	object_init();
+	end = false;
 }
 /*Initializing Functions*/
 void Map::wall_maker() {
@@ -34,7 +35,7 @@ void Map::wall_maker() {
 	for (i = 0; i < 15; ++i) loc_wall.push_back(60 + map_size * i);
 	int len, x, y;
 	for (i = 0; i < 20; ++i) {
-		len = rand() % 25;
+		len = rand() % 15;
 		x = rand() % (map_size - 40);
 		y = rand() % (map_size);
 		for (int j = 0; j < len; ++j) {
@@ -42,7 +43,7 @@ void Map::wall_maker() {
 		}
 	}
 	for (i = 0; i < 15; ++i) {
-		len = rand() % 25;
+		len = rand() % 15;
 		x = rand() % (map_size);
 		y = rand() % (map_size - 40);
 		for (int j = 0; j < len; ++j) {
@@ -132,7 +133,25 @@ bool Map::check_wall(pair<int, int> pos) {
 bool Map::update_enemies() {
 	int direction;
 	for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); ) {
-		if (it->check_chase(player.get_position())) {
+		if (it->get_position() == player.get_position()) {
+			direction = rand() % 4;
+			pair<int, int> new_pos = it->move_test(direction);
+			if (check_range(new_pos) == false) continue;
+			if (map_arr[new_pos.second][new_pos.first] == wall) continue;
+			it->move(direction);
+			bool die = false;
+			for (vector<Bullet>::iterator bl = bull_vec.begin(); bl != bull_vec.end(); bl++) {
+				pair<int, int> bull_pos = bl->get_position();
+				if (new_pos == bull_pos) {
+					bl = bull_vec.erase(bl);
+					die = true;
+					break;
+				}
+			}
+			if (die) it = enem_vec.erase(it);
+			else it++;
+		}
+		else if (it->check_chase(player.get_position())) {
 			int x = player.get_x() - it->get_x();
 			int y = player.get_y() - it->get_y();
 			if (x > 0 && !check_wall(it->move_test(direction::right))) it->move(direction::right);
@@ -228,13 +247,20 @@ bool Map::get_item() {
 bool Map::isEnd() {
 	for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
 		if (player.get_position() == it->get_position()) {
-			cout << "You lose";
-			return true;
+			player.die();
+			if (player.get_life() == 0)
+			{
+				cout << "You lose";
+				end = true;
+				return true;
+			}
+			else break;
 		}
 	}
 	if (enem_vec.size() == 0) {
 		cout << "You win";
 		win = true;
+		end = true;
 		return true;
 	}
 	return false;
@@ -242,6 +268,11 @@ bool Map::isEnd() {
 bool Map::get_win() {
 	return win;
 }
+
+bool Map::get_end() {
+	return end;
+}
+
 void Map::display() {
 	pair<int, int> pos = player.get_position();
 	int x = pos.first, y = pos.second;
@@ -300,6 +331,19 @@ void Map::display() {
 	for (int i = 1; i <= item_num; i++)
 		print(x + 7 * item_size, y + display_num - 1 * i, s + to_string(i));
 
+	int life_remained = player.get_life();
+	string ss = "Remained Life ";
+	print(x + 1, y + 2 * view_size - 1, ss + to_string(life_remained));
+
+	if (end) {
+		if (win) {
+			print(x + view_size, y + view_size + 2, "You Win");
+		}
+		else {
+			print(x + view_size, y + view_size + 2, "You Lose");
+		}
+	}
+	/*
 	//Enemy Kills
 	int killed = numb_enemy - enem_vec.size();
 	string ss = "Killed Enemy ";
@@ -314,6 +358,7 @@ void Map::display() {
 			print(x + view_size, y + view_size + 2, "You Lose");
 		}
 	}
+	*/
 	glutSwapBuffers();
 }
 void Map::draw_rec(int x1, int y1, int x2, int y2) {
