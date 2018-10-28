@@ -2,7 +2,12 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+#include <GL/freeglut_ext.h>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 #include <vector>
+#include <math.h>
 #include <cstdio>
 #include "time.h"
 #include "map.h"
@@ -13,6 +18,10 @@
 #include <string>
 #include <fstream>
 using namespace std;
+using namespace glm;
+
+#define BUFFER_OFFSET( offset ) ((GLvoid*) (offset))
+const int NumPoints = 3;
 
 Map newmap;
 void player_move_func(int key, int x, int y);
@@ -24,16 +33,23 @@ void reshape(int w, int h);
 void endstate();
 int LoadBMP(const char* location, GLuint &texture);
 void load_images();
+void init(void);
+GLuint InitShader(const char* vShaderFile, const char* fShaderFile);
+
 
 int main(int argc, char **argv) {
 	srand((unsigned)time(NULL));
 	
 	newmap = Map();
 	glutInit(&argc, argv);
+	glutInitDisplayMode( GLUT_RGBA );
 	glutInitWindowPosition(0,0);
-	glutInitWindowSize(800, 800);//창 크기 설정
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+	glutInitWindowSize(700, 700);//창 크기 설정
 	glutCreateWindow("GAME");
+
+	glewInit();
+	init();
+
 	glutReshapeFunc(reshape);
 	glutDisplayFunc(display);
 	glutSpecialFunc(player_move_func);
@@ -42,9 +58,125 @@ int main(int argc, char **argv) {
 	glutTimerFunc(1000, move_enemies, 1);
 	glutIdleFunc(endstate);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
-	load_images();
+	//load_images();
 	glutMainLoop();
 	return 0;
+}
+
+void init(void) {
+	vec2 points[NumPoints];
+	vec2 vertices[3] = {
+		vec2(0, 0), vec2(0.1, 0), vec2(0.1,0.1)
+	};
+	for (int i = 0; i < NumPoints; ++i) {
+		points[i] = vertices[i];
+	}
+	//Vertex array object
+	GLuint vao;
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	//Create and initialize a buffer obj
+	GLuint buffer;
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
+
+	GLuint program = InitShader("vshader1.glsl", "fshader1.glsl");
+	glUseProgram(program);
+
+	GLuint loc = glGetAttribLocation(program, "vPosition");
+	glEnableVertexAttribArray(loc);
+	glVertexAttribPointer(loc, 2 , GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+
+	glClearColor(1.0, 1.0, 0.0, 1.0);
+
+}
+
+static char* readShaderSource(const char* shaderFile)
+{
+	FILE* fp;
+	fopen_s(&fp, shaderFile, "rb");
+
+	if (fp == NULL) { return NULL; }
+
+	fseek(fp, 0L, SEEK_END);
+	long size = ftell(fp);
+
+	fseek(fp, 0L, SEEK_SET);
+	char* buf = new char[size + 1];
+	fread(buf, 1, size, fp);
+
+	buf[size] = '\0';
+	fclose(fp);
+
+	return buf;
+}
+
+GLuint InitShader(const char* vShaderFile, const char* fShaderFile)
+{
+	struct Shader {
+		const char*  filename;
+		GLenum       type;
+		GLchar*      source;
+	}  shaders[2] = {
+		{ vShaderFile, GL_VERTEX_SHADER, NULL },
+		{ fShaderFile, GL_FRAGMENT_SHADER, NULL }
+	};
+
+	GLuint program = glCreateProgram();
+
+	for (int i = 0; i < 2; ++i) {
+		Shader& s = shaders[i];
+		s.source = readShaderSource(s.filename);
+		if (shaders[i].source == NULL) {
+			std::cerr << "Failed to read " << s.filename << std::endl;
+			exit(EXIT_FAILURE);
+		}
+
+		GLuint shader = glCreateShader(s.type);
+		glShaderSource(shader, 1, (const GLchar**)&s.source, NULL);
+		glCompileShader(shader);
+
+		GLint  compiled;
+		glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
+		if (!compiled) {
+			std::cerr << s.filename << " failed to compile:" << std::endl;
+			GLint  logSize;
+			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logSize);
+			char* logMsg = new char[logSize];
+			glGetShaderInfoLog(shader, logSize, NULL, logMsg);
+			std::cerr << logMsg << std::endl;
+			delete[] logMsg;
+
+			exit(EXIT_FAILURE);
+		}
+
+		delete[] s.source;
+
+		glAttachShader(program, shader);
+	}
+
+	/* link  and error check */
+	glLinkProgram(program);
+
+	GLint  linked;
+	glGetProgramiv(program, GL_LINK_STATUS, &linked);
+	if (!linked) {
+		std::cerr << "Shader program failed to link" << std::endl;
+		GLint  logSize;
+		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logSize);
+		char* logMsg = new char[logSize];
+		glGetProgramInfoLog(program, logSize, NULL, logMsg);
+		std::cerr << logMsg << std::endl;
+		delete[] logMsg;
+
+		exit(EXIT_FAILURE);
+	}
+
+	/* use program object */
+	glUseProgram(program);
+	return program;
 }
 
 void reshape(int w, int h) {
@@ -53,8 +185,16 @@ void reshape(int w, int h) {
 	gluOrtho2D(0, newmap.get_map_size(), 0, newmap.get_map_size());
 }
 void display() {
-	newmap.display();
+	glClear(GL_COLOR_BUFFER_BIT);   
+	glDrawArrays(GL_LINES, 0, NumPoints);  
+	glDrawArrays(GL_LINES, 1, NumPoints);
+	glDrawArrays(GL_LINES, 2, NumPoints);
+	glFlush();
 }
+/*
+void display() {
+	newmap.display();
+}*/
 void player_move_func(int key, int x, int y) {
 	switch (key) {
 	case GLUT_KEY_UP:
