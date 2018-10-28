@@ -12,5 +12,8 @@ public:
 	int get_num_i();
 	void add_num_i();
 	void display();
+	static void image_setting() {
+		cout << "???" << endl;
+	}
 };
 

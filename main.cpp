@@ -27,8 +27,8 @@ void load_images();
 
 int main(int argc, char **argv) {
 	srand((unsigned)time(NULL));
-	
-	newmap = Map();
+	Player::image_setting();
+	/*newmap = Map();
 	glutInit(&argc, argv);
 	glutInitWindowPosition(0,0);
 	glutInitWindowSize(800, 800);//창 크기 설정
@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
 	glutIdleFunc(endstate);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 	load_images();
-	glutMainLoop();
+	glutMainLoop();*/
 	return 0;
 }
 

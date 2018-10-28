@@ -49,9 +49,7 @@ public:
 	bool kill_enemies(pair<int, int> pos);
 	void update_bullets();
 	void create_bullet();
-	//Player에 대하여 Valid한 Move후 Direction update
 	void valid_move(int dir);
-	//현재 위치의 item을 주워 없앤 뒤 empty를 return함
 	bool get_item();
 	bool isEnd();
 	bool get_win();
