@@ -98,6 +98,8 @@ void init(void) {
 	
 	glClearColor(1.0, 1.0, 0.0, 1.0);
 
+	make_player_down();
+
 }
 
 static char* readShaderSource(const char* shaderFile)
