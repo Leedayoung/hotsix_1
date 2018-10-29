@@ -157,7 +157,8 @@ void make_player_left_right(treenode * player, vec4 torso_color) {
 	left_upper_leg->s = glm::scale(glm::mat4(1.0), vec3(0.1, 0.2, 0.0));
 	//left_upper_leg->jump1 = glm::translate(glm::mat4(1.0), vec3(-0.1, 0.15, 0.0)) * glm::rotate(glm::mat4(1.0), -1.0f, vec3(0.0, 0.0, 1.0));
 	//left_upper_leg->jump2 = glm::translate(glm::mat4(1.0), vec3(-0.1, 0.15, 0.0)) * glm::rotate(glm::mat4(1.0), -1.0f, vec3(0.0, 0.0, 1.0));
-	//left_upper_leg->jump3 = glm::translate(glm::mat4(1.0), vec3(-0.1, 0.15, 0.0)) * glm::rotate(glm::mat4(1.0), -1.0f, vec3(0.0, 0.0, 1.0));
+	left_upper_leg->jump3 = glm::translate(glm::mat4(1.0), vec3(-0.15, 0.1, 0.0))*glm::rotate(glm::mat4(1.0), -1.0f, vec3(0.0, 0.0, 1.0));
+	left_upper_leg->jump2 = glm::translate(glm::mat4(1.0), vec3(-0.15, 0.1, 0.0))*glm::rotate(glm::mat4(1.0), -1.0f, vec3(0.0, 0.0, 1.0));
 	left_upper_leg->color = vec4(0.0, 0.3, 0.7, 1.0);
 
 	//left lower_leg
@@ -165,6 +166,8 @@ void make_player_left_right(treenode * player, vec4 torso_color) {
 	left_lower_leg->m = glm::translate(glm::mat4(1.0), vec3(0.0, -0.2, 0.0));
 	left_lower_leg->s = glm::scale(glm::mat4(1.0), vec3(0.1, 0.2, 0.0));
 	left_lower_leg->color = vec4(1, 0.3, 0.7, 1.0);
+	left_lower_leg->jump3 = glm::translate(glm::mat4(1.0), vec3(0.17, 0.05, 0.0))*glm::rotate(glm::mat4(1.0), 1.0f, vec3(0.0, 0.0, 1.0));
+	left_lower_leg->jump2 = glm::translate(glm::mat4(1.0), vec3(0.17, 0.05, 0.0))*glm::rotate(glm::mat4(1.0), 1.0f, vec3(0.0, 0.0, 1.0));
 	//left_lower_leg->jump1 = glm::translate(glm::mat4(1.0), vec3(0.2, 0.05, 0.0))*glm::rotate(glm::mat4(1.0), 1.0f, vec3(0.0, 0.0, 1.0));
 	//left_lower_leg->jump2 = glm::translate(glm::mat4(1.0), vec3(0.2, 0.05, 0.0))*glm::rotate(glm::mat4(1.0), 1.0f, vec3(0.0, 0.0, 1.0));
 
@@ -173,8 +176,8 @@ void make_player_left_right(treenode * player, vec4 torso_color) {
 	right_upper_leg->m = glm::translate(glm::mat4(1.0), vec3(0.1, -0.2, 0.0));
 	right_upper_leg->s = glm::scale(glm::mat4(1.0), vec3(0.1, 0.2, 0.0));
 	//right_upper_leg->jump1 = glm::translate(glm::mat4(1.0), vec3(0.1, 0.05, 0.0))*glm::rotate(glm::mat4(1.0), 1.0f, vec3(0.0, 0.0, 1.0));
-	//right_upper_leg->jump2 = glm::translate(glm::mat4(1.0), vec3(0.1, 0.05, 0.0))*glm::rotate(glm::mat4(1.0), 1.0f, vec3(0.0, 0.0, 1.0));
-	//right_upper_leg->jump3 = glm::translate(glm::mat4(1.0), vec3(0.1, 0.05, 0.0))*glm::rotate(glm::mat4(1.0), 1.0f, vec3(0.0, 0.0, 1.0));
+	right_upper_leg->jump2 = glm::translate(glm::mat4(1.0), vec3(0.2, 0.0, 0.0))*glm::rotate(glm::mat4(1.0), 1.0f, vec3(0.0, 0.0, 1.0));
+	right_upper_leg->jump3 = glm::translate(glm::mat4(1.0), vec3(0.2, 0.0, 0.0))*glm::rotate(glm::mat4(1.0), 1.0f, vec3(0.0, 0.0, 1.0));
 	right_upper_leg->color = vec4(0.0, 0.3, 0.7, 1.0);
 
 	//right lower_leg
@@ -189,7 +192,6 @@ void make_player_left_right(treenode * player, vec4 torso_color) {
 	treenode * left_upper_arm = right_upper_leg->sibling = new treenode();
 	left_upper_arm->m = glm::translate(glm::mat4(1.0), vec3(0.1, 0.2, 0.0));
 	left_upper_arm->s = glm::scale(glm::mat4(1.0), vec3(0.1, 0.2, 0.0));
-	//left_upper_arm->jump1 = glm::translate(glm::mat4(1.0), vec3(-0.1, 0.1, 0.0)) * glm::rotate(glm::mat4(1.0), -1.0f, vec3(0.0, 0.0, 1.0));
 	//left_upper_arm->jump2 = glm::translate(glm::mat4(1.0), vec3(-0.1, 0.1, 0.0)) * glm::rotate(glm::mat4(1.0), -1.0f, vec3(0.0, 0.0, 1.0));
 	//left_upper_arm->jump3 = glm::translate(glm::mat4(1.0), vec3(-0.1, 0.1, 0.0)) * glm::rotate(glm::mat4(1.0), -1.0f, vec3(0.0, 0.0, 1.0));
 	left_upper_arm->color = vec4(1.0, 0.0, 0.0, 1.0);
@@ -199,7 +201,8 @@ void make_player_left_right(treenode * player, vec4 torso_color) {
 	left_lower_arm->m = glm::translate(glm::mat4(1.0), vec3(0.0, -0.2, 0.0));
 	left_lower_arm->s = glm::scale(glm::mat4(1.0), vec3(0.1, 0.2, 0.0));
 	left_lower_arm->color = vec4(1.0, 1.0, 0.3, 1.0);
-	//left_lower_arm->jump2 = glm::translate(glm::mat4(1.0), vec3(0.0, 0.1, 0.0))*glm::rotate(glm::mat4(1.0), 2.0f, vec3(0.0, 0.0, 1.0));
+	left_lower_arm->jump2 = glm::translate(glm::mat4(1.0), vec3(-0.15, 0.15, 0.0))*glm::rotate(glm::mat4(1.0), -1.0f, vec3(0.0, 0.0, 1.0));
+	left_lower_arm->jump3 = glm::translate(glm::mat4(1.0), vec3(0.15, 0.05, 0.0))*glm::rotate(glm::mat4(1.0), 1.0f, vec3(0.0, 0.0, 1.0));
 	//left_lower_arm->s = glm::scale(glm::mat4(1.0), vec3(0.1, 0.2, 0.0));
 	//left_lower_arm->gun = glm::translate(glm::mat4(1.0), vec3(0.0, 0.1, 0.0))*glm::rotate(glm::mat4(1.0), 2.0f, vec3(0.0, 0.0, 1.0));
 
@@ -209,15 +212,17 @@ void make_player_left_right(treenode * player, vec4 torso_color) {
 	right_upper_arm->m = glm::translate(glm::mat4(1.0), vec3(0.1, 0.2, 0.0));
 	right_upper_arm->s = glm::scale(glm::mat4(1.0), vec3(0.1, 0.2, 0.0));
 	right_upper_arm->color = vec4(1.0, 0.0, 0.0, 1.0);
-	//right_upper_arm->jump1 = glm::translate(glm::mat4(1.0), vec3(0.1, 0.0, 0.0))*glm::rotate(glm::mat4(1.0), 1.0f, vec3(0.0, 0.0, 1.0));
+	
 	//right_upper_arm->jump2 = glm::translate(glm::mat4(1.0), vec3(0.1, 0.0, 0.0))*glm::rotate(glm::mat4(1.0), 1.0f, vec3(0.0, 0.0, 1.0));
 	//right_upper_arm->jump3 = glm::translate(glm::mat4(1.0), vec3(0.1, 0.0, 0.0))*glm::rotate(glm::mat4(1.0), 1.0f, vec3(0.0, 0.0, 1.0));
 
-	//left_lower_arm
+	//right_lower_arm
 	treenode * right_lower_arm = right_upper_arm->child = new treenode();
 	right_lower_arm->m = glm::translate(glm::mat4(1.0), vec3(0.0, -0.2, 0.0));
 	right_lower_arm->s = glm::scale(glm::mat4(1.0), vec3(0.1, 0.2, 0.0));
 	right_lower_arm->color = vec4(1.0, 1.0, 0.3, 1.0);
+	right_lower_arm->jump2 = left_lower_arm->jump2;
+	right_lower_arm->jump3 = left_lower_arm->jump3;
 	//right_lower_arm->jump3 = glm::translate(glm::mat4(1.0), vec3(0.2, 0.1, 0.0))*glm::rotate(glm::mat4(1.0), 1.0f, vec3(0.0, 0.0, 1.0)); glm::translate(glm::mat4(1.0), vec3(0.0, 0.1, 0.0))*glm::rotate(glm::mat4(1.0), 3.0f, vec3(0.0, 0.0, 1.0));
 	
 	treenode * cloth = right_upper_arm->sibling = new treenode();
