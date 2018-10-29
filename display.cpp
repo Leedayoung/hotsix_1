@@ -103,14 +103,14 @@ void make_player_up_down(treenode * player,vec4 torso_color) {
 		right_lower_arm->gun = glm::translate(glm::mat4(1.0), vec3(0.0, 0.1, 0.0))*glm::rotate(glm::mat4(1.0), 1.14f, vec3(0.0, 0.0, 1.0));
 		//gun1
 		treenode * gun = left_lower_arm->child = new treenode();
-		gun->m = glm::translate(glm::mat4(1.0), vec3(0.1, 0.3, 0.0));
+		gun->m = glm::translate(glm::mat4(1.0), vec3(-0.1, 0.2, 0.0));
 		gun->s = glm::scale(glm::mat4(1.0), vec3(0.1, 0.3, 0.0));
 		gun->color = vec4(0.0, 0.0, 0.0, 1.0);
 		gun->is_gun = true;
 
 		//gun2
 		treenode * gun2 = gun->child = new treenode();
-		gun2->m = glm::rotate(glm::mat4(1.0), 0.0f, vec3(0.0, 0.0, 1.0));
+		gun2->m = glm::rotate(glm::mat4(1.0), 0.0f, vec3(0.0, 0.0, 1.0)) * glm::translate(glm::mat4(1.0), vec3(0.1, 0.0, 0.0));;
 		gun2->s = glm::scale(glm::mat4(1.0), vec3(0.1, 0.1, 0.0));
 		gun2->color = vec4(0.0, 0.0, 0.0, 1.0);
 		gun2->is_gun = true;
@@ -195,7 +195,8 @@ void make_player_left_right(treenode * player, vec4 torso_color) {
 	//left_upper_arm->jump2 = glm::translate(glm::mat4(1.0), vec3(-0.1, 0.1, 0.0)) * glm::rotate(glm::mat4(1.0), -1.0f, vec3(0.0, 0.0, 1.0));
 	//left_upper_arm->jump3 = glm::translate(glm::mat4(1.0), vec3(-0.1, 0.1, 0.0)) * glm::rotate(glm::mat4(1.0), -1.0f, vec3(0.0, 0.0, 1.0));
 	left_upper_arm->color = vec4(1.0, 0.0, 0.0, 1.0);
-
+	left_upper_arm->gun = glm::translate(glm::mat4(1.0), vec3(-0.1, 0.1, 0.0)) * glm::rotate(glm::mat4(1.0), -1.5f, vec3(0.0, 0.0, 1.0));
+	
 	//left_lower_arm
 	treenode * left_lower_arm = left_upper_arm->child = new treenode();
 	left_lower_arm->m = glm::translate(glm::mat4(1.0), vec3(0.0, -0.2, 0.0));
@@ -204,7 +205,7 @@ void make_player_left_right(treenode * player, vec4 torso_color) {
 	left_lower_arm->jump2 = glm::translate(glm::mat4(1.0), vec3(-0.15, 0.15, 0.0))*glm::rotate(glm::mat4(1.0), -1.0f, vec3(0.0, 0.0, 1.0));
 	left_lower_arm->jump3 = glm::translate(glm::mat4(1.0), vec3(0.15, 0.05, 0.0))*glm::rotate(glm::mat4(1.0), 1.0f, vec3(0.0, 0.0, 1.0));
 	//left_lower_arm->s = glm::scale(glm::mat4(1.0), vec3(0.1, 0.2, 0.0));
-	//left_lower_arm->gun = glm::translate(glm::mat4(1.0), vec3(0.0, 0.1, 0.0))*glm::rotate(glm::mat4(1.0), 2.0f, vec3(0.0, 0.0, 1.0));
+	//left_lower_arm->gun = glm::scale(glm::mat4(1.0), vec3(0.0, 0.0, 0.0));
 
 
 	//right_upper_arm
@@ -212,7 +213,7 @@ void make_player_left_right(treenode * player, vec4 torso_color) {
 	right_upper_arm->m = glm::translate(glm::mat4(1.0), vec3(0.1, 0.2, 0.0));
 	right_upper_arm->s = glm::scale(glm::mat4(1.0), vec3(0.1, 0.2, 0.0));
 	right_upper_arm->color = vec4(1.0, 0.0, 0.0, 1.0);
-	
+	right_upper_arm->gun = left_upper_arm->gun;
 	//right_upper_arm->jump2 = glm::translate(glm::mat4(1.0), vec3(0.1, 0.0, 0.0))*glm::rotate(glm::mat4(1.0), 1.0f, vec3(0.0, 0.0, 1.0));
 	//right_upper_arm->jump3 = glm::translate(glm::mat4(1.0), vec3(0.1, 0.0, 0.0))*glm::rotate(glm::mat4(1.0), 1.0f, vec3(0.0, 0.0, 1.0));
 
@@ -223,13 +224,29 @@ void make_player_left_right(treenode * player, vec4 torso_color) {
 	right_lower_arm->color = vec4(1.0, 1.0, 0.3, 1.0);
 	right_lower_arm->jump2 = left_lower_arm->jump2;
 	right_lower_arm->jump3 = left_lower_arm->jump3;
+	//right_lower_arm->gun = glm::scale(glm::mat4(1.0), vec3(0.0, 0.0, 0.0));
+	//right_lower_arm->gun = glm::scale(glm::mat4(1.0), vec3(0.1, 0.2, 0.0));
 	//right_lower_arm->jump3 = glm::translate(glm::mat4(1.0), vec3(0.2, 0.1, 0.0))*glm::rotate(glm::mat4(1.0), 1.0f, vec3(0.0, 0.0, 1.0)); glm::translate(glm::mat4(1.0), vec3(0.0, 0.1, 0.0))*glm::rotate(glm::mat4(1.0), 3.0f, vec3(0.0, 0.0, 1.0));
 	
 	treenode * cloth = right_upper_arm->sibling = new treenode();
 	cloth->m = glm::translate(glm::mat4(1.0), vec3(0.25, 0.1, 0.0));
 	cloth->s = glm::scale(glm::mat4(1.0), vec3(0.1, 0.3, 0.0));
 	cloth->color = vec4(0.0, 0.0, 0.0, 1.0);
+	//left_lower_arm->gun = glm::translate(glm::mat4(1.0), vec3(0.1, 0.2, 0.0))*glm::rotate(glm::mat4(1.0), -1.0f, vec3(0.0, 0.0, 1.0));
+	
+	treenode * gun = left_lower_arm->child = new treenode();
+	gun->m = glm::translate(glm::mat4(1.0), vec3(-0.1, -0.3, 0.0));
+	gun->s = glm::scale(glm::mat4(1.0), vec3(0.1, 0.3, 0.0));
+	gun->color = vec4(0.0, 0.0, 0.0, 1.0);
+	gun->is_gun = true;
 
+	//gun2
+	treenode * gun2 = gun->child = new treenode();
+	gun2->m = glm::rotate(glm::mat4(1.0), 0.0f, vec3(0.0, 0.0, 1.0)) * gun->m = glm::translate(glm::mat4(1.0), vec3(0.1, 0.15, 0.0));;
+	gun2->s = glm::scale(glm::mat4(1.0), vec3(0.1, 0.1, 0.0));
+	gun2->color = vec4(0.0, 0.0, 0.0, 1.0);
+	gun2->is_gun = true;
+	
 	//customize up_down
 	/*if (player == player_down) {
 		left_lower_arm->gun = glm::translate(glm::mat4(1.0), vec3(0.1, 0.2, 0.0))*glm::rotate(glm::mat4(1.0), -1.0f, vec3(0.0, 0.0, 1.0));
