@@ -18,12 +18,13 @@
 #include "display.h"
 #include <string>
 #include <fstream>
+#include <mutex>
 using namespace std;
 using namespace glm;
 
 #define BUFFER_OFFSET( offset ) ((GLvoid*) (offset))
 const int NumPoints = 4;
-
+int call_state = 0;
 Map newmap;
 void player_move_func(int key, int x, int y);
 void bullet_make(unsigned char key, int x, int y);
@@ -36,7 +37,7 @@ int LoadBMP(const char* location, GLuint &texture);
 void load_images();
 void init(void);
 GLuint InitShader(const char* vShaderFile, const char* fShaderFile);
-
+std::mutex mtx_lock;
 
 int main(int argc, char **argv) {
 	srand((unsigned)time(NULL));
@@ -65,16 +66,9 @@ int main(int argc, char **argv) {
 }
 
 void init(void) {
-	//vec2 points[NumPoints];
-	/*vec2 points[NumPoints] = {
-		vec2(0, 0), vec2(0.1, 0), vec2(0.1,0.1), vec2(0, 0.1)
-	};*/
 	vec4 points[NumPoints] = {
 		vec4(0, 0,0, 1), vec4(1, 0,0,1), vec4(1,1,0,1), vec4(0, 1,0,1)
 	};
-	/*for (int i = 0; i < NumPoints; ++i) {
-		points[i] = vertices[i];
-	}*/
 	//Vertex array object
 	GLuint vao;
 	glGenVertexArrays(1, &vao);
@@ -98,8 +92,8 @@ void init(void) {
 	
 	glClearColor(1.0, 1.0, 0.0, 1.0);
 
-	make_player_down();
-
+	make_player();
+	call_state = 0;
 }
 
 static char* readShaderSource(const char* shaderFile)
@@ -195,16 +189,17 @@ void reshape(int w, int h) {
 }
 void display() {
 	newmap.display(program);
-	/*glClear(GL_COLOR_BUFFER_BIT);   
-	glDrawArrays(GL_LINES, 0, NumPoints);  
-	glDrawArrays(GL_LINES, 1, NumPoints);
-	glDrawArrays(GL_LINES, 2, NumPoints);
-	glFlush();*/
 }
-/*
-void display() {
-	newmap.display();
-}*/
+void makedelay(int x)
+{
+	if (x == 0) return;
+	glutPostRedisplay();
+	//Sleep(10);
+	//makedelay(x - 1);
+	glutTimerFunc(40, makedelay, x-1);
+	
+}
+
 void player_move_func(int key, int x, int y) {
 	switch (key) {
 	case GLUT_KEY_UP:
@@ -220,10 +215,13 @@ void player_move_func(int key, int x, int y) {
 		newmap.valid_move(direction::left);
 		break;
 	}
-	glutPostRedisplay();
+	//makedelay(3);
+	glutTimerFunc(40, makedelay, 3);
 }
 void bullet_make(unsigned char key, int x, int y) {
 	if (key == 32) newmap.create_bullet();
+	glutPostRedisplay();
+	Sleep(200);
 	glutPostRedisplay();
 }
 void move_enemies(int v) {

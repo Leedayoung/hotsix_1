@@ -332,15 +332,16 @@ void Map::create_bullet() {
 	int _direction = player.get_direction();
 	Bullet newbullet = Bullet(_posx, _posy, _direction, bull_length);
 	bull_vec.push_back(newbullet);
+	player.set_gun(true);
 }
 //Player에 대하여 Valid한 Move후 Direction update
 void Map::valid_move(int dir) {
 	pair<int, int> test_pos = player.move_test(dir);
-	if (check_range(test_pos) && map_arr[test_pos.second][test_pos.first] != wall) {
-		player.move(dir);
+	if (player.get_jump()==0 && check_range(test_pos) && map_arr[test_pos.second][test_pos.first] != wall) {
 		player.set_direction(dir);
+		player.move();
 		get_item();
-
+		player.add_jump(3);
 	}
 }
 //현재 위치의 item을 주워 없앤 뒤 empty를 return함

@@ -21,12 +21,12 @@ extern GLuint texture[16];
 
 class Entity {
 public:
-	int pos_x;
-	int pos_y;
+	float pos_x;
+	float pos_y;
 	int direc;
 	int get_direction();
-	int get_x();
-	int get_y();
+	float get_x();
+	float get_y();
 	pair<int, int> get_position();
 	pair<int, int> move_test(int direc);
 	void move(int direc);
