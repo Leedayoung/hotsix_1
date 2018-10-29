@@ -17,7 +17,7 @@ extern glm::mat4 ortho_mat;
 extern GLint vColor;
 extern mat4 model_view;
 extern 	GLuint buffer[2];
-extern GLuint vao[2];
+extern GLuint vao[3];
 class treenode {
 public:
 	mat4 m;
@@ -47,7 +47,10 @@ public:
 extern treenode * player_down;
 extern treenode * player_up;
 extern treenode * player_left;
-extern treenode * player_right;
+
+extern treenode * enemy_down;
+extern treenode * enemy_up;
+extern treenode * enemy_left;
 
 void make_player();
 void traverse(treenode* root,int state);

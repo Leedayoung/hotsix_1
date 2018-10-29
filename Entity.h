@@ -24,9 +24,16 @@ public:
 	float pos_x;
 	float pos_y;
 	int direc;
+	int jump = 0;
 	int get_direction();
 	float get_x();
 	float get_y();
+	void add_jump(int _jump) {
+		jump += _jump;
+	}
+	int get_jump() {
+		return jump;
+	}
 	pair<int, int> get_position();
 	pair<int, int> move_test(int direc);
 	void move(int direc);

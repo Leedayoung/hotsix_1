@@ -6,7 +6,7 @@ using namespace std;
 class Player : public Entity {
 private:
 	int num_i;
-	int jump = 0;
+	
 	bool gun = false;
 public:
 	Player();
@@ -21,12 +21,7 @@ public:
 	bool get_gun() {
 		return gun;
 	}
-	void add_jump(int _jump) {
-		jump += _jump;
-	}
-	int get_jump() {
-		return jump;
-	}
+	
 	static void image_setting() {
 		cout << "???" << endl;
 	}

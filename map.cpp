@@ -279,12 +279,28 @@ bool Map::update_enemies() {
 	int direction;
 	for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); ) {
 		if (it->check_chase(player.get_position())) {
-			int x = player.get_x() - it->get_x();
-			int y = player.get_y() - it->get_y();
-			if (x > 0 && !check_wall(it->move_test(direction::right))) it->move(direction::right);
-			else if (x < 0 && !check_wall(it->move_test(direction::left))) it->move(direction::left);
-			else if (y > 0 && !check_wall(it->move_test(direction::up))) it->move(direction::up);
-			else if (y < 0 && !check_wall(it->move_test(direction::down))) it->move(direction::down);
+			int x = (int)player.get_x() - (int)it->get_x();
+			int y = (int)player.get_y() - (int)it->get_y();
+			if (x > 0 && !check_wall(it->move_test(direction::right))) {
+				it->set_direction(direction::right);
+				it->move();
+				it->add_jump(3);
+			}
+			else if (x < 0 && !check_wall(it->move_test(direction::left))) {
+				it->set_direction(direction::left);
+				it->move();
+				it->add_jump(3);
+			}
+			else if (y > 0 && !check_wall(it->move_test(direction::up))) {
+				it->set_direction(direction::up);
+				it->move();
+				it->add_jump(3);
+			}
+			else if (y < 0 && !check_wall(it->move_test(direction::down))) {
+				it->set_direction(direction::down);
+				it->move();
+				it->add_jump(3);
+			}
 			bool die = false;
 			for (vector<Bullet>::iterator bl = bull_vec.begin(); bl != bull_vec.end();bl++) {
 				pair<int, int> bull_pos = bl->get_position();
@@ -302,7 +318,10 @@ bool Map::update_enemies() {
 			pair<int, int> new_pos = it->move_test(direction);
 			if (check_range(new_pos) == false) continue;
 			if (map_arr[new_pos.second][new_pos.first] == wall) continue;
-			it->move(direction);
+			if (it->get_jump() != 0) continue;
+			it->add_jump(3);
+			it->set_direction(direction);
+			it->move();
 			bool die = false;
 			for (vector<Bullet>::iterator bl = bull_vec.begin(); bl != bull_vec.end();bl++) {
 				pair<int, int> bull_pos = bl->get_position();
@@ -344,8 +363,8 @@ void Map::update_bullets() {
 }
 //Bullet »ý¼º
 void Map::create_bullet() {
-	int _posx = player.get_x();
-	int _posy = player.get_y();
+	int _posx = (int)player.get_x();
+	int _posy = (int)player.get_y();
 	int _direction = player.get_direction();
 	Bullet newbullet = Bullet(_posx, _posy, _direction, bull_length);
 	bull_vec.push_back(newbullet);
