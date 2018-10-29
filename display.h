@@ -16,7 +16,8 @@ extern GLint ctmParam;
 extern glm::mat4 ortho_mat;
 extern GLint vColor;
 extern mat4 model_view;
-
+extern 	GLuint buffer[2];
+extern GLuint vao[2];
 class treenode {
 public:
 	mat4 m;
@@ -27,6 +28,7 @@ public:
 	mat4 gun;
 	vec4 color;
 	bool is_gun;
+	bool left;
 	void(*f)(mat4 s);
 	treenode * sibling;
 	treenode * child;
@@ -38,6 +40,7 @@ public:
 		jump3 = glm::mat4(1.0);
 		gun = glm::mat4(1.0);
 		is_gun = false;
+		left = false;
 	}
 };
 

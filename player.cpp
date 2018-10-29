@@ -45,11 +45,18 @@ void Player::display() {
 		case direction::up:
 			player_direc = player_up;
 			break;
+		case direction::left:
+		case direction::right:
+			player_direc = player_left;
+			break;
 		default:
 			player_direc = player_down;
 			break;
 	}
-	model_view = ortho_mat * glm::translate(mat4(1.0), glm::vec3(pos_x-0.5, pos_y, 0))* scale(glm::mat4(1.0), vec3(2, 2, 0));
+	if(direc == direction::right)
+		model_view = ortho_mat * glm::translate(mat4(1.0), glm::vec3(pos_x + 1.5, pos_y, 0))* scale(glm::mat4(1.0), vec3(-2, 2, 0));
+	else
+		model_view = ortho_mat * glm::translate(mat4(1.0), glm::vec3(pos_x-0.5, pos_y, 0))* scale(glm::mat4(1.0), vec3(2, 2, 0));
 	if (gun == true){
 		gun = false;
 		traverse(player_direc,4);

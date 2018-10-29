@@ -69,13 +69,17 @@ void init(void) {
 	vec4 points[NumPoints] = {
 		vec4(0, 0,0, 1), vec4(1, 0,0,1), vec4(1,1,0,1), vec4(0, 1,0,1)
 	};
-	//Vertex array object
-	GLuint vao;
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
+	vec4 item_points[6] = {
+		vec4(0.5, 0.75, 0.0, 1.0), vec4(0.25, 1.0, 0.0, 1.0 ), vec4(0.0, 0.75, 0.0, 1.0)
+		, vec4( 0.5, 0.0, 0.0, 1.0), vec4(1.0, 0.75, 0.0, 1.0), vec4(0.75, 1.0, 0.0, 1.0)};
 
-	//Create and initialize a buffer obj
+	//Vertex array object
+	
+	glGenVertexArrays(1, &vao[0]);
+	glBindVertexArray(vao[0]);
+
 	GLuint buffer;
+	//Create and initialize a buffer obj
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
@@ -90,6 +94,17 @@ void init(void) {
 	ctmParam = glGetUniformLocation(program, "ctm");
 	vColor = glGetUniformLocation(program, "color");
 	
+	glGenVertexArrays(1, &vao[1]);
+	glBindVertexArray(vao[1]);
+
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(item_points), item_points, GL_STATIC_DRAW);
+	loc = glGetAttribLocation(program, "vPosition");
+	glEnableVertexAttribArray(loc);
+	glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+
+	glBindVertexArray(vao[0]);
 	glClearColor(1.0, 1.0, 0.0, 1.0);
 
 	make_player();
@@ -196,7 +211,7 @@ void makedelay(int x)
 	glutPostRedisplay();
 	//Sleep(10);
 	//makedelay(x - 1);
-	glutTimerFunc(40, makedelay, x-1);
+	glutTimerFunc(100, makedelay, x-1);
 	
 }
 
@@ -216,7 +231,7 @@ void player_move_func(int key, int x, int y) {
 		break;
 	}
 	//makedelay(3);
-	glutTimerFunc(40, makedelay, 3);
+	glutTimerFunc(100, makedelay, 3);
 }
 void bullet_make(unsigned char key, int x, int y) {
 	if (key == 32) newmap.create_bullet();

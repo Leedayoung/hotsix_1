@@ -48,12 +48,16 @@ void Map::display(GLuint program) {
 				glDrawArrays(GL_TRIANGLE_FAN, 0, NumPoints);
 			}
 			else if (map_arr[y][x] == map_info::item) {
+				glBindVertexArray(vao[1]);
+				
 				mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0));
 				mat4 final_mat = ortho_mat * trans;
 				vec4 vec_color = vec4(1.0, 0.0, 0.0, 1.0);
 				glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
 				glUniform4fv(vColor, 1, &vec_color[0]);
-				glDrawArrays(GL_TRIANGLE_FAN, 0, NumPoints);
+				glDrawArrays(GL_TRIANGLE_FAN, 0, 7);
+				
+				glBindVertexArray(vao[0]);
 			}
 		}
 	}
