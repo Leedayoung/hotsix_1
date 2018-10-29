@@ -73,20 +73,33 @@ void Map::display(GLuint program) {
 		it->display();
 	}
 
-	int item_size = view_size / 4;
+	int item_size = view_size / 8;
 	int item_num = player.get_num_i();
-	string s = " item";
+	//string s = " item";
 	glColor3f(1.0, 1.0, 0.0);
-	int display_num = item_num > 3 ? item_num : 3;
-	display_num = display_num * 1 + 1;
-	mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(0.75, -1, 0));
-	mat4 scale_mat = glm::scale(glm::mat4(1.0), glm::vec3(0.25, 0.3, 0));
+	int display_num = 5;
+	//int display_num = item_num > 3 ? item_num : 3;
+	//display_num = display_num * 1 + 1;
+	mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(0.5, -1, 0));
+	mat4 scale_mat = glm::scale(glm::mat4(1.0), glm::vec3(0.5, 0.1, 0));
 	mat4 final_mat = trans * scale_mat;
 	vec4 vec_color = vec4(1.0, 1.0, 0.0, 1.0);
 	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
 	glUniform4fv(vColor, 1, &vec_color[0]);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, NumPoints);
-	
+	//draw item
+	glBindVertexArray(vao[1]);
+	for (int i = 0; i < item_num; i++) {
+		mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(0.5 + 0.1*i +0.01, -1, 0));
+		mat4 scale_mat = glm::scale(glm::mat4(1.0), glm::vec3(0.09, 0.09, 0));
+		mat4 final_mat = trans * scale_mat;
+		vec4 vec_color = vec4(1.0, 0.0, 0.0, 1.0);
+		glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
+		glUniform4fv(vColor, 1, &vec_color[0]);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
+	}
+	glBindVertexArray(vao[0]);
+
 	/*glColor3f(0.0, 0.0, 0.0);
 	print(x + 7 * item_size, y + display_num + 1, "Item List");
 	for (int i = 1; i <= item_num; i++)
