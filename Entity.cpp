@@ -10,10 +10,10 @@ int Entity::get_direction() {
 void Entity::set_direction(int _direc) {
 	direc = _direc;
 }
-int Entity::get_x() {
+float Entity::get_x() {
 	return pos_x;
 }
-int Entity::get_y() {
+float Entity::get_y() {
 	return pos_y;
 }
 pair<int, int> Entity::get_position() {

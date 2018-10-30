@@ -15,14 +15,16 @@
 #include "bullet.h"
 #include "Enemy.h"
 #include "Entity.h"
+#include "display.h"
 #include <string>
 #include <fstream>
+#include <mutex>
 using namespace std;
 using namespace glm;
 
 #define BUFFER_OFFSET( offset ) ((GLvoid*) (offset))
-const int NumPoints = 3;
-
+const int NumPoints = 4;
+int call_state = 0;
 Map newmap;
 void player_move_func(int key, int x, int y);
 void bullet_make(unsigned char key, int x, int y);
@@ -35,7 +37,7 @@ int LoadBMP(const char* location, GLuint &texture);
 void load_images();
 void init(void);
 GLuint InitShader(const char* vShaderFile, const char* fShaderFile);
-
+std::mutex mtx_lock;
 
 int main(int argc, char **argv) {
 	srand((unsigned)time(NULL));
@@ -47,8 +49,8 @@ int main(int argc, char **argv) {
 	glutInitWindowSize(800, 800);//창 크기 설정
 	glutCreateWindow("GAME");
 
-	//glewInit();
-	//init();
+	glewInit();
+	init();
 
 	glutReshapeFunc(reshape);
 	glutDisplayFunc(display);
@@ -64,33 +66,65 @@ int main(int argc, char **argv) {
 }
 
 void init(void) {
-	vec2 points[NumPoints];
-	vec2 vertices[3] = {
-		vec2(0, 0), vec2(0.1, 0), vec2(0.1,0.1)
+	vec4 points[NumPoints] = {
+		vec4(0, 0,0, 1), vec4(1, 0,0,1), vec4(1,1,0,1), vec4(0, 1,0,1)
 	};
-	for (int i = 0; i < NumPoints; ++i) {
-		points[i] = vertices[i];
-	}
-	//Vertex array object
-	GLuint vao;
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
+	vec4 item_points[6] = {
+		vec4(0.5, 0.75, 0.0, 1.0), vec4(0.25, 1.0, 0.0, 1.0 ), vec4(0.0, 0.75, 0.0, 1.0)
+		, vec4( 0.5, 0.0, 0.0, 1.0), vec4(1.0, 0.75, 0.0, 1.0), vec4(0.75, 1.0, 0.0, 1.0)};
 
-	//Create and initialize a buffer obj
+	vec4 bullet_points[12] = {
+		vec4(1.0, 0.5, 0.0, 1.0), vec4(0.7, 1.0, 0.0, 1.0), vec4(0.0, 1.0, 0.0, 1.0)
+		, vec4(0.2, 0.8, 0.0, 1.0), vec4(0.0, 0.7, 0.0, 1.0), vec4(0.2, 0.6, 0.0, 1.0)
+		, vec4(0.0, 0.5, 0.0, 1.0), vec4(0.2, 0.4, 0.0, 1.0), vec4(0.0, 0.3, 0.0, 1.0)
+		, vec4(0.2, 0.2, 0.0, 1.0), vec4(0.0, 0.0, 0.0, 1.0), vec4(0.7, 0.0, 0.0, 1.0) };
+
+	//Vertex array object
+	
+	glGenVertexArrays(1, &vao[0]);
+	glBindVertexArray(vao[0]);
+
 	GLuint buffer;
+	//Create and initialize a buffer obj
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
 
-	GLuint program = InitShader("vshader1.glsl", "fshader1.glsl");
+	program = InitShader("vshader1.glsl", "fshader1.glsl");
 	glUseProgram(program);
 
 	GLuint loc = glGetAttribLocation(program, "vPosition");
 	glEnableVertexAttribArray(loc);
-	glVertexAttribPointer(loc, 2 , GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+	glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 
+	ctmParam = glGetUniformLocation(program, "ctm");
+	vColor = glGetUniformLocation(program, "color");
+	
+	glGenVertexArrays(1, &vao[1]);
+	glBindVertexArray(vao[1]);
+
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(item_points), item_points, GL_STATIC_DRAW);
+	loc = glGetAttribLocation(program, "vPosition");
+	glEnableVertexAttribArray(loc);
+	glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+
+	glGenVertexArrays(1, &vao[2]);
+	glBindVertexArray(vao[2]);
+
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(bullet_points), bullet_points, GL_STATIC_DRAW);
+	loc = glGetAttribLocation(program, "vPosition");
+	glEnableVertexAttribArray(loc);
+	glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+
+	glBindVertexArray(vao[0]);
 	glClearColor(1.0, 1.0, 0.0, 1.0);
 
+	make_player();
+	call_state = 0;
 }
 
 static char* readShaderSource(const char* shaderFile)
@@ -186,6 +220,7 @@ void reshape(int w, int h) {
 }
 /*
 void display() {
+<<<<<<< HEAD
 	glClear(GL_COLOR_BUFFER_BIT);   
 	glDrawArrays(GL_LINES, 0, NumPoints);  
 	glDrawArrays(GL_LINES, 1, NumPoints);
@@ -194,7 +229,13 @@ void display() {
 }*/
 
 void display() {
-	newmap.display();
+	newmap.display(program);
+}
+void makedelay(int x)
+{
+	if (x == 0) return;
+	glutPostRedisplay();
+	glutTimerFunc(100, makedelay, x-1);
 }
 void player_move_func(int key, int x, int y) {
 	switch (key) {
@@ -217,9 +258,12 @@ void player_move_func(int key, int x, int y) {
 		glutPostRedisplay();
 	}
 	glutPostRedisplay();
+	glutTimerFunc(100, makedelay, 3);
 }
 void bullet_make(unsigned char key, int x, int y) {
 	if (key == 32) newmap.create_bullet();
+	glutPostRedisplay();
+	Sleep(200);
 	glutPostRedisplay();
 }
 void move_enemies(int v) {
