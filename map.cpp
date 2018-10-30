@@ -100,6 +100,12 @@ void Map::display(GLuint program) {
 	}
 	glBindVertexArray(vao[0]);
 
+	/*
+	int life_remaining = player.get_life();
+	string ss = "Remaining Life";
+	print(x + 1, y + 2 * view_size - 1, ss + to_string(life_remaining));
+	*/
+
 	/*glColor3f(0.0, 0.0, 0.0);
 	print(x + 7 * item_size, y + display_num + 1, "Item List");
 	for (int i = 1; i <= item_num; i++)
