@@ -16,6 +16,7 @@
 #include <glm/vec4.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "display.h"
+#include "sevenseg.h"
 #include <string>
 using namespace std;
 using namespace glm;
@@ -49,7 +50,7 @@ void Map::display(GLuint program) {
 			}
 			else if (map_arr[y][x] == map_info::item) {
 				glBindVertexArray(vao[1]);
-				
+
 				mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0));
 				mat4 final_mat = ortho_mat * trans;
 				vec4 vec_color = vec4(1.0, 0.0, 0.0, 1.0);
@@ -100,73 +101,33 @@ void Map::display(GLuint program) {
 	}
 	glBindVertexArray(vao[0]);
 
-	/*
-	int life_remaining = player.get_life();
-	string ss = "Remaining Life";
-	print(x + 1, y + 2 * view_size - 1, ss + to_string(life_remaining));
-	*/
+	//display time
+	int second = time_limit % 60;
+	int minute = time_limit / 60;
+	int sec2= second / 10;
+	int sec1 = second % 10;
+	int min2 = minute / 10;
+	int min1 = minute % 10;
+	draw_seven_seg(sec1, 0);
+	draw_seven_seg(sec2, 1);
+	draw_seven_seg(min1, 2);
+	draw_seven_seg(min2, 3);
+	draw_seven_seg(-1, -1);
 
-	/*glColor3f(0.0, 0.0, 0.0);
-	print(x + 7 * item_size, y + display_num + 1, "Item List");
-	for (int i = 1; i <= item_num; i++)
-		print(x + 7 * item_size, y + display_num - 1 * i, s + to_string(i));
+	//Display life
 
-	//Enemy Kills
-	int killed = numb_enemy - enem_vec.size();
-	string ss = "Killed Enemy ";
-	string dash = "/";
-	print(x + 1, y + 2 * view_size - 1, ss + to_string(killed) + dash + to_string(numb_enemy));
 
-	if (isEnd()) {
-		if (win) {
-			print(x + view_size, y + view_size + 2, "You Win");
-		}
-		else {
-			print(x + view_size, y + view_size + 2, "You Lose");
-		}
-	}
-	*/
-	/*
-	//item inventory
-	int item_size = view_size / 4;
-	int item_num = player.get_num_i();
-	string s = " item";
-	glColor3f(1.0, 1.0, 0.0);
-	int display_num = item_num > 3 ? item_num : 3;
-	display_num = display_num * 1 + 1;
-	glRecti(x + 7 * item_size, y, x + 8 * item_size, y + display_num);
-	glColor3f(0.0, 0.0, 0.0);
-	print(x + 7 * item_size, y + display_num + 1, "Item List");
-	for (int i = 1; i <= item_num; i++)
-	print(x + 7 * item_size, y + display_num - 1 * i, s + to_string(i));
-
-	//Enemy Kills
-	int killed = numb_enemy - enem_vec.size();
-	string ss = "Killed Enemy ";
-	string dash = "/";
-	print(x + 1, y + 2 * view_size - 1, ss + to_string(killed) + dash + to_string(numb_enemy));
-
-	if (isEnd()) {
-	if (win) {
-	print(x + view_size, y + view_size + 2, "You Win");
-	}
-	else {
-	print(x + view_size, y + view_size + 2, "You Lose");
-	}
-	}*/
 	glFlush();
 }
 
-
-
 Map::Map() {
 	win = false;
-	map_size = 96;
-	view_size = map_size / 12;
+	map_size = 70;
+	view_size = map_size / 8;
 	numb_enemy = 15;
 	wall_maker();
 	item_numb = 6;
-	time_limit = 60;
+	time_limit = 180;
 	world_init();
 	map_init();
 	object_init();
@@ -190,7 +151,7 @@ void Map::wall_maker() {
 	int len, x, y;
 	for (i = 0; i < 20; ++i) {
 		len = rand() % 15;
-		x = rand() % (map_size - 40);
+		x = rand() % (map_size - 15);
 		y = rand() % (map_size);
 		for (int j = 0; j < len; ++j) {
 			loc_wall.push_back(x + j + map_size * y);
@@ -199,7 +160,7 @@ void Map::wall_maker() {
 	for (i = 0; i < 15; ++i) {
 		len = rand() % 15;
 		x = rand() % (map_size);
-		y = rand() % (map_size - 40);
+		y = rand() % (map_size - 15);
 		for (int j = 0; j < len; ++j) {
 			loc_wall.push_back(x + map_size * (y + j));
 		}
