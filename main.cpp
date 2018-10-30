@@ -33,6 +33,7 @@ void move_bullets(int v);
 void display();
 void reshape(int w, int h);
 void endstate(int v);
+void restart(unsigned char key, int x, int y);
 void init(void);
 GLuint InitShader(const char* vShaderFile, const char* fShaderFile);
 std::mutex mtx_lock;
@@ -213,16 +214,6 @@ void reshape(int w, int h) {
 	glViewport(0, 0, w, h);
 	gluOrtho2D(0, newmap.get_map_size(), 0, newmap.get_map_size());
 }
-/*
-void display() {
-<<<<<<< HEAD
-<<<<<<< HEAD
-	glClear(GL_COLOR_BUFFER_BIT);   
-	glDrawArrays(GL_LINES, 0, NumPoints);  
-	glDrawArrays(GL_LINES, 1, NumPoints);
-	glDrawArrays(GL_LINES, 2, NumPoints);
-	glFlush();
-}*/
 
 void display() {
 	newmap.display(program);
@@ -250,7 +241,7 @@ void player_move_func(int key, int x, int y) {
 	}
 	if (newmap.isEnd()) {
 		glutSpecialFunc(NULL);
-		glutKeyboardFunc(NULL);
+		glutKeyboardFunc(restart);
 		glutPostRedisplay();
 	}
 	glutPostRedisplay();
@@ -262,12 +253,23 @@ void bullet_make(unsigned char key, int x, int y) {
 	Sleep(200);
 	glutPostRedisplay();
 }
+
+void restart(unsigned char key, int x, int y) {
+	if (key == 'r' || key == 'R') {
+		newmap = Map();
+		glutSpecialFunc(player_move_func);
+		glutKeyboardFunc(bullet_make);
+		glutTimerFunc(150, move_bullets, 1);
+		glutTimerFunc(1000, move_enemies, 1);
+	}
+}
+
 void move_enemies(int v) {
 	newmap.update_enemies();
 	newmap.timer();
 	if (newmap.isEnd()) {
 		glutSpecialFunc(NULL);
-		glutKeyboardFunc(NULL);
+		glutKeyboardFunc(restart);
 		glutPostRedisplay();
 		return;
 	}
@@ -286,7 +288,7 @@ void move_bullets(int v) {
 void endstate(int v) {
 	if (newmap.isEnd()) {
 		glutSpecialFunc(NULL);
-		glutKeyboardFunc(NULL);
+		glutKeyboardFunc(restart);
 		glutPostRedisplay();
 		return;
 	}
