@@ -11,11 +11,6 @@ Enemy::Enemy(int _pos_x, int _pos_y) {
 	pos_y = (float)_pos_y;
 	direc = direction::down;
 }
-/*void Enemy::move(int _direc) {
-	direc = _direc;
-	Entity::move(_direc);
-}
-*/
 
 bool Enemy::check_chase(pair<int, int> player_pos) {
 	int player_x = player_pos.first;

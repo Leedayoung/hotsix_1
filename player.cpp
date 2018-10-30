@@ -12,7 +12,6 @@ Player::Player(int _pos_x, int _pos_y) {
 	pos_y = (float)_pos_y;
 	num_i = 0;
 	direc = direction::down;
-	life = 3;
 }
 int Player::get_num_i() {
 	return num_i;

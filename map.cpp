@@ -166,11 +166,12 @@ Map::Map() {
 	numb_enemy = 15;
 	wall_maker();
 	item_numb = 6;
-	time_limit = 30;
+	time_limit = 60;
 	world_init();
 	map_init();
 	object_init();
 	end = false;
+	player.set_life(3);
 }
 /*Initializing Functions*/
 void Map::wall_maker() {
@@ -404,17 +405,20 @@ void Map::timer() {
 }
 bool Map::isEnd() {
 	if (time_limit == 0) {
-		cout << "You lose";
+		cout << "Time out" << endl;
+		cout << "You lose"<<endl;
+		cout << "Press 'R' to restart"<<endl;
 		end = true;
 		return true;
 	}
 	for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
 		if (player.get_position() == it->get_position()) {
 			player.die();
-			cout << player.get_life();
 			if (player.get_life() == 0)
 			{
-				cout << "You lose";
+				cout << "Life =0" << endl;
+				cout << "You lose"<<endl;
+				cout << "Press 'R' to restart"<<endl;
 				end = true;
 				return true;
 			}
@@ -422,7 +426,8 @@ bool Map::isEnd() {
 		}
 	}
 	if (enem_vec.size() == 0) {
-		cout << "You win";
+		cout << "You win"<<endl;
+		cout << "Press 'R' to restart"<<endl;
 		win = true;
 		end = true;
 		return true;
