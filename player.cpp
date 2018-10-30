@@ -69,6 +69,7 @@ void Player::display() {
 	else {
 		traverse(player_direc, 0);
 	}
+
 }
 int Player::get_life() {
 	return life;

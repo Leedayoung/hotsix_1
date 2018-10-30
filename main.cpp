@@ -119,7 +119,6 @@ void init(void) {
 	loc = glGetAttribLocation(program, "vPosition");
 	glEnableVertexAttribArray(loc);
 	glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-
 	glBindVertexArray(vao[0]);
 	glClearColor(1.0, 1.0, 0.0, 1.0);
 
@@ -220,6 +219,7 @@ void reshape(int w, int h) {
 }
 /*
 void display() {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	glClear(GL_COLOR_BUFFER_BIT);   
 	glDrawArrays(GL_LINES, 0, NumPoints);  
