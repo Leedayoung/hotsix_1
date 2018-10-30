@@ -411,6 +411,7 @@ bool Map::isEnd() {
 	for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
 		if (player.get_position() == it->get_position()) {
 			player.die();
+			cout << player.get_life();
 			if (player.get_life() == 0)
 			{
 				cout << "You lose";
