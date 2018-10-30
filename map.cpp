@@ -90,7 +90,7 @@ void Map::display(GLuint program) {
 	glDrawArrays(GL_TRIANGLE_FAN, 0, NumPoints);
 	//draw item
 	glBindVertexArray(vao[1]);
-	for (int i = 0; i < item_num; i++) {
+	for (int i = 0; i < player.get_life(); i++) {
 		mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(0.5 + 0.1*i +0.01, -1, 0));
 		mat4 scale_mat = glm::scale(glm::mat4(1.0), glm::vec3(0.09, 0.09, 0));
 		mat4 final_mat = trans * scale_mat;
@@ -126,13 +126,13 @@ Map::Map() {
 	view_size = map_size / 8;
 	numb_enemy = 15;
 	wall_maker();
-	item_numb = 6;
+	item_numb = 5;
 	time_limit = 180;
 	world_init();
 	map_init();
 	object_init();
 	end = false;
-	player.set_life(3);
+	player.set_life(2);
 }
 /*Initializing Functions*/
 void Map::wall_maker() {
@@ -356,7 +356,7 @@ bool Map::get_item() {
 	if (map_arr[current.second][current.first] == item) {
 		map_arr[current.second][current.first] = map_info::empty;
 		player.add_num_i();
-		bull_length = bull_length + 3;
+		player.set_life(player.get_life()+1);
 		return true;
 	}
 	return false;
