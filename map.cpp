@@ -249,24 +249,29 @@ bool Map::update_enemies() {
 	int direction;
 	for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); ) {
 		if (it->check_chase(player.get_position())) {
-			int x = (int)player.get_x() - (int)it->get_x();
-			int y = (int)player.get_y() - (int)it->get_y();
+			pair<int, int> new_pos;
+			float x = player.get_x() - it->get_x();
+			float y = player.get_y() - it->get_y();
 			if (x > 0 && !check_wall(it->move_test(direction::right))) {
+				new_pos = it->move_test(direction::right);
 				it->set_direction(direction::right);
 				it->move();
 				it->add_jump(3);
 			}
 			else if (x < 0 && !check_wall(it->move_test(direction::left))) {
+				new_pos = it->move_test(direction::left);
 				it->set_direction(direction::left);
 				it->move();
 				it->add_jump(3);
 			}
 			else if (y > 0 && !check_wall(it->move_test(direction::up))) {
+				new_pos = it->move_test(direction::up);
 				it->set_direction(direction::up);
 				it->move();
 				it->add_jump(3);
 			}
 			else if (y < 0 && !check_wall(it->move_test(direction::down))) {
+				new_pos = it->move_test(direction::down);
 				it->set_direction(direction::down);
 				it->move();
 				it->add_jump(3);
@@ -274,7 +279,7 @@ bool Map::update_enemies() {
 			bool die = false;
 			for (vector<Bullet>::iterator bl = bull_vec.begin(); bl != bull_vec.end();bl++) {
 				pair<int, int> bull_pos = bl->get_position();
-				if (it->get_position() == bull_pos) {
+				if (new_pos == bull_pos) {
 					die = true;
 					bl = bull_vec.erase(bl);
 					break;
