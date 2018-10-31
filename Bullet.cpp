@@ -28,13 +28,13 @@ void Bullet::display() {
 	mat4 rot;
 	switch (direc) {
 		case direction::down:
-			rot = glm::rotate(glm::mat4(1.0), -1.57f, vec3(0, 0, 1));
+			rot = glm::translate(glm::mat4(1.0), glm::vec3(0, 2, 0))*glm::rotate(glm::mat4(1.0), -1.57f, vec3(0, 0, 1));
 			break;
 		case direction::up:
 			rot = glm::translate(glm::mat4(1.0), glm::vec3(1, 0, 0))*glm::rotate(glm::mat4(1.0), +1.57f, vec3(0, 0, 1));
 			break;
 		case direction::left:
-			rot = glm::scale(glm::mat4(1.0), vec3(-1,1,0));
+			rot = glm::translate(glm::mat4(1.0), glm::vec3(2, 0, 0))*glm::scale(glm::mat4(1.0), vec3(-1,1,0));
 			break;
 		default:
 			rot = glm::mat4(1.0);
