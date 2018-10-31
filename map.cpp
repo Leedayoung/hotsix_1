@@ -346,13 +346,13 @@ void Map::valid_move(int dir) {
 	if (player.get_jump()==0 && check_range(test_pos) && map_arr[test_pos.second][test_pos.first] != wall) {
 		player.set_direction(dir);
 		player.move();
-		get_item();
+		get_item(test_pos);
 		player.add_jump(3);
 	}
 }
 //현재 위치의 item을 주워 없앤 뒤 empty를 return함
-bool Map::get_item() {
-	pair<int, int> current = player.get_position();
+bool Map::get_item(pair<int, int> current) {
+	//pair<int, int> current = player.get_position();
 	if (map_arr[current.second][current.first] == item) {
 		map_arr[current.second][current.first] = map_info::empty;
 		player.add_num_i();

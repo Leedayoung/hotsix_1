@@ -54,7 +54,7 @@ public:
 	void update_bullets();
 	void create_bullet();
 	void valid_move(int dir);
-	bool get_item();
+	bool get_item(pair<int, int> current);
 	bool isEnd();
 	bool get_win();
 };
