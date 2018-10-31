@@ -17,7 +17,7 @@ float Entity::get_y() {
 	return pos_y;
 }
 pair<int, int> Entity::get_position() {
-	return make_pair(pos_x, pos_y);
+	return make_pair(pos_x+jump*0.25, pos_y+jump*0.25);
 }
 pair<int, int> Entity::move_test(int direc) {
 	switch (direc) {
