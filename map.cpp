@@ -18,6 +18,7 @@
 #include "display.h"
 #include "sevenseg.h"
 #include <string>
+#include "sixteenseg.h"
 using namespace std;
 using namespace glm;
 void Map::display(GLuint program) {
@@ -114,9 +115,15 @@ void Map::display(GLuint program) {
 	draw_seven_seg(min2, 3);
 	draw_seven_seg(-1, -1);
 
-	//Display life
-
-
+	//End
+	string msg;
+	if (end) {
+		string end_msg = "PRESS R TO RESTART";
+		if (win) msg = "YOU WIN";
+		else msg = "YOU LOSE";
+		draw_string(msg, -0.30, 0.5);
+		draw_string(end_msg, -0.75, 0.3);
+	}
 	glFlush();
 }
 
