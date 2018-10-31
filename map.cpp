@@ -150,17 +150,17 @@ void Map::wall_maker() {
 	for (i = 0; i < 15; ++i) loc_wall.push_back(60 + map_size * i);
 	int len, x, y;
 	for (i = 0; i < 20; ++i) {
-		len = rand() % 15;
-		x = rand() % (map_size - 15);
+		len = rand() % 13;
+		x = rand() % (map_size - 13);
 		y = rand() % (map_size);
 		for (int j = 0; j < len; ++j) {
 			loc_wall.push_back(x + j + map_size * y);
 		}
 	}
 	for (i = 0; i < 15; ++i) {
-		len = rand() % 15;
+		len = rand() % 13;
 		x = rand() % (map_size);
-		y = rand() % (map_size - 15);
+		y = rand() % (map_size - 13);
 		for (int j = 0; j < len; ++j) {
 			loc_wall.push_back(x + map_size * (y + j));
 		}

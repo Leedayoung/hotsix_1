@@ -36,7 +36,6 @@ void endstate(int v);
 void restart(unsigned char key, int x, int y);
 void init(void);
 GLuint InitShader(const char* vShaderFile, const char* fShaderFile);
-std::mutex mtx_lock;
 
 int main(int argc, char **argv) {
 	srand((unsigned)time(NULL));
