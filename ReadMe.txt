@@ -26,3 +26,21 @@ Bullet,Enemy, Player의 부모 클래스이다.
 
 6.Map.h/Map.cpp
 전체적인 게임을 관리하는 클래스이다.
+
+7.display.h/display.cpp
+Shader를 이용하여 그림을 그리는 함수와 변수의 집합이다.
+
+8.Node.h
+계층모델을 구성할 node이다.
+
+9.sevenseg.h/sevenseg.cpp
+숫자를 표현하는 7-segment와 관련된 함수들이다.
+
+10.sixtennseg.h/sixtennseg.cpp
+문자를 표현하는 16-segment와 관련된 함수들이다.
+
+11.vshader1.glsl
+ctm을 받아 position을 output으로 주는 vertex shader이다.
+
+12.fshader1.glsl
+fragment의 color를 ouput으로 주는 fragment shader이다.

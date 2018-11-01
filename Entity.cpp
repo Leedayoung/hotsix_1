@@ -16,8 +16,18 @@ float Entity::get_x() {
 float Entity::get_y() {
 	return pos_y;
 }
-pair<int, int> Entity::get_position() {
-	return make_pair(pos_x+jump*0.25, pos_y+jump*0.25);
+pair<float, float> Entity::get_position() {
+	switch (direc) {
+	case direction::up:
+		return make_pair(pos_x, pos_y + jump * 0.25);
+	case direction::down:
+		return make_pair(pos_x, pos_y - jump * 0.25);
+	case direction::left:
+		return make_pair(pos_x - jump * 0.25, pos_y);
+	case direction::right:
+		return make_pair(pos_x + jump * 0.25, pos_y);
+	}
+	return make_pair(-1, -1);
 }
 pair<int, int> Entity::move_test(int direc) {
 	switch (direc) {
@@ -29,6 +39,19 @@ pair<int, int> Entity::move_test(int direc) {
 		return make_pair(pos_x - 1, pos_y);
 	case direction::right:
 		return make_pair(pos_x + 1, pos_y);
+	}
+	return make_pair(-1, -1);
+}
+pair<int, int> Entity::move_test2(int direc) {
+	switch (direc) {
+	case direction::up:
+		return make_pair(pos_x, pos_y + 2);
+	case direction::down:
+		return make_pair(pos_x, pos_y - 2);
+	case direction::left:
+		return make_pair(pos_x - 2, pos_y);
+	case direction::right:
+		return make_pair(pos_x + 2, pos_y);
 	}
 	return make_pair(-1, -1);
 }

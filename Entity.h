@@ -34,8 +34,9 @@ public:
 	int get_jump() {
 		return jump;
 	}
-	pair<int, int> get_position();
+	pair<float, float> get_position();
 	pair<int, int> move_test(int direc);
+	pair<int, int> move_test2(int direc);
 	void move(int direc);
 	void display(int x1, int y1, int x2, int y2);
 	void set_direction(int direc);

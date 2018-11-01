@@ -39,7 +39,7 @@ void Enemy::display() {
 		break;
 	}
 	if (direc == direction::right)
-		model_view = ortho_mat * glm::translate(mat4(1.0), glm::vec3(pos_x, pos_y, 0))*scale(glm::mat4(1.0), vec3(-1, 1, 0));
+		model_view = ortho_mat * glm::translate(mat4(1.0), glm::vec3(pos_x+1, pos_y, 0))*scale(glm::mat4(1.0), vec3(-1, 1, 0));
 	else
 		model_view = ortho_mat * glm::translate(mat4(1.0), glm::vec3(pos_x, pos_y, 0));// *scale(glm::mat4(1.0), vec3(2, 2, 0));
 	

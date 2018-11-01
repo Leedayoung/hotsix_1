@@ -256,7 +256,7 @@ bool Map::update_enemies() {
 	int direction;
 	for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); ) {
 		if (it->check_chase(player.get_position())) {
-			pair<int, int> new_pos;
+			pair<float, float> new_pos;
 			float x = player.get_x() - it->get_x();
 			float y = player.get_y() - it->get_y();
 			if (x > 0 && !check_wall(it->move_test(direction::right))) {
@@ -285,12 +285,15 @@ bool Map::update_enemies() {
 			}
 			bool die = false;
 			for (vector<Bullet>::iterator bl = bull_vec.begin(); bl != bull_vec.end();bl++) {
-				pair<int, int> bull_pos = bl->get_position();
+				pair<float, float> bull_pos = bl->get_position();
 				if (new_pos == bull_pos) {
 					die = true;
 					bl = bull_vec.erase(bl);
 					break;
 				}
+			}
+			if (player.get_position() == it->get_position()) {
+				player.die();
 			}
 			if (die) it = enem_vec.erase(it);
 			else it++;
@@ -313,16 +316,19 @@ bool Map::update_enemies() {
 					break;
 				}
 			}
+			if (player.get_position() == it->get_position()) {
+				player.die();
+			}
 			if (die) it = enem_vec.erase(it);
 			else it++;
 		}
 	}
 	return true;
 }
-bool Map::kill_enemies(pair<int, int> pos) {
+bool Map::kill_enemies(pair<float, float> pos) {
 	bool kill = false;
 	for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end();) {
-		pair<int, int> new_pos = it->get_position();
+		pair<float, float> new_pos = it->get_position();
 		if (new_pos == pos) {
 			it = enem_vec.erase(it);
 			kill = true;
@@ -345,12 +351,20 @@ void Map::update_bullets() {
 }
 //Bullet 생성
 void Map::create_bullet() {
-	int _posx = (int)player.get_x();
-	int _posy = (int)player.get_y();
+	float _posx = player.get_x();
+	float _posy = player.get_y();
 	int _direction = player.get_direction();
 	Bullet newbullet = Bullet(_posx, _posy, _direction, bull_length);
-	bull_vec.push_back(newbullet);
+	
 	player.set_gun(true);
+
+	pair<float, float> new_pos = newbullet.get_position();
+	if (kill_enemies(new_pos)) {
+		
+	}
+	else {
+		bull_vec.push_back(newbullet);
+	}
 }
 //Player에 대하여 Valid한 Move후 Direction update
 void Map::valid_move(int dir) {
@@ -384,7 +398,15 @@ bool Map::isEnd() {
 		end = true;
 		return true;
 	}
-	for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
+	if (player.get_life() == 0)
+	{
+		cout << "Life =0" << endl;
+		cout << "You lose" << endl;
+		cout << "Press 'R' to restart" << endl;
+		end = true;
+		return true;
+	}
+	/*for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
 		if (player.get_position() == it->get_position()) {
 			player.die();
 			if (player.get_life() == 0)
@@ -397,7 +419,7 @@ bool Map::isEnd() {
 			}
 			else break;
 		}
-	}
+	}*/
 	if (enem_vec.size() == 0) {
 		cout << "You win"<<endl;
 		cout << "Press 'R' to restart"<<endl;
