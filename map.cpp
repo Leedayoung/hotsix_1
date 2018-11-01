@@ -131,7 +131,7 @@ Map::Map() {
 	win = false;
 	map_size = 70;
 	view_size = map_size / 8;
-	numb_enemy = 15;
+	numb_enemy = 10;
 	wall_maker();
 	item_numb = 5;
 	time_limit = 180;
