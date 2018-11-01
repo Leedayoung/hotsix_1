@@ -6,7 +6,7 @@
 using namespace std;
 using namespace glm;
 
-Bullet::Bullet(int _pos_x, int _pos_y, int _direction, int _length) {
+Bullet::Bullet(float _pos_x, float _pos_y, int _direction, int _length) {
 	pos_x = (float)_pos_x;
 	pos_y = (float)_pos_y;
 	direc = _direction;

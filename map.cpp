@@ -338,8 +338,8 @@ void Map::update_bullets() {
 }
 //Bullet »ý¼º
 void Map::create_bullet() {
-	int _posx = (int)player.get_x();
-	int _posy = (int)player.get_y();
+	float _posx = player.get_x();
+	float _posy = player.get_y();
 	int _direction = player.get_direction();
 	Bullet newbullet = Bullet(_posx, _posy, _direction, bull_length);
 	bull_vec.push_back(newbullet);
