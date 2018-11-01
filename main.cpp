@@ -250,8 +250,6 @@ void player_move_func(int key, int x, int y) {
 void bullet_make(unsigned char key, int x, int y) {
 	if (key == 32) newmap.create_bullet();
 	glutPostRedisplay();
-	Sleep(200);
-	glutPostRedisplay();
 }
 
 void restart(unsigned char key, int x, int y) {

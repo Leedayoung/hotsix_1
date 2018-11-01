@@ -56,7 +56,7 @@ void Player::display() {
 	if (direc == direction::right)
 		model_view = ortho_mat * glm::translate(mat4(1.0), glm::vec3(pos_x + 1.5, pos_y, 0))* scale(glm::mat4(1.0), vec3(-2, 2, 0));
 	else
-		model_view = ortho_mat * glm::translate(mat4(1.0), glm::vec3(pos_x - 0.5, pos_y, 0))* scale(glm::mat4(1.0), vec3(2, 2, 0));
+		model_view = ortho_mat * glm::translate(mat4(1.0), glm::vec3(pos_x-0.5, pos_y, 0))*scale(glm::mat4(1.0), vec3(2, 2, 0));
 	if (gun == true) {
 		gun = false;
 		traverse(player_direc, 4);

@@ -50,7 +50,7 @@ public:
 	bool check_range(pair<int, int> pos);
 	bool check_wall(pair<int, int> pos);
 	bool update_enemies();
-	bool kill_enemies(pair<int, int> pos);
+	bool kill_enemies(pair<float, float> pos);
 	void update_bullets();
 	void create_bullet();
 	void valid_move(int dir);

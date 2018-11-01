@@ -16,6 +16,9 @@ Bullet::Bullet(float _pos_x, float _pos_y, int _direction, int _length) {
 pair<int, int> Bullet::move_test() {
 	return Entity::move_test(direc);
 }
+pair<int, int> Bullet::move_test2() {
+	return Entity::move_test2(direc);
+}
 bool Bullet::move() {
 	if (length == 0) return false;
 	Entity::move(direc);
@@ -28,19 +31,19 @@ void Bullet::display() {
 	mat4 rot;
 	switch (direc) {
 		case direction::down:
-			rot = glm::translate(glm::mat4(1.0), glm::vec3(0, 2, 0))*glm::rotate(glm::mat4(1.0), -1.57f, vec3(0, 0, 1));
+			rot = glm::translate(glm::mat4(1.0), glm::vec3(0, 1, 0))*glm::rotate(glm::mat4(1.0), -1.57f, vec3(0, 0, 1));
 			break;
 		case direction::up:
 			rot = glm::translate(glm::mat4(1.0), glm::vec3(1, 0, 0))*glm::rotate(glm::mat4(1.0), +1.57f, vec3(0, 0, 1));
 			break;
 		case direction::left:
-			rot = glm::translate(glm::mat4(1.0), glm::vec3(2, 0, 0))*glm::scale(glm::mat4(1.0), vec3(-1,1,0));
+			rot = glm::translate(glm::mat4(1.0), glm::vec3(1, 0, 0))*glm::scale(glm::mat4(1.0), vec3(-1,1,0));
 			break;
 		default:
 			rot = glm::mat4(1.0);
 	}
-
-	mat4 final_mat = ortho_mat * trans * rot;
+	mat4 scale = glm::translate(glm::mat4(1.0), glm::vec3(0.25, 0.25, 0)) * glm::scale(glm::mat4(1.0), vec3(0.5, 0.5, 0));
+	mat4 final_mat = ortho_mat * trans * rot * scale;
 	vec4 vec_color = vec4(0.4, 0.4, 1.0, 1.0);
 	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
 	glUniform4fv(vColor, 1, &vec_color[0]);
