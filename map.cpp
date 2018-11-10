@@ -131,7 +131,7 @@ Map::Map() {
 	win = false;
 	map_size = 70;
 	view_size = map_size / 8;
-	numb_enemy = 10;
+	numb_enemy = 35;
 	wall_maker();
 	item_numb = 5;
 	time_limit = 180;
@@ -189,9 +189,9 @@ void Map::map_init() {
 	}
 }
 void Map::object_init() {
-	player_init(basic_mode);
 	enemy_init();
 	item_init();
+	player_init(random_mode);
 }
 void Map::enemy_init() {
 	int tempx, tempy;
@@ -217,6 +217,17 @@ void Map::player_init(int mode) {
 	if (mode == basic_mode) {
 		player = Player(2, 2);
 	}
+	else if (mode == random_mode) {
+		int tempx, tempy;
+		while (true) {
+			tempx = rand() % map_size;
+			tempy = rand() % map_size;
+			if (map_arr[tempy][tempx] == map_info::empty) {
+				player = Player(tempx, tempy);
+				break;
+			}
+		}
+	}
 }
 void Map::item_init() {
 	int tempx, tempy;
@@ -225,7 +236,7 @@ void Map::item_init() {
 			tempx = rand() % map_size;
 			tempy = rand() % map_size;
 			bool flag = true;
-			if (map_arr[tempy][tempx] == map_info::empty && tempx!=2 && tempy!=2) {
+			if (map_arr[tempy][tempx] == map_info::empty) {
 				map_arr[tempy][tempx] = item;
 				break;
 			}
