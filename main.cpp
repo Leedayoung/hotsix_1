@@ -27,15 +27,18 @@ const int NumPoints = 4;
 int call_state = 0;
 Map newmap;
 void player_move_func(int key, int x, int y);
+void player_move_3d(unsigned char key, int x, int y);
 void bullet_make(unsigned char key, int x, int y);
 void move_enemies(int v);
 void move_bullets(int v);
 void display();
-void reshape(int w, int h);
+void reshape_first(int w, int h);
+void reshape_third(int w, int h);
 void endstate(int v);
 void restart(unsigned char key, int x, int y);
 void init(void);
 GLuint InitShader(const char* vShaderFile, const char* fShaderFile);
+
 
 int main(int argc, char **argv) {
 	srand((unsigned)time(NULL));
@@ -50,7 +53,7 @@ int main(int argc, char **argv) {
 	glewInit();
 	init();
 
-	glutReshapeFunc(reshape);
+	glutReshapeFunc(reshape_first);
 	glutDisplayFunc(display);
 	glutSpecialFunc(player_move_func);
 	glutKeyboardFunc(bullet_make);
@@ -74,7 +77,17 @@ void init(void) {
 		, vec4(0.2, 0.8, 0.0, 1.0), vec4(0.0, 0.7, 0.0, 1.0), vec4(0.2, 0.6, 0.0, 1.0)
 		, vec4(0.0, 0.5, 0.0, 1.0), vec4(0.2, 0.4, 0.0, 1.0), vec4(0.0, 0.3, 0.0, 1.0)
 		, vec4(0.2, 0.2, 0.0, 1.0), vec4(0.0, 0.0, 0.0, 1.0), vec4(0.7, 0.0, 0.0, 1.0) };
-
+	// Vertices of a unit cube centered at origin, sides aligned with axes
+	vec4 cube_points[8] = {
+		vec4(-0.5, -0.5,  0.5, 1.0),
+		vec4(-0.5,  0.5,  0.5, 1.0),
+		vec4(0.5,  0.5,  0.5, 1.0),
+		vec4(0.5, -0.5,  0.5, 1.0),
+		vec4(-0.5, -0.5, -0.5, 1.0),
+		vec4(-0.5,  0.5, -0.5, 1.0),
+		vec4(0.5,  0.5, -0.5, 1.0),
+		vec4(0.5, -0.5, -0.5, 1.0)
+	};
 
 	//Vertex array object
 	
@@ -116,6 +129,17 @@ void init(void) {
 	loc = glGetAttribLocation(program, "vPosition");
 	glEnableVertexAttribArray(loc);
 	glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+
+	glGenVertexArrays(1, &vao[3]);
+	glBindVertexArray(vao[3]);
+
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(cube_points), cube_points, GL_STATIC_DRAW);
+	loc = glGetAttribLocation(program, "vPosition");
+	glEnableVertexAttribArray(loc);
+	glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+
 	glBindVertexArray(vao[0]);
 	glClearColor(1.0, 1.0, 0.0, 1.0);
 
@@ -209,10 +233,18 @@ GLuint InitShader(const char* vShaderFile, const char* fShaderFile)
 	return program;
 }
 
-void reshape(int w, int h) {
+void reshape_first(int w, int h) {
 	glLoadIdentity();
 	glViewport(0, 0, w, h);
 	gluOrtho2D(0, newmap.get_map_size(), 0, newmap.get_map_size());
+	//Control gluLookAt
+	//gluLookAt(100, 10, 0, 0, -100, -100, 0, -1, 0);
+}
+
+void reshape_third(int w, int h) {
+	/*
+	Implement here
+	*/
 }
 
 void display() {
@@ -250,6 +282,27 @@ void player_move_func(int key, int x, int y) {
 void bullet_make(unsigned char key, int x, int y) {
 	if (key == 32) newmap.create_bullet();
 	glutPostRedisplay();
+}
+
+void player_move_3d(unsigned char key, int x, int y) {
+	switch (key) {
+	case 'w':
+		newmap.valid_move(direction::up);
+		break;
+	case 'a':
+		newmap.valid_move(direction::down);
+		break;
+	case 'd':
+		newmap.valid_move(direction::right);
+		break;
+	}
+	if (newmap.isEnd()) {
+		glutSpecialFunc(NULL);
+		glutKeyboardFunc(restart);
+		glutPostRedisplay();
+	}
+	glutPostRedisplay();
+	glutTimerFunc(100, makedelay, 3);
 }
 
 void restart(unsigned char key, int x, int y) {

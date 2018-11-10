@@ -35,19 +35,21 @@ void Map::display(GLuint program) {
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	int NumPoints = 4;
-
 	//glm::lookAtRH(vec3(0, 0, 0), vec3(0, 0, 0), vec3(0, 0, 1));
 	//map_display
 	double wall_len = 1.0 / map_size;
 	for (int y = 0; y < map_size; y++) {
 		for (int x = 0; x < map_size; x++) {
 			if (map_arr[y][x] == map_info::wall) {
+				glBindVertexArray(vao[3]);
+
 				mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0));
 				mat4 final_mat = ortho_mat * trans;
 				vec4 vec_color = vec4(0.0, 0.0, 0.0, 1.0);
 				glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
 				glUniform4fv(vColor, 1, &vec_color[0]);
-				glDrawArrays(GL_TRIANGLE_FAN, 0, NumPoints);
+				glDrawArrays(GL_TRIANGLE_FAN, 0, 8);
+				glBindVertexArray(vao[0]);
 			}
 			else if (map_arr[y][x] == map_info::item) {
 				glBindVertexArray(vao[1]);
@@ -144,17 +146,6 @@ Map::Map() {
 /*Initializing Functions*/
 void Map::wall_maker() {
 	int i;
-	for (i = 0; i<map_size; ++i)loc_wall.push_back(0 + map_size * i);
-	for (i = 0; i<map_size; ++i)loc_wall.push_back(map_size - 1 + map_size * i);
-	for (i = 0; i<map_size; ++i)loc_wall.push_back(i + map_size * 0);
-	for (i = 0; i<map_size; ++i)loc_wall.push_back(i + map_size * (map_size - 1));
-	for (i = map_size - 20; i < map_size; ++i) loc_wall.push_back(20 + map_size * i);
-	for (i = 0; i < 15; ++i) loc_wall.push_back(25 + map_size * i);
-	for (i = 0; i < 16; ++i) loc_wall.push_back(25 + i + 14 * map_size);
-	for (i = 15; i < 30; ++i) loc_wall.push_back(40 + map_size * i);
-	for (i = 0; i < 20; ++i) loc_wall.push_back(40 + i + 29 * map_size);
-	for (i = 0; i < 35; ++i) loc_wall.push_back(i + map_size * 50);
-	for (i = 0; i < 15; ++i) loc_wall.push_back(60 + map_size * i);
 	int len, x, y;
 	for (i = 0; i < 20; ++i) {
 		len = rand() % 13;
@@ -164,7 +155,7 @@ void Map::wall_maker() {
 			loc_wall.push_back(x + j + map_size * y);
 		}
 	}
-	for (i = 0; i < 15; ++i) {
+	for (i = 0; i < 20; ++i) {
 		len = rand() % 13;
 		x = rand() % (map_size);
 		y = rand() % (map_size - 13);
@@ -385,6 +376,11 @@ void Map::valid_move(int dir) {
 		player.move();
 		get_item(test_pos);
 		player.add_jump(3);
+		for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
+			if (player.get_position() == it->get_position()) {
+				player.die();
+			}
+		}
 	}
 }
 //현재 위치의 item을 주워 없앤 뒤 empty를 return함
