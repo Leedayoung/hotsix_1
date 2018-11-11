@@ -1,5 +1,6 @@
-#pragma once
+
 #include <GL/glew.h>
+
 
 class Sphere
 {
@@ -19,3 +20,4 @@ private:
 	GLuint m_vao, m_vboVertex, m_vboIndex;
 	int numsToDraw;
 };
+

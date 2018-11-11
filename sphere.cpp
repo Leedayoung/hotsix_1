@@ -3,7 +3,7 @@
 #include <iostream>
 #include <glm/gtc/matrix_inverse.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/string_cast.hpp>
+
 
 
 Sphere::Sphere()

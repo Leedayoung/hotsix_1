@@ -16,6 +16,7 @@
 #include "Enemy.h"
 #include "Entity.h"
 #include "display.h"
+#include "sphere.h"
 #include <string>
 #include <fstream>
 #include <mutex>
@@ -31,6 +32,7 @@ void player_move_3d(unsigned char key, int x, int y);
 void bullet_make(unsigned char key, int x, int y);
 void move_enemies(int v);
 void move_bullets(int v);
+void mouse_bullet(int button, int state, int x, int y);
 void display();
 void reshape_first(int w, int h);
 void reshape_third(int w, int h);
@@ -55,8 +57,10 @@ int main(int argc, char **argv) {
 
 	glutReshapeFunc(reshape_first);
 	glutDisplayFunc(display);
-	glutSpecialFunc(player_move_func);
-	glutKeyboardFunc(bullet_make);
+	//glutSpecialFunc(player_move_func);
+	glutKeyboardFunc(player_move_3d);
+	glutMouseFunc(mouse_bullet);
+	//glutKeyboardFunc(bullet_make);
 	glutTimerFunc(150, move_bullets, 1);
 	glutTimerFunc(1000, move_enemies, 1);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
@@ -245,6 +249,8 @@ void reshape_third(int w, int h) {
 	/*
 	Implement here
 	*/
+
+
 }
 
 void display() {
@@ -284,20 +290,28 @@ void bullet_make(unsigned char key, int x, int y) {
 	glutPostRedisplay();
 }
 
+void mouse_bullet(int button, int state, int x, int y) {
+	if (state == GLUT_DOWN) {
+		if (button == GLUT_LEFT_BUTTON) {
+			newmap.create_bullet();
+			glutPostRedisplay();
+		}
+	}
+}
 void player_move_3d(unsigned char key, int x, int y) {
 	switch (key) {
 	case 'w':
-		newmap.valid_move(direction::up);
+		newmap.valid_move_3d();
 		break;
 	case 'a':
-		newmap.valid_move(direction::down);
+		newmap.rotate_3d(-1);
 		break;
 	case 'd':
-		newmap.valid_move(direction::right);
+		newmap.rotate_3d(1);
 		break;
 	}
 	if (newmap.isEnd()) {
-		glutSpecialFunc(NULL);
+		glutMouseFunc(NULL);
 		glutKeyboardFunc(restart);
 		glutPostRedisplay();
 	}
@@ -308,8 +322,9 @@ void player_move_3d(unsigned char key, int x, int y) {
 void restart(unsigned char key, int x, int y) {
 	if (key == 'r' || key == 'R') {
 		newmap = Map();
-		glutSpecialFunc(player_move_func);
-		glutKeyboardFunc(bullet_make);
+		//glutSpecialFunc(player_move_func);
+		glutMouseFunc(mouse_bullet);
+		glutKeyboardFunc(player_move_3d);
 		glutTimerFunc(150, move_bullets, 1);
 		glutTimerFunc(1000, move_enemies, 1);
 	}
@@ -318,8 +333,9 @@ void restart(unsigned char key, int x, int y) {
 void move_enemies(int v) {
 	newmap.update_enemies();
 	newmap.timer();
-	if (newmap.isEnd()) {
-		glutSpecialFunc(NULL);
+	if (newmap.get_end()) {
+		//glutSpecialFunc(NULL);
+		glutMouseFunc(NULL);
 		glutKeyboardFunc(restart);
 		glutPostRedisplay();
 		return;

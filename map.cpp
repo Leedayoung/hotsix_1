@@ -383,6 +383,25 @@ void Map::valid_move(int dir) {
 		}
 	}
 }
+void Map::valid_move_3d() {
+	int dir = player.get_direction();
+	cout << dir;
+	pair<int, int> test_pos = player.move_test(dir);
+	if (player.get_jump() == 0 && check_range(test_pos) && map_arr[test_pos.second][test_pos.first] != wall) {
+		player.move();
+		get_item(test_pos);
+		player.add_jump(3);
+		for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
+			if (player.get_position() == it->get_position()) {
+				player.die();
+			}
+		}
+	}
+}
+void Map::rotate_3d(int dir) {
+	int new_dir = (player.get_direction() + dir+4) % 4;
+	player.set_direction(new_dir);
+}
 //현재 위치의 item을 주워 없앤 뒤 empty를 return함
 bool Map::get_item(pair<int, int> current) {
 	//pair<int, int> current = player.get_position();
