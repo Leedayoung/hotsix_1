@@ -40,7 +40,9 @@ void endstate(int v);
 void restart(unsigned char key, int x, int y);
 void init(void);
 GLuint InitShader(const char* vShaderFile, const char* fShaderFile);
-
+vector < glm::vec4 > load_obj_files();
+vector<glm::vec4> vertices;
+void char_display();
 
 int main(int argc, char **argv) {
 	srand((unsigned)time(NULL));
@@ -57,7 +59,7 @@ int main(int argc, char **argv) {
 
 	glutReshapeFunc(reshape_first);
 	glutDisplayFunc(display);
-	//glutSpecialFunc(player_move_func);
+	glutSpecialFunc(player_move_func);
 	glutKeyboardFunc(player_move_3d);
 	glutMouseFunc(mouse_bullet);
 	//glutKeyboardFunc(bullet_make);
@@ -92,7 +94,8 @@ void init(void) {
 		vec4(0.5,  0.5, -0.5, 1.0),
 		vec4(0.5, -0.5, -0.5, 1.0)
 	};
-
+	program = InitShader("vshader1.glsl", "fshader1.glsl");
+	glUseProgram(program);
 	//Vertex array object
 	
 	glGenVertexArrays(1, &vao[0]);
@@ -103,10 +106,9 @@ void init(void) {
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
-
-	program = InitShader("vshader1.glsl", "fshader1.glsl");
-	glUseProgram(program);
-
+	
+	
+	
 	GLuint loc = glGetAttribLocation(program, "vPosition");
 	glEnableVertexAttribArray(loc);
 	glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
@@ -137,9 +139,12 @@ void init(void) {
 	glGenVertexArrays(1, &vao[3]);
 	glBindVertexArray(vao[3]);
 
+
 	glGenBuffers(1, &buffer);
+	vertices = load_obj_files();
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(cube_points), cube_points, GL_STATIC_DRAW);
+	//glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(glm::vec4), &vertices[0], GL_STATIC_DRAW);
 	loc = glGetAttribLocation(program, "vPosition");
 	glEnableVertexAttribArray(loc);
 	glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
@@ -149,6 +154,92 @@ void init(void) {
 
 	make_player();
 	call_state = 0;
+	/*vec4 cube_points[8] = {
+		vec4(-0.5, -0.5,  0.5, 1.0),
+		vec4(-0.5,  0.5,  0.5, 1.0),
+		vec4(0.5,  0.5,  0.5, 1.0),
+		vec4(0.5, -0.5,  0.5, 1.0),
+		vec4(-0.5, -0.5, -0.5, 1.0),
+		vec4(-0.5,  0.5, -0.5, 1.0),
+		vec4(0.5,  0.5, -0.5, 1.0),
+		vec4(0.5, -0.5, -0.5, 1.0)
+	};
+
+	program = InitShader("vshader1.glsl", "fshader1.glsl");
+	glUseProgram(program);
+	glGenVertexArrays(1, &vao[0]);
+	glBindVertexArray(vao[0]);
+	GLuint buffer;
+	//Create and initialize a buffer obj
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	//
+	glBufferData(GL_ARRAY_BUFFER, sizeof(cube_points), cube_points, GL_STATIC_DRAW);
+	//glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec4), &vertices[0], GL_STATIC_DRAW);
+	GLuint loc = glGetAttribLocation(program, "vPosition");
+	glEnableVertexAttribArray(loc);
+	glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));*/
+}
+vector < glm::vec4 > load_obj_files(){
+	vector< unsigned int > vertexIndices, uvIndices, normalIndices;
+	vector< glm::vec3 > temp_vertices;
+	vector< glm::vec2 > temp_uvs;
+	vector< glm::vec3 > temp_normals;
+
+	FILE * file = fopen("OBJ files/cu.txt", "r");
+	if (file == NULL) {
+		printf("Impossible to open the file !\n");
+		return vector<glm::vec4>();
+	}
+	while (1) {
+
+		char lineHeader[128];
+		// read the first word of the line
+		int res = fscanf(file, "%s", lineHeader);
+		if (res == EOF)
+			break; // EOF = End Of File. Quit the loop.
+		if (strcmp(lineHeader, "v") == 0) {
+			glm::vec3 vertex;
+			fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
+			temp_vertices.push_back(vertex);
+		}
+		else if (strcmp(lineHeader, "vt") == 0) {
+			glm::vec2 uv;
+			fscanf(file, "%f %f\n", &uv.x, &uv.y);
+			temp_uvs.push_back(uv);
+		}
+		else if (strcmp(lineHeader, "vn") == 0) {
+			glm::vec3 normal;
+			fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z);
+			temp_normals.push_back(normal);
+		}
+		else if (strcmp(lineHeader, "f") == 0) {
+			std::string vertex1, vertex2, vertex3;
+			unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
+			int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
+			if (matches != 9) {
+				printf("File can't be read by our simple parser : ( Try exporting with other options\n");
+				return vector<glm::vec4>();
+			}
+			vertexIndices.push_back(vertexIndex[0]);
+			vertexIndices.push_back(vertexIndex[1]);
+			vertexIndices.push_back(vertexIndex[2]);
+			uvIndices.push_back(uvIndex[0]);
+			uvIndices.push_back(uvIndex[1]);
+			uvIndices.push_back(uvIndex[2]);
+			normalIndices.push_back(normalIndex[0]);
+			normalIndices.push_back(normalIndex[1]);
+			normalIndices.push_back(normalIndex[2]);
+		}
+	}
+	std::vector < glm::vec4 > out_vertices;
+	for (unsigned int i = 0; i < vertexIndices.size(); i++) {
+		unsigned int vertexIndex = vertexIndices[i];
+		glm::vec3 t = temp_vertices[vertexIndex - 1];
+		glm::vec4 vertex = glm::vec4(t.x, t.y, t.z, 1.0);
+		out_vertices.push_back(vertex);
+	}
+	return out_vertices;
 }
 
 static char* readShaderSource(const char* shaderFile)
@@ -170,7 +261,6 @@ static char* readShaderSource(const char* shaderFile)
 
 	return buf;
 }
-
 GLuint InitShader(const char* vShaderFile, const char* fShaderFile)
 {
 	struct Shader {
@@ -236,15 +326,13 @@ GLuint InitShader(const char* vShaderFile, const char* fShaderFile)
 	glUseProgram(program);
 	return program;
 }
-
 void reshape_first(int w, int h) {
 	glLoadIdentity();
 	glViewport(0, 0, w, h);
-	gluOrtho2D(0, newmap.get_map_size(), 0, newmap.get_map_size());
+	//gluOrtho2D(0, newmap.get_map_size(), 0, newmap.get_map_size());
 	//Control gluLookAt
 	//gluLookAt(100, 10, 0, 0, -100, -100, 0, -1, 0);
 }
-
 void reshape_third(int w, int h) {
 	/*
 	Implement here
@@ -252,7 +340,27 @@ void reshape_third(int w, int h) {
 
 
 }
+void char_display() {
+/*	glm::mat4 View = glm::lookAt(
+		glm::vec3((float)x, (float)y, -0.5f), // 카메라는 (4,3,3) 에 있다. 월드 좌표에서
+		glm::vec3(0, 0, 0), // 그리고 카메라가 원점을 본다
+		glm::vec3(0, 1, 0)  // 머리가 위쪽이다 (0,-1,0 으로 해보면, 뒤집어 볼것이다)
+	);*/
+	/*glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
+	ortho_mat = View;// *Projection;
+					 //ortho_mat = glm::ortho((float)x, (float)x + 2 * view_size, (float)y, (float)y + 2 * view_size);
+	glClearColor(1.0, 1.0, 1.0, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
 
+	glBindVertexArray(vao[3]);
+	mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0));
+	mat4 final_mat = ortho_mat * trans;
+	vec4 vec_color = vec4(0.0, 0.0, 0.0, 1.0);
+	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
+	glUniform4fv(vColor, 1, &vec_color[0]);
+	glDrawArrays(GL_TRIANGLE_FAN, 0, 36);
+	glBindVertexArray(vao[0]);*/
+}
 void display() {
 	newmap.display(program);
 }
@@ -297,26 +405,6 @@ void mouse_bullet(int button, int state, int x, int y) {
 			glutPostRedisplay();
 		}
 	}
-}
-void player_move_3d(unsigned char key, int x, int y) {
-	switch (key) {
-	case 'w':
-		newmap.valid_move_3d();
-		break;
-	case 'a':
-		newmap.rotate_3d(-1);
-		break;
-	case 'd':
-		newmap.rotate_3d(1);
-		break;
-	}
-	if (newmap.isEnd()) {
-		glutMouseFunc(NULL);
-		glutKeyboardFunc(restart);
-		glutPostRedisplay();
-	}
-	glutPostRedisplay();
-	glutTimerFunc(100, makedelay, 3);
 }
 
 void restart(unsigned char key, int x, int y) {

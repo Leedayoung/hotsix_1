@@ -32,7 +32,10 @@ public:
 		jump += _jump;
 	}
 	int get_jump() {
+		return 0;
+		
 		return jump;
+		
 	}
 	pair<float, float> get_position();
 	pair<int, int> move_test(int direc);

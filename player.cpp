@@ -20,24 +20,51 @@ void Player::add_num_i() {
 	num_i++;
 }
 void Player::move() {
+	float s = 1;
 	switch (direc) {
 	case direction::up:
-		pos_y += 0.25;
+		pos_y += s;
 		break;
 	case direction::down:
-		pos_y -= 0.25;
+		pos_y -= s;
 		break;
 	case direction::left:
-		pos_x -= 0.25;
+		pos_x -= s;
 		break;
 	case direction::right:
-		pos_x += 0.25;
+		pos_x += s;
 		break;
 	}
+	printf("Move : %lf %lf\n", pos_x, pos_y);
 }
 
 void Player::display() {
-	treenode * player_direc;
+	glBindVertexArray(vao[0]);
+	float mul;
+	switch (direc) {
+		case direction::up:
+			mul = 2;
+			break;
+		case direction::down:
+			mul = 0;
+			break;
+		case direction::left:
+			mul = 3;
+			break;
+		case direction::right:
+			mul = 1;
+			break;
+	}
+	mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(pos_x, pos_y, -5));
+	mat4 scale = glm::scale(glm::mat4(1.0), vec3(0.1f, 0.01f, 0.1f));
+	mat4 rot = glm::rotate(glm::mat4(1.0), 1.57f*mul, vec3(0.0, 0.0, 1.0))*glm::rotate(glm::mat4(1.0), 1.57f, vec3(1.0, 0.0, 0.0));
+	mat4 final_mat = per_look * trans * rot * scale;
+	vec4 vec_color = vec4(1.0, 0.0, 0.0, 0.5);
+	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
+	glUniform4fv(vColor, 1, &vec_color[0]);
+	glDrawArrays(GL_TRIANGLES, 0, vao_size[0]);
+
+	/*treenode * player_direc;
 	switch (direc) {
 	case direction::down:
 		player_direc = player_down;
@@ -70,6 +97,7 @@ void Player::display() {
 		traverse(player_direc, 0);
 	}
 
+	*/
 }
 int Player::get_life() {
 	return life;

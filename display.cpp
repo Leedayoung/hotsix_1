@@ -8,7 +8,11 @@ glm::mat4 ortho_mat;
 GLint vColor;
 GLuint buffer[2];
 GLuint vao[3];
-
+int vao_size[3];
+GLuint loc;
+mat4 per_look;
+mat4 look_at;
+mat4 perspec;
 treenode * player_down;
 treenode * player_up;
 treenode * player_left;

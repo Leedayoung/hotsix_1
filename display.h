@@ -18,6 +18,12 @@ extern GLint vColor;
 extern mat4 model_view;
 extern 	GLuint buffer[2];
 extern GLuint vao[3];
+extern int vao_size[3];
+extern GLuint loc;
+extern mat4 per_look;
+extern mat4 look_at;
+extern mat4 perspec;
+
 class treenode {
 public:
 	mat4 m;

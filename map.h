@@ -36,7 +36,7 @@ public:
 	void timer();
 	void print(int x, int y, string string);
 	void draw_rec(int x1, int y1, int x2, int y2);
-	void display(GLuint program);
+	void display();
 	void wall_maker();
 	void world_init();
 	void map_init();

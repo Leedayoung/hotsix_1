@@ -21,8 +21,79 @@
 #include "sixteenseg.h"
 using namespace std;
 using namespace glm;
-void Map::display(GLuint program) {
-	pair<int, int> pos = player.get_position();
+void Map::display() {
+	pair<float, float> pos = player.get_position();
+	int direc = player.get_direction();
+	float e_x = pos.first, e_y = pos.second;
+	float c_x=0, c_y=0;
+	float s = 0.5;
+	float e = 5;
+	switch (direc) {
+	case direction::up:
+		c_y = s;
+		e_y -= e;
+		break;
+	case direction::down:
+		c_y = -s;
+		e_y += e;
+		break;
+	case direction::left:
+		c_x = -s;
+		e_x += e;
+		break;
+	case direction::right:
+		c_x = +s;
+		e_x -= e;
+		break;
+	}
+	printf(" camera_position : %lf %lf direction : %lf %lf \n", e_x, e_y, e_x + c_x, e_y + c_y);
+	mat4 look_at = glm::lookAt(glm::vec3(e_x, e_y, 2.0f), glm::vec3(e_x + c_x, e_y + c_y, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	mat4 perspec = glm::perspective(glm::radians(130.0f), 1.0f, 0.000000000001f, 5000.0f);
+	per_look = perspec * look_at;
+
+	glClearColor(1.0, 1.0, 1.0, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glColor3f(1, float(0.7137), float(0.7568));
+	glLineWidth(1);
+	glPointSize(1.0f);
+	glPolygonMode(GL_FRONT, GL_LINE);
+	glPolygonMode(GL_BACK, GL_LINE);
+
+	for (int y = 0; y < map_size; y++) {
+		for (int x = 0; x < map_size; x++) { 
+			if (map_arr[y][x] == map_info::wall) {
+				glBindVertexArray(vao[1]);
+				mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0));
+				mat4 final_mat = per_look*trans;
+				vec4 vec_color = vec4(0.0, 0.0, 0.0, 1.0);
+				glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
+				glUniform4fv(vColor, 1, &vec_color[0]);
+				glDrawArrays(GL_TRIANGLES, 0, vao_size[0]);
+			}/*
+			else if (map_arr[y][x] == map_info::item) {
+				glBindVertexArray(vao[1]);
+
+				mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0));
+				mat4 final_mat = trans * ortho_mat;
+				vec4 vec_color = vec4(1.0, 0.0, 0.0, 1.0);
+				glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
+				glUniform4fv(vColor, 1, &vec_color[0]);
+				glDrawArrays(GL_TRIANGLE_FAN, 0, 7);
+
+				glBindVertexArray(vao[0]);
+			}*/
+		}
+	}
+
+	player.display();
+	
+	glutSwapBuffers();
+	return;
+
+
+
+	//dummy
+	/*pair<int, int> pos = player.get_position();
 	int x = pos.first, y = pos.second;
 	x -= view_size;
 	y -= view_size;
@@ -31,7 +102,14 @@ void Map::display(GLuint program) {
 	if (x + 2 * view_size > map_size) x = map_size - 2 * view_size;
 	if (y + 2 * view_size > map_size) y = map_size - 2 * view_size;
 	
-	ortho_mat = glm::ortho((float)x, (float)x + 2 * view_size, (float)y, (float)y + 2 * view_size);
+	glm::mat4 View = glm::lookAt(
+		glm::vec3((float)0, (float)0, -0.0), // 카메라는 (4,3,3) 에 있다. 월드 좌표에서
+		glm::vec3((float)70.0, (float)70, -0.0), // 그리고 카메라가 원점을 본다
+		glm::vec3(0, 0.0f, 1.0)  // 머리가 위쪽이다 (0,-1,0 으로 해보면, 뒤집어 볼것이다)
+	);
+	glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.01f, 10.0f);
+	ortho_mat = Projection*View;// * Projection;// *Projection;
+	//ortho_mat = glm::ortho((float)x, (float)x + 2 * view_size, (float)y, (float)y + 2 * view_size);
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	int NumPoints = 4;
@@ -44,7 +122,7 @@ void Map::display(GLuint program) {
 				glBindVertexArray(vao[3]);
 
 				mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0));
-				mat4 final_mat = ortho_mat * trans;
+				mat4 final_mat = trans*ortho_mat;
 				vec4 vec_color = vec4(0.0, 0.0, 0.0, 1.0);
 				glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
 				glUniform4fv(vColor, 1, &vec_color[0]);
@@ -55,8 +133,8 @@ void Map::display(GLuint program) {
 				glBindVertexArray(vao[1]);
 
 				mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0));
-				mat4 final_mat = ortho_mat * trans;
-				vec4 vec_color = vec4(1.0, 0.0, 0.0, 1.0);
+				mat4 final_mat = trans*ortho_mat;
+				 vec4 vec_color = vec4(1.0, 0.0, 0.0, 1.0);
 				glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
 				glUniform4fv(vColor, 1, &vec_color[0]);
 				glDrawArrays(GL_TRIANGLE_FAN, 0, 7);
@@ -126,7 +204,7 @@ void Map::display(GLuint program) {
 		draw_string(msg, -0.30, 0.5);
 		draw_string(end_msg, -0.75, 0.3);
 	}
-	glFlush();
+	glFlush();*/
 }
 
 Map::Map() {
@@ -373,9 +451,11 @@ void Map::valid_move(int dir) {
 	pair<int, int> test_pos = player.move_test(dir);
 	if (player.get_jump()==0 && check_range(test_pos) && map_arr[test_pos.second][test_pos.first] != wall) {
 		player.set_direction(dir);
+		int dir = player.get_direction();
+		cout << dir;
 		player.move();
 		get_item(test_pos);
-		player.add_jump(3);
+		//player.add_jump(3);
 		for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
 			if (player.get_position() == it->get_position()) {
 				player.die();
@@ -390,12 +470,15 @@ void Map::valid_move_3d() {
 	if (player.get_jump() == 0 && check_range(test_pos) && map_arr[test_pos.second][test_pos.first] != wall) {
 		player.move();
 		get_item(test_pos);
-		player.add_jump(3);
+		//player.add_jump(3);
 		for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
 			if (player.get_position() == it->get_position()) {
 				player.die();
 			}
 		}
+	}
+	else {
+		printf("False move\n");
 	}
 }
 void Map::rotate_3d(int dir) {
