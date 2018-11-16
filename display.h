@@ -10,7 +10,7 @@
 #include <glm/vec4.hpp>
 #include <glm/gtc/type_ptr.hpp>
 using namespace glm;
-#define v_size 10
+#define v_size 15
 extern GLuint program;
 extern GLint ctmParam;
 extern glm::mat4 ortho_mat;
@@ -32,6 +32,9 @@ extern mat4 perspec;
 #define E_1 5
 #define E_2 6
 #define E_3 7
+
+#define RECT 8
+#define HEART 9
 
 #define BULL v_size-2
 #define WALL v_size-1

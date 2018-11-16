@@ -67,6 +67,12 @@ int main(int argc, char **argv) {
 	return 0;
 }
 void init() {
+	vec4 rect[4] = {
+		vec4(0, 0,0, 1), vec4(1, 0,0,1), vec4(1,1,0,1), vec4(0, 1,0,1)
+	};
+	vec4 heart[6] = {
+		vec4(0.5, 0.75, 0.0, 1.0), vec4(0.25, 1.0, 0.0, 1.0), vec4(0.0, 0.75, 0.0, 1.0)
+		, vec4(0.5, 0.0, 0.0, 1.0), vec4(1.0, 0.75, 0.0, 1.0), vec4(0.75, 1.0, 0.0, 1.0) };
 	
 	program = InitShader("vshader1.glsl", "fshader1.glsl");
 	glUseProgram(program);
@@ -85,6 +91,27 @@ void init() {
 
 	load_obj_files("OBJ files/bullet.obj", 0, BULL);
 	load_obj_files("OBJ files/cu.txt", 0, WALL);
+
+	glGenVertexArrays(1, &vao[RECT]);
+	glBindVertexArray(vao[RECT]);
+	GLuint buffer;
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(rect), rect, GL_STATIC_DRAW);
+	GLuint loc = glGetAttribLocation(program, "vPosition");
+	glEnableVertexAttribArray(loc);
+	glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+
+	glGenVertexArrays(1, &vao[HEART]);
+	glBindVertexArray(vao[HEART]);
+	GLuint buffer;
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(heart), heart, GL_STATIC_DRAW);
+	GLuint loc = glGetAttribLocation(program, "vPosition");
+	glEnableVertexAttribArray(loc);
+	glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+
 }
 void reshape(int w, int h)
 {
