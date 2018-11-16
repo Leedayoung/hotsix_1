@@ -226,6 +226,10 @@ Map::Map() {
 void Map::wall_maker() {
 	int i;
 	int len, x, y;
+	for (i = 0; i<map_size; ++i)loc_wall.push_back(0 + map_size * i);
+	for (i = 0; i<map_size; ++i)loc_wall.push_back(map_size - 1 + map_size * i);
+	for (i = 0; i<map_size; ++i)loc_wall.push_back(i + map_size * 0);
+	for (i = 0; i<map_size; ++i)loc_wall.push_back(i + map_size * (map_size - 1));
 	for (i = 0; i < 20; ++i) {
 		len = rand() % 13;
 		x = rand() % (map_size - 13);
