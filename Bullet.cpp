@@ -26,30 +26,34 @@ bool Bullet::move() {
 	return true;
 }
 void Bullet::display() {
-	glBindVertexArray(vao[2]);
-	mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(pos_x, pos_y, 0));
-	mat4 rot;
+
+	float mul;
 	switch (direc) {
-		case direction::down:
-			rot = glm::translate(glm::mat4(1.0), glm::vec3(0, 1, 0))*glm::rotate(glm::mat4(1.0), -1.57f, vec3(0, 0, 1));
-			break;
-		case direction::up:
-			rot = glm::translate(glm::mat4(1.0), glm::vec3(1, 0, 0))*glm::rotate(glm::mat4(1.0), +1.57f, vec3(0, 0, 1));
-			break;
-		case direction::left:
-			rot = glm::translate(glm::mat4(1.0), glm::vec3(1, 0, 0))*glm::scale(glm::mat4(1.0), vec3(-1,1,0));
-			break;
-		default:
-			rot = glm::mat4(1.0);
+	case direction::up:
+		mul = 0;
+		break;
+	case direction::down:
+		mul = 2;
+		break;
+	case direction::left:
+		mul = 1;
+		break;
+	case direction::right:
+		mul = 3;
+		break;
 	}
-	mat4 scale = glm::translate(glm::mat4(1.0), glm::vec3(0.25, 0.25, 0)) * glm::scale(glm::mat4(1.0), vec3(0.5, 0.5, 0));
-	mat4 final_mat = ortho_mat * trans * rot * scale;
-	vec4 vec_color = vec4(0.4, 0.4, 1.0, 1.0);
+	int index = BULL;
+	glBindVertexArray(vao[index]);
+	//mat4 scale = glm::scale(glm::mat4(1.0), vec3(0.1f, 0.05f, 0.1f));
+	mat4 y_z = mat4(vec4(1.0, 0.0, 0.0, 0.0), vec4(0.0, 0.0, 1.0, 0.0), vec4(0.0, 1.0, 0.0, 0.0), vec4(0.0, 0.0, 0.0, 1.0));
+	mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(pos_x, pos_y, 0.0));
+	//mat4 scale = glm::scale(glm::mat4(1.0), vec3(1.0f, 0.01f, 1.0f));
+	mat4 rot = glm::rotate(glm::mat4(1.0), 1.57f*mul, vec3(0.0, 0.0, 1.0));
+	mat4 final_mat = per_look * trans*rot * y_z;//  * y_z * scale;// *rot * scale;
+	vec4 vec_color = vec4(0.0, 0.0, 0.0, 0.5);
 	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
 	glUniform4fv(vColor, 1, &vec_color[0]);
-	glDrawArrays(GL_TRIANGLE_FAN, 0, 12);
-	glBindVertexArray(vao[0]);
-
-	//glBindTexture(GL_TEXTURE_2D, texture[bullet_u + direc]);
-	//Entity::display(pos_x, pos_y, pos_x + 1, pos_y + 1);
+	glPolygonMode(GL_FRONT, GL_FILL);
+	glPolygonMode(GL_BACK, GL_FILL);
+	glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
 }

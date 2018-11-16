@@ -113,7 +113,12 @@ void Map::display() {
 	for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
 		it->display();
 	}
+	//display bullet
+	for (vector<Bullet>::iterator it = bull_vec.begin(); it != bull_vec.end(); it++) {
+		it->display();
+	}
 	player.display();
+
 	glutSwapBuffers();
 	return;
 
@@ -379,25 +384,25 @@ bool Map::update_enemies() {
 				new_pos = it->move_test(direction::right);
 				it->set_direction(direction::right);
 				it->move();
-				//it->add_jump(3);
+				it->add_jump(3);
 			}
 			else if (x < 0 && !check_wall(it->move_test(direction::left))) {
 				new_pos = it->move_test(direction::left);
 				it->set_direction(direction::left);
 				it->move();
-				//it->add_jump(3);
+				it->add_jump(3);
 			}
 			else if (y > 0 && !check_wall(it->move_test(direction::up))) {
 				new_pos = it->move_test(direction::up);
 				it->set_direction(direction::up);
 				it->move();
-				//it->add_jump(3);
+				it->add_jump(3);
 			}
 			else if (y < 0 && !check_wall(it->move_test(direction::down))) {
 				new_pos = it->move_test(direction::down);
 				it->set_direction(direction::down);
 				it->move();
-				//it->add_jump(3);
+				it->add_jump(3);
 			}
 			bool die = false;
 			for (vector<Bullet>::iterator bl = bull_vec.begin(); bl != bull_vec.end();bl++) {
@@ -420,7 +425,7 @@ bool Map::update_enemies() {
 			if (check_range(new_pos) == false) continue;
 			if (map_arr[new_pos.second][new_pos.first] == wall) continue;
 			if (it->get_jump() != 0) continue;
-			//it->add_jump(3);
+			it->add_jump(3);
 			it->set_direction(direction);
 			it->move();
 			bool die = false;

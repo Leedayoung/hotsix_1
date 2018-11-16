@@ -51,6 +51,7 @@ int main(int argc, char **argv) {
 	glutInitWindowPosition(0, 0);
 	glutInitWindowSize(800, 800);//창 크기 설정
 	glutCreateWindow("GAME");
+	glutMouseFunc(mouse_bullet);
 
 	glewInit();
 	init();
@@ -77,9 +78,13 @@ void init() {
 	load_obj_files("OBJ files/dummy_obj_walk_pose_2.obj", 0, P_2);
 	load_obj_files("OBJ files/dummy_obj_walk_pose_3.obj", 0, P_3);
 
+	load_obj_files("OBJ files/Skeleton_pose0.obj", 0, E_0);
+	load_obj_files("OBJ files/Skeleton_pose1.obj", 0, E_1);
+	load_obj_files("OBJ files/Skeleton_pose2.obj", 0, E_2);
+	load_obj_files("OBJ files/Skeleton_pose3.obj", 0, E_3);
 
+	load_obj_files("OBJ files/bullet.obj", 0, BULL);
 	load_obj_files("OBJ files/cu.txt", 0, WALL);
-	load_obj_files("OBJ files/Skeleton.obj", 1, 7);
 }
 void reshape(int w, int h)
 {
@@ -325,7 +330,7 @@ void move_enemies(int v) {
 	newmap.update_enemies();
 	newmap.timer();
 	if (newmap.get_end()) {
-		//glutSpecialFunc(NULL);
+		glutSpecialFunc(NULL);
 		glutMouseFunc(NULL);
 		glutKeyboardFunc(restart);
 		glutPostRedisplay();

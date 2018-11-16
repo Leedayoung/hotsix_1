@@ -28,6 +28,12 @@ extern mat4 perspec;
 #define P_2 2
 #define P_3 3
 
+#define E_0 4
+#define E_1 5
+#define E_2 6
+#define E_3 7
+
+#define BULL v_size-2
 #define WALL v_size-1
 #define ITEM v_size-1
 

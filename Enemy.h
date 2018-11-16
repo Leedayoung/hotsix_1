@@ -7,7 +7,7 @@ using namespace std;
 class Enemy : public Entity {
 public:
 	Enemy(int _pos_x, int _pos_y);
-	int s = 1;
+	float s = 0.25;
 	void move() {
 		switch (direc) {
 		case direction::up:

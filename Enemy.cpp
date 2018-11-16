@@ -23,7 +23,7 @@ bool Enemy::check_chase(pair<int, int> player_pos) {
 }
 void Enemy::display() {
 
-	int index = 7;
+	int index = (4 - jump) % 4 + 4;
 	glBindVertexArray(vao[index]);
 	float mul;
 	switch (direc) {
@@ -51,7 +51,15 @@ void Enemy::display() {
 	glUniform4fv(vColor, 1, &vec_color[0]);
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_FILL);
-	glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);	/*treenode * enemy_direc;
+	glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
+
+	if (jump != 0) {
+		jump--;
+		this->move();
+	}
+
+
+	/*treenode * enemy_direc;
 	switch (direc) {
 	case direction::down:
 		enemy_direc = enemy_down;
