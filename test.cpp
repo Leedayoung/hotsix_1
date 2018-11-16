@@ -157,7 +157,6 @@ vector < glm::vec4 > load_obj_files(string file_path,int type, int index) {
 	vector< unsigned int > vertexIndices, uvIndices, normalIndices;
 	vector< glm::vec3 > temp_vertices;
 	vector< glm::vec2 > temp_uvs;
-	vector< glm::vec3 > temp_normals;
 
 	FILE * file = fopen(&file_path[0], "r");
 	if (file == NULL) {
@@ -184,14 +183,19 @@ vector < glm::vec4 > load_obj_files(string file_path,int type, int index) {
 			fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
 			temp_vertices.push_back(vertex);
 		}
+		else if (strcmp(lineHeader, "vt") == 0) {
+			glm::vec2 uv;
+			fscanf(file, "%f %f\n", &uv.x, &uv.y);
+			temp_uvs.push_back(uv);
+		}
 		else if (strcmp(lineHeader, "f") == 0) {
 			if (num == 0) num = 1;
 			std::string vertex1, vertex2, vertex3;
 			unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
 			
 			if (type == 0 || type ==2) {
-				int v3, t;
-				int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2],&v3,&t,&t);
+				int v3, uv3, t;
+				int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2],&v3,&uv3,&t);
 				if (matches == 9){
 					if ( type == 2 && m_num == 17) {
 						hand_loc = temp_vertices[vertexIndex[0] - 1];
@@ -202,6 +206,9 @@ vector < glm::vec4 > load_obj_files(string file_path,int type, int index) {
 					vertexIndices.push_back(vertexIndex[0]);
 					vertexIndices.push_back(vertexIndex[1]);
 					vertexIndices.push_back(vertexIndex[2]);
+					uvIndices.push_back(uvIndex[0]);
+					uvIndices.push_back(uvIndex[1]);
+					uvIndices.push_back(uvIndex[2]);
 				}
 				else if (matches == 12) {
 					if (type == 2 && m_num == 17) {
@@ -214,10 +221,16 @@ vector < glm::vec4 > load_obj_files(string file_path,int type, int index) {
 					vertexIndices.push_back(vertexIndex[0]);
 					vertexIndices.push_back(vertexIndex[1]);
 					vertexIndices.push_back(vertexIndex[2]);
+					uvIndices.push_back(uvIndex[0]);
+					uvIndices.push_back(uvIndex[1]);
+					uvIndices.push_back(uvIndex[2]);
 
 					vertexIndices.push_back(vertexIndex[1]);
 					vertexIndices.push_back(vertexIndex[2]);
 					vertexIndices.push_back(v3);
+					uvIndices.push_back(uvIndex[1]);
+					uvIndices.push_back(uvIndex[2]);
+					uvIndices.push_back(uv3);
 				}else{
 					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
 					return vector<glm::vec4>();
@@ -226,21 +239,31 @@ vector < glm::vec4 > load_obj_files(string file_path,int type, int index) {
 			}
 			else {
 				int v1, v2, v3, v4;
+				int uv1, uv2, uv3, uv4;
 				int t;
-				int matches = fscanf(file, "%d/%d %d/%d %d/%d %d/%d\n", &v1, &t, &v2, &t, &v3, &t, &v4, &t);
+				int matches = fscanf(file, "%d/%d %d/%d %d/%d %d/%d\n", &v1, &uv1, &v2, &uv2, &v3, &uv3, &v4, &uv4);
 				if (matches == 8) {
 					vertexIndices.push_back(v1);
 					vertexIndices.push_back(v2);
 					vertexIndices.push_back(v3);
+					uvIndices.push_back(uv1);
+					uvIndices.push_back(uv2);
+					uvIndices.push_back(uv3);
 
 					vertexIndices.push_back(v2);
 					vertexIndices.push_back(v3);
 					vertexIndices.push_back(v4);
+					uvIndices.push_back(uv2);
+					uvIndices.push_back(uv3);
+					uvIndices.push_back(uv4);
 				}
 				else if (matches == 6) {
 					vertexIndices.push_back(v1);
 					vertexIndices.push_back(v2);
 					vertexIndices.push_back(v3);
+					uvIndices.push_back(uv1);
+					uvIndices.push_back(uv2);
+					uvIndices.push_back(uv3);
 				}
 				
 			}
@@ -252,6 +275,12 @@ vector < glm::vec4 > load_obj_files(string file_path,int type, int index) {
 	for (unsigned int i = 0; i < vertexIndices.size(); i++) {
 		unsigned int vertexIndex = vertexIndices[i];
 		glm::vec3 t = temp_vertices[vertexIndex - 1];
+		glm::vec4 vertex = glm::vec4(t.x, t.y, t.z, 1.0);
+		out_vertices.push_back(vertex);
+	}
+	for (unsigned int i = 0; i < uvIndices.size(); i++) {
+		unsigned int uvIndex = uvIndices[i];
+		glm::vec2 t = temp_uvs[uvIndex - 1];
 		glm::vec4 vertex = glm::vec4(t.x, t.y, t.z, 1.0);
 		out_vertices.push_back(vertex);
 	}
