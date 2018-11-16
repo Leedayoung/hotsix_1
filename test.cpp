@@ -1,4 +1,5 @@
 #pragma once
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -35,7 +36,7 @@ static char* readShaderSource(const char* shaderFile);
 GLuint InitShader(const char* vShaderFile, const char* fShaderFile);
 Map newmap;
 
-void player_move_func(int key, int x, int y);
+
 int main(int argc, char **argv) {
 
 	srand((unsigned)time(NULL));
@@ -51,7 +52,6 @@ int main(int argc, char **argv) {
 
 	glutReshapeFunc(reshape);
 	glutDisplayFunc(display);
-	glutSpecialFunc(player_move_func);
 	glutKeyboardFunc(player_move_3d);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 	glutMainLoop();
@@ -114,8 +114,8 @@ void display() {
 	glLineWidth(1);
 	glPointSize(1.0f);
 
-	glPolygonMode(GL_FRONT, GL_LINE);
-	glPolygonMode(GL_BACK, GL_LINE);
+	glPolygonMode(GL_FRONT, GL_FILL);
+	glPolygonMode(GL_BACK, GL_FILL);
 
 	mat4 final_mat = perspec * look_at;
 	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
@@ -299,21 +299,4 @@ void player_move_3d(unsigned char key, int x, int y) {
 	}
 	glutPostRedisplay();
 	//glutTimerFunc(100, makedelay, 3);
-}
-void player_move_func(int key, int x, int y) {
-	switch (key) {
-	case GLUT_KEY_UP:
-		newmap.valid_move(direction::up);
-		break;
-	case GLUT_KEY_DOWN:
-		newmap.valid_move(direction::down);
-		break;
-	case GLUT_KEY_RIGHT:
-		newmap.valid_move(direction::right);
-		break;
-	case GLUT_KEY_LEFT:
-		newmap.valid_move(direction::left);
-		break;
-	}
-	glutPostRedisplay();
 }
