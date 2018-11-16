@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
 	glutKeyboardFunc(player_move_3d);
 	glutMouseFunc(mouse_bullet);
 	glutTimerFunc(1000, move_enemies, 1);
-	glutTimerFunc(147, move_bullets, 1);
+	glutTimerFunc(150, move_bullets, 1);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 	glutMainLoop();
 	return 0;

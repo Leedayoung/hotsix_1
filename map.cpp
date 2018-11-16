@@ -35,9 +35,9 @@ void Map::display() {
 		z = 2.0f;
 		break;
 	case 1://1 person
-		s = 0.5;
+		s = 1.3;
 		e = -1;
-		z = 0.5f;
+		z = 1.3f;
 		break;
 	}
 	
@@ -82,12 +82,12 @@ void Map::display() {
 		for (int x = 0; x < map_size; x++) { 
 			if (map_arr[y][x] == map_info::wall) {
 				index = WALL;
-				glPolygonMode(GL_FRONT, GL_LINE);
-				glPolygonMode(GL_BACK, GL_LINE);
+				glPolygonMode(GL_FRONT, GL_FILL);
+				glPolygonMode(GL_BACK, GL_FILL);
 				glBindVertexArray(vao[index]);
 				mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0.5));
 				mat4 final_mat = per_look*trans;
-				vec4 vec_color = vec4(0.0, 0.0, 0.0, 1.0);
+				vec4 vec_color = vec4(0.58, 0.29, 0.0, 1.0);
 				glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
 				glUniform4fv(vColor, 1, &vec_color[0]);
 				glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
