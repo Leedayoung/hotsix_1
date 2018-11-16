@@ -25,7 +25,7 @@ private:
 	int basic_mode = 0;
 	int random_mode = 1;
 	int item_numb;
-	int bull_length = 4;
+	int bull_length = 8;
 	bool win;
 	bool end;
 	int time_limit;
