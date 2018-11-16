@@ -39,7 +39,8 @@ void Player::move() {
 }
 
 void Player::display() {
-	glBindVertexArray(vao[0]);
+	int index = 0;
+	glBindVertexArray(vao[index]);
 	float mul;
 	switch (direc) {
 		case direction::up:
@@ -55,16 +56,18 @@ void Player::display() {
 			mul = 1;
 			break;
 	}
-	mat4 scale = glm::scale(glm::mat4(1.0), vec3(0.01f, 0.003f, 0.01f));
+	mat4 scale = glm::scale(glm::mat4(1.0), vec3(0.01f, 0.01f, 0.01f));
 	mat4 y_z = mat4(vec4(1.0, 0.0, 0.0, 0.0), vec4(0.0, 0.0, 1.0, 0.0), vec4(0.0, 1.0, 0.0, 0.0), vec4(0.0, 0.0, 0.0, 1.0));
-	mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(pos_x, pos_y, -0.5));
+	mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(pos_x, pos_y, 0));
 	//mat4 scale = glm::scale(glm::mat4(1.0), vec3(1.0f, 0.01f, 1.0f));
-	//mat4 rot = glm::rotate(glm::mat4(1.0), 1.57f*mul, vec3(0.0, 0.0, 1.0))*glm::rotate(glm::mat4(1.0), 1.57f, vec3(1.0, 0.0, 0.0));
-	mat4 final_mat = per_look * trans * y_z * scale;// *rot * scale;
+	mat4 rot = glm::rotate(glm::mat4(1.0), 1.57f*mul, vec3(0.0, 0.0, 1.0));
+	mat4 final_mat = per_look * trans *rot* y_z * scale;// *rot * scale;
 	vec4 vec_color = vec4(1.0, 0.0, 0.0, 0.5);
 	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
 	glUniform4fv(vColor, 1, &vec_color[0]);
-	glDrawArrays(GL_TRIANGLES, 0, vao_size[0]);
+	glPolygonMode(GL_FRONT, GL_FILL);
+	glPolygonMode(GL_BACK, GL_FILL);
+	glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
 
 	/*treenode * player_direc;
 	switch (direc) {

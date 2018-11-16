@@ -26,8 +26,21 @@ void Map::display() {
 	int direc = player.get_direction();
 	float e_x = pos.first, e_y = pos.second;
 	float c_x=0, c_y=0;
-	float s = 0.5;
-	float e = 0.01;
+	float s, e, z;
+	
+	switch (mode) {
+	case 0://3 person
+		s = 2;
+		e = 1;
+		z = 2.0f;
+		break;
+	case 1://1 person
+		s = 0.5;
+		e = -1;
+		z = 0.5f;
+		break;
+	}
+	
 	switch (direc) {
 	case direction::up:
 		c_y = s;
@@ -46,17 +59,16 @@ void Map::display() {
 		e_x -= e;
 		break;
 	}
-	int mode = 0;
+	
 	mat4 look_at;
 	printf(" camera_position : %lf %lf direction : %lf %lf \n", e_x, e_y, e_x + c_x, e_y + c_y);
 	if (mode == 1) {
-		s = 0.5, e = -1;
-		look_at = glm::lookAt(glm::vec3(e_x, e_y, 0.0f), glm::vec3(e_x + c_x, e_y + c_y, -0.1f), glm::vec3(0.0f, 0.0f, 1.0f));
+		look_at = glm::lookAt(glm::vec3(e_x, e_y, z), glm::vec3(e_x + c_x, e_y + c_y, 0.4f), glm::vec3(0.0f, 0.0f, 1.0f));
 	}
 	else {
-		look_at = glm::lookAt(glm::vec3(e_x, e_y, 0.5f), glm::vec3(e_x + c_x, e_y + c_y, -0.1f), glm::vec3(0.0f, 0.0f, 1.0f));
+		look_at = glm::lookAt(glm::vec3(e_x, e_y, z), glm::vec3(e_x + c_x, e_y + c_y, 0.4f), glm::vec3(0.0f, 0.0f, 1.0f));
 	}
-	mat4 perspec = glm::perspective(glm::radians(130.0f), 1.0f, 0.000000000001f, 5000.0f);
+	mat4 perspec = glm::perspective(glm::radians(80.0f), 1.0f, 0.000000000001f, 5000.0f);
 	per_look = perspec * look_at;
 
 	glClearColor(1.0, 1.0, 1.0, 1.0);
@@ -64,37 +76,43 @@ void Map::display() {
 	glColor3f(1, float(0.7137), float(0.7568));
 	glLineWidth(1);
 	glPointSize(1.0f);
-	glPolygonMode(GL_FRONT, GL_LINE);
-	glPolygonMode(GL_BACK, GL_LINE);
+	
 
 	for (int y = 0; y < map_size; y++) {
 		for (int x = 0; x < map_size; x++) { 
 			if (map_arr[y][x] == map_info::wall) {
+
+				glPolygonMode(GL_FRONT, GL_LINE);
+				glPolygonMode(GL_BACK, GL_LINE);
 				glBindVertexArray(vao[1]);
-				mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0));
+				mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0.5));
 				mat4 final_mat = per_look*trans;
 				vec4 vec_color = vec4(0.0, 0.0, 0.0, 1.0);
 				glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
 				glUniform4fv(vColor, 1, &vec_color[0]);
-				glDrawArrays(GL_TRIANGLES, 0, vao_size[0]);
-			}/*
+				glDrawArrays(GL_TRIANGLES, 0, vao_size[1]);
+			}
 			else if (map_arr[y][x] == map_info::item) {
+				glPolygonMode(GL_FRONT, GL_FILL);
+				glPolygonMode(GL_BACK, GL_FILL);
 				glBindVertexArray(vao[1]);
-
-				mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0));
-				mat4 final_mat = trans * ortho_mat;
-				vec4 vec_color = vec4(1.0, 0.0, 0.0, 1.0);
+				mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0.1));
+				mat4 scale = glm::scale(mat4(1.0), vec3(0.2, 0.2, 0.2));
+				mat4 final_mat = per_look * trans;
+				vec4 vec_color = vec4(1.0, 1.0, 0.0, 1.0);
 				glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
 				glUniform4fv(vColor, 1, &vec_color[0]);
-				glDrawArrays(GL_TRIANGLE_FAN, 0, 7);
-
-				glBindVertexArray(vao[0]);
-			}*/
+				glDrawArrays(GL_TRIANGLE_FAN, 0, vao_size[1]);
+			}
 		}
 	}
 
+
+	//enemy display
+	for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
+		it->display();
+	}
 	player.display();
-	
 	glutSwapBuffers();
 	return;
 
@@ -356,25 +374,25 @@ bool Map::update_enemies() {
 				new_pos = it->move_test(direction::right);
 				it->set_direction(direction::right);
 				it->move();
-				it->add_jump(3);
+				//it->add_jump(3);
 			}
 			else if (x < 0 && !check_wall(it->move_test(direction::left))) {
 				new_pos = it->move_test(direction::left);
 				it->set_direction(direction::left);
 				it->move();
-				it->add_jump(3);
+				//it->add_jump(3);
 			}
 			else if (y > 0 && !check_wall(it->move_test(direction::up))) {
 				new_pos = it->move_test(direction::up);
 				it->set_direction(direction::up);
 				it->move();
-				it->add_jump(3);
+				//it->add_jump(3);
 			}
 			else if (y < 0 && !check_wall(it->move_test(direction::down))) {
 				new_pos = it->move_test(direction::down);
 				it->set_direction(direction::down);
 				it->move();
-				it->add_jump(3);
+				//it->add_jump(3);
 			}
 			bool die = false;
 			for (vector<Bullet>::iterator bl = bull_vec.begin(); bl != bull_vec.end();bl++) {
@@ -397,7 +415,7 @@ bool Map::update_enemies() {
 			if (check_range(new_pos) == false) continue;
 			if (map_arr[new_pos.second][new_pos.first] == wall) continue;
 			if (it->get_jump() != 0) continue;
-			it->add_jump(3);
+			//it->add_jump(3);
 			it->set_direction(direction);
 			it->move();
 			bool die = false;

@@ -29,7 +29,7 @@ private:
 	bool win;
 	bool end;
 	int time_limit;
-		
+	int mode = 0;
 public:
 	Map();
 	bool get_end();

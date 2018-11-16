@@ -26,8 +26,5 @@ public:
 	bool get_gun() {
 		return gun;
 	}
-	static void image_setting() {
-		cout << "???" << endl;
-	}
 };
 
