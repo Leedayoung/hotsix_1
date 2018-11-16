@@ -1,4 +1,5 @@
 #pragma once
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -151,7 +152,6 @@ void init(void) {
 
 	glBindVertexArray(vao[0]);
 	glClearColor(1.0, 1.0, 0.0, 1.0);
-
 	make_player();
 	call_state = 0;
 	/*vec4 cube_points[8] = {
@@ -331,7 +331,7 @@ void reshape_first(int w, int h) {
 	glViewport(0, 0, w, h);
 	//gluOrtho2D(0, newmap.get_map_size(), 0, newmap.get_map_size());
 	//Control gluLookAt
-	//gluLookAt(100, 10, 0, 0, -100, -100, 0, -1, 0);
+	//gluLookAt(100, 10, 0, 0, -100, -100, 0, -1, -1);
 }
 void reshape_third(int w, int h) {
 	/*
@@ -362,7 +362,7 @@ void char_display() {
 	glBindVertexArray(vao[0]);*/
 }
 void display() {
-	newmap.display(program);
+	newmap.display();
 }
 void makedelay(int x)
 {
@@ -393,6 +393,27 @@ void player_move_func(int key, int x, int y) {
 	glutPostRedisplay();
 	glutTimerFunc(100, makedelay, 3);
 }
+
+void player_move_3d(unsigned char key, int x, int y) {
+	switch (key) {
+	case 'w':
+		newmap.valid_move_3d();
+		break;
+	case 'a':
+		newmap.rotate_3d(-1);
+		break;
+
+	case 'd':
+		newmap.rotate_3d(1);
+		break;
+	}
+	if (newmap.isEnd()) {
+		glutMouseFunc(NULL);
+		glutKeyboardFunc(restart);	
+		glutPostRedisplay();		
+	}
+}
+
 void bullet_make(unsigned char key, int x, int y) {
 	if (key == 32) newmap.create_bullet();
 	glutPostRedisplay();

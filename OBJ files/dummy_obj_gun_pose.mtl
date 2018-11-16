@@ -1,0 +1,236 @@
+#
+#
+#
+
+newmtl dummy_hips3 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_belly 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_belly dummy_torso 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_belly dummy_torso dummy_lshoulder 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_belly dummy_torso dummy_lshoulder dummy_larm 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_belly dummy_torso dummy_lshoulder dummy_larm dummy_lelbow 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_belly dummy_torso dummy_lshoulder dummy_larm dummy_lelbow dummy_lfarm 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_belly dummy_torso dummy_lshoulder dummy_larm dummy_lelbow dummy_lfarm dummy_lwrist 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_belly dummy_torso dummy_lshoulder dummy_larm dummy_lelbow dummy_lfarm dummy_lwrist dummy_lhand 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_belly dummy_torso dummy_neck 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_belly dummy_torso dummy_neck dummy_headq 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_belly dummy_torso dummy_rshoulder 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_belly dummy_torso dummy_rshoulder dummy_rarm 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_belly dummy_torso dummy_rshoulder dummy_rarm dummy_relbow 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_belly dummy_torso dummy_rshoulder dummy_rarm dummy_relbow dummy_rfarm 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_belly dummy_torso dummy_rshoulder dummy_rarm dummy_relbow dummy_rfarm dummy_rwrist 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_belly dummy_torso dummy_rshoulder dummy_rarm dummy_relbow dummy_rfarm dummy_rwrist dummy_rhand 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_lpelvis 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_lpelvis dummy_lupleg 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_lpelvis dummy_lupleg dummy_lknee 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_lpelvis dummy_lupleg dummy_lknee dummy_lleg 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_lpelvis dummy_lupleg dummy_lknee dummy_lleg dummy_lankle 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_lpelvis dummy_lupleg dummy_lknee dummy_lleg dummy_lankle dummy_lfoot 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_rpelvis 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_rpelvis dummy_rupleg 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_rpelvis dummy_rupleg dummy_rknee 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_rpelvis dummy_rupleg dummy_rknee dummy_rleg 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_rpelvis dummy_rupleg dummy_rknee dummy_rleg dummy_rankle 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
+newmtl dummy_hips3 dummy_rpelvis dummy_rupleg dummy_rknee dummy_rleg dummy_rankle dummy_rfoot 메시_blinn3SG
+illum 2
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ns 0.000000
+map_Kd dummy_red.jpg
+
