@@ -77,7 +77,7 @@ void init() {
 	load_obj_files("OBJ files/dummy_obj_walk_pose_1.obj", 0, P_1);
 	load_obj_files("OBJ files/dummy_obj_walk_pose_2.obj", 0, P_2);
 	load_obj_files("OBJ files/dummy_obj_walk_pose_3.obj", 0, P_3);
-	load_obj_files("OBJ files/dummy_obj_gun_pose.obj", 0, P_GUN);
+	load_obj_files("OBJ files/dummy_obj_gun.obj", 0, P_GUN);
 	
 	load_obj_files("OBJ files/Skeleton_pose0.obj", 0, E_0);
 	load_obj_files("OBJ files/Skeleton_pose1.obj", 0, E_1);
