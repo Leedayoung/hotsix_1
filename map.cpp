@@ -115,6 +115,7 @@ void Map::display() {
 	int NumPoints = 4;
 	//glm::lookAtRH(vec3(0, 0, 0), vec3(0, 0, 0), vec3(0, 0, 1));
 	//map_display
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	double wall_len = 1.0 / map_size;
 	for (int y = 0; y < map_size; y++) {
 		for (int x = 0; x < map_size; x++) {
@@ -465,7 +466,6 @@ void Map::valid_move(int dir) {
 }
 void Map::valid_move_3d() {
 	int dir = player.get_direction();
-	cout << dir;
 	pair<int, int> test_pos = player.move_test(dir);
 	if (player.get_jump() == 0 && check_range(test_pos) && map_arr[test_pos.second][test_pos.first] != wall) {
 		player.move();
