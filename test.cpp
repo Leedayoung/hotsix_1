@@ -8,6 +8,7 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <vector>
+#include <numeric>     
 #include <math.h>
 #include <cstdio>
 #include <string>
@@ -78,13 +79,28 @@ void init() {
 	glUseProgram(program);
 	ctmParam = glGetUniformLocation(program, "ctm");
 	vColor = glGetUniformLocation(program, "color");
+	
+	load_obj_files("OBJ files/dummy_obj_walk_pose_0.obj", 0, P_0);
+	load_obj_files("OBJ files/dummy_obj_walk_pose_1.obj", 0, P_1);
+	load_obj_files("OBJ files/dummy_obj_walk_pose_2.obj", 0, P_2);
+	load_obj_files("OBJ files/dummy_obj_walk_pose_3.obj", 0, P_3);
+	load_obj_files("OBJ files/dummy_obj_gun.obj", 2, P_GUN);
 
-	load_obj_files("OBJ files/cu.txt", 0, P_0);
+	load_obj_files("OBJ files/Skeleton_pose0.obj", 0, E_0);
+	load_obj_files("OBJ files/Skeleton_pose1.obj", 0, E_1);
+	load_obj_files("OBJ files/Skeleton_pose2.obj", 0, E_2);
+	load_obj_files("OBJ files/Skeleton_pose3.obj", 0, E_3);
+
+	load_obj_files("OBJ files/M1911.obj", 0, GUN);
+	load_obj_files("OBJ files/bullet.obj", 0, BULL);
+	load_obj_files("OBJ files/cu.txt", 0, WALL);
+	/*
+	load_obj_files("OBJ files/dummy_obj_gun.obj", 2, P_0);
 
 	load_obj_files("OBJ files/cu.txt", 0, P_1);
 	load_obj_files("OBJ files/cu.txt", 0, P_2);
 	load_obj_files("OBJ files/cu.txt", 0, P_3);
-	load_obj_files("OBJ files/cu.txt", 0, P_GUN);
+	load_obj_files("OBJ files/dummy_obj_gun.obj", 0, P_GUN);
 
 	load_obj_files("OBJ files/cu.txt", 0, E_0);
 	load_obj_files("OBJ files/cu.txt", 0, E_1);
@@ -92,12 +108,14 @@ void init() {
 	load_obj_files("OBJ files/cu.txt", 0, E_3);
 
 
+	load_obj_files("OBJ files/M1911.obj", 0, GUN);
 	load_obj_files("OBJ files/cu.txt", 0, BULL);
 	load_obj_files("OBJ files/cu.txt", 0, WALL);
 
+	*/
 
 	/*
-	load_obj_files("OBJ files/dummy_obj_walk_pose_0.obj", 0, P_0	);
+	load_obj_files("OBJ files/dummy_obj_walk_pose_0.obj", 0, P_0);
 	load_obj_files("OBJ files/dummy_obj_walk_pose_1.obj", 0, P_1);
 	load_obj_files("OBJ files/dummy_obj_walk_pose_2.obj", 0, P_2);
 	load_obj_files("OBJ files/dummy_obj_walk_pose_3.obj", 0, P_3);
@@ -178,6 +196,9 @@ vector < glm::vec4 > load_obj_files(string file_path,int type, int index) {
 		return vector<glm::vec4>();
 	}
 	int num = 0;
+	int m_num = 1;
+	bool hand_check = false;
+	vector<glm::vec3> rhand;
 	while (1) {
 
 		char lineHeader[128];
@@ -186,25 +207,41 @@ vector < glm::vec4 > load_obj_files(string file_path,int type, int index) {
 		if (res == EOF)
 			break; // EOF = End Of File. Quit the loop.
 		if (strcmp(lineHeader, "v") == 0) {
+			if (num == 1) {
+				m_num++;
+				num = 0;
+			}
 			glm::vec3 vertex;
 			fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
 			temp_vertices.push_back(vertex);
-
 		}
 		else if (strcmp(lineHeader, "f") == 0) {
 			if (num == 0) num = 1;
 			std::string vertex1, vertex2, vertex3;
 			unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
 			
-			if (type == 0) {
+			if (type == 0 || type ==2) {
 				int v3, t;
 				int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2],&v3,&t,&t);
 				if (matches == 9){
+					if ( type == 2 && m_num == 17) {
+						hand_loc = temp_vertices[vertexIndex[0] - 1];
+						rhand.push_back(temp_vertices[vertexIndex[0]-1]);
+						rhand.push_back(temp_vertices[vertexIndex[1]-1]);
+						rhand.push_back(temp_vertices[vertexIndex[2]-1]);
+					}
 					vertexIndices.push_back(vertexIndex[0]);
 					vertexIndices.push_back(vertexIndex[1]);
 					vertexIndices.push_back(vertexIndex[2]);
 				}
 				else if (matches == 12) {
+					if (type == 2 && m_num == 17) {
+						hand_loc = temp_vertices[vertexIndex[0] - 1];
+						rhand.push_back(temp_vertices[vertexIndex[0] - 1]);
+						rhand.push_back(temp_vertices[vertexIndex[1] - 1]);
+						rhand.push_back(temp_vertices[vertexIndex[2] - 1]);
+						rhand.push_back(temp_vertices[v3 - 1]);
+					}
 					vertexIndices.push_back(vertexIndex[0]);
 					vertexIndices.push_back(vertexIndex[1]);
 					vertexIndices.push_back(vertexIndex[2]);
@@ -240,6 +277,8 @@ vector < glm::vec4 > load_obj_files(string file_path,int type, int index) {
 			}
 		}
 	}
+	vec3 hand_loc = accumulate(rhand.begin(), rhand.end(), glm::vec3(0.0, 0.0, 0.0));
+	hand_loc = vec3(hand_loc.x / rhand.size(), hand_loc.y / rhand.size(), hand_loc.z / rhand.size());
 	std::vector < glm::vec4 > out_vertices;
 	for (unsigned int i = 0; i < vertexIndices.size(); i++) {
 		unsigned int vertexIndex = vertexIndices[i];

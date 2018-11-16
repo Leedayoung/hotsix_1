@@ -13,6 +13,7 @@ GLuint loc;
 mat4 per_look;
 mat4 look_at;
 mat4 perspec;
+vec3 hand_loc;
 treenode * player_down;
 treenode * player_up;
 treenode * player_left;

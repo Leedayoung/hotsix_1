@@ -16,13 +16,14 @@ extern GLint ctmParam;
 extern glm::mat4 ortho_mat;
 extern GLint vColor;
 extern mat4 model_view;
-extern 	GLuint buffer[2];
+extern	GLuint buffer[2];
 extern GLuint vao[v_size];
 extern int vao_size[v_size];
 extern GLuint loc;
 extern mat4 per_look;
 extern mat4 look_at;
 extern mat4 perspec;
+extern vec3 hand_loc;
 #define P_0 0
 #define P_1 1
 #define P_2 2
@@ -33,6 +34,7 @@ extern mat4 perspec;
 #define E_2 6
 #define E_3 7
 
+#define GUN v_size-4
 #define P_GUN v_size-3
 #define RECT 8
 #define HEART 9
