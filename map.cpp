@@ -27,7 +27,7 @@ void Map::display() {
 	float e_x = pos.first, e_y = pos.second;
 	float c_x=0, c_y=0;
 	float s = 0.5;
-	float e = 5;
+	float e = 0.01;
 	switch (direc) {
 	case direction::up:
 		c_y = s;
@@ -46,8 +46,16 @@ void Map::display() {
 		e_x -= e;
 		break;
 	}
+	int mode = 0;
+	mat4 look_at;
 	printf(" camera_position : %lf %lf direction : %lf %lf \n", e_x, e_y, e_x + c_x, e_y + c_y);
-	mat4 look_at = glm::lookAt(glm::vec3(e_x, e_y, 2.0f), glm::vec3(e_x + c_x, e_y + c_y, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	if (mode == 1) {
+		s = 0.5, e = -1;
+		look_at = glm::lookAt(glm::vec3(e_x, e_y, 0.0f), glm::vec3(e_x + c_x, e_y + c_y, -0.1f), glm::vec3(0.0f, 0.0f, 1.0f));
+	}
+	else {
+		look_at = glm::lookAt(glm::vec3(e_x, e_y, 0.5f), glm::vec3(e_x + c_x, e_y + c_y, -0.1f), glm::vec3(0.0f, 0.0f, 1.0f));
+	}
 	mat4 perspec = glm::perspective(glm::radians(130.0f), 1.0f, 0.000000000001f, 5000.0f);
 	per_look = perspec * look_at;
 
