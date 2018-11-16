@@ -59,4 +59,5 @@ public:
 	bool get_item(pair<int, int> current);
 	bool isEnd();
 	bool get_win();
+	void change_mode();
 };
