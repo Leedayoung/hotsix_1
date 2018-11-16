@@ -57,7 +57,6 @@ void Player::display() {
 	mat4 scale = glm::scale(glm::mat4(1.0), vec3(0.01f, 0.01f, 0.01f));
 	mat4 y_z = mat4(vec4(1.0, 0.0, 0.0, 0.0), vec4(0.0, 0.0, 1.0, 0.0), vec4(0.0, 1.0, 0.0, 0.0), vec4(0.0, 0.0, 0.0, 1.0));
 	mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(pos_x, pos_y, 0));
-	//mat4 scale = glm::scale(glm::mat4(1.0), vec3(1.0f, 0.01f, 1.0f));
 	mat4 rot = glm::rotate(glm::mat4(1.0), 3.14f, vec3(0.0, 0.0, 1.0)) * glm::rotate(glm::mat4(1.0), 1.57f*mul, vec3(0.0, 0.0, 1.0));
 	mat4 final_mat = per_look * trans*rot* y_z *scale;// *rot * scale;
 	vec4 vec_color = vec4(1.0, 0.0, 0.0, 0.5);
@@ -77,7 +76,6 @@ void Player::display() {
 		glDrawArrays(GL_TRIANGLES, 0, vao_size[g_index]);
 		index = P_GUN;
 	}
-	//final_mat *= scale;
 	glBindVertexArray(vao[index]);
 	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
 	glUniform4fv(vColor, 1, &vec_color[0]);
@@ -89,41 +87,6 @@ void Player::display() {
 		jump--;
 		this->move();
 	}
-
-	/*treenode * player_direc;
-	switch (direc) {
-	case direction::down:
-		player_direc = player_down;
-		break;
-	case direction::up:
-		player_direc = player_up;
-		break;
-	case direction::left:
-	case direction::right:
-		player_direc = player_left;
-		break;
-	default:
-		player_direc = player_down;
-		break;
-	}
-	if (direc == direction::right)
-		model_view = ortho_mat * glm::translate(mat4(1.0), glm::vec3(pos_x + 1.5, pos_y, 0))* scale(glm::mat4(1.0), vec3(-2, 2, 0));
-	else
-		model_view = ortho_mat * glm::translate(mat4(1.0), glm::vec3(pos_x-0.5, pos_y, 0))*scale(glm::mat4(1.0), vec3(2, 2, 0));
-	if (gun == true) {
-		gun = false;
-		traverse(player_direc, 4);
-	}
-	else if (jump != 0) {
-		traverse(player_direc, jump);
-		jump--;
-		this->move();
-	}
-	else {
-		traverse(player_direc, 0);
-	}
-
-	*/
 }
 int Player::get_life() {
 	return life;

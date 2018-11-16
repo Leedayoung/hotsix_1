@@ -44,10 +44,8 @@ void Bullet::display() {
 	}
 	int index = BULL;
 	glBindVertexArray(vao[index]);
-	//mat4 scale = glm::scale(glm::mat4(1.0), vec3(0.1f, 0.05f, 0.1f));
 	mat4 y_z = mat4(vec4(1.0, 0.0, 0.0, 0.0), vec4(0.0, 0.0, 1.0, 0.0), vec4(0.0, 1.0, 0.0, 0.0), vec4(0.0, 0.0, 0.0, 1.0));
 	mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(pos_x, pos_y, 0.0));
-	//mat4 scale = glm::scale(glm::mat4(1.0), vec3(1.0f, 0.01f, 1.0f));
 	mat4 rot = glm::rotate(glm::mat4(1.0), 1.57f*mul, vec3(0.0, 0.0, 1.0));
 	mat4 final_mat = per_look * trans*rot * y_z;//  * y_z * scale;// *rot * scale;
 	vec4 vec_color = BULLET_COLOR;
