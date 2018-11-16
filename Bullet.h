@@ -8,7 +8,7 @@ private:
 	int length;
 public:
 	Bullet(float _pos_x, float _pos_y, int _direction, int _length);
-	pair<int, int> move_test();
+	pair<float, float> move_test();
 	pair<int, int> move_test2();
 	bool move();
 	void display();

@@ -33,13 +33,10 @@ public:
 		jump += _jump;
 	}
 	int get_jump() {
-		return 0;
-		
 		return jump;
-		
 	}
 	pair<float, float> get_position();
-	pair<int, int> move_test(int direc);
+	pair<float, float> move_test(int direc);
 	pair<int, int> move_test2(int direc);
 	void move(int direc);
 	void display(int x1, int y1, int x2, int y2);

@@ -61,7 +61,6 @@ void Map::display() {
 	}
 	
 	mat4 look_at;
-	printf(" camera_position : %lf %lf direction : %lf %lf \n", e_x, e_y, e_x + c_x, e_y + c_y);
 	if (mode == 1) {
 		look_at = glm::lookAt(glm::vec3(e_x, e_y, z), glm::vec3(e_x + c_x, e_y + c_y, 0.4f), glm::vec3(0.0f, 0.0f, 1.0f));
 	}
@@ -505,9 +504,10 @@ void Map::valid_move(int dir) {
 	}
 }
 void Map::valid_move_3d() {
+	if (player.get_jump() != 0) return;
 	int dir = player.get_direction();
-	pair<int, int> test_pos = player.move_test(dir);
-	if (player.get_jump() == 0 && check_range(test_pos) && map_arr[test_pos.second][test_pos.first] != wall) {
+	pair<float, float> test_pos = player.move_test(dir);
+	if (check_range(test_pos) && map_arr[(int)test_pos.second][(int)test_pos.first] != wall) {
 		player.move();
 		get_item(test_pos);
 		player.add_jump(3);
@@ -516,9 +516,6 @@ void Map::valid_move_3d() {
 				player.die();
 			}
 		}
-	}
-	else {
-		printf("False move\n");
 	}
 }
 void Map::rotate_3d(int dir) {

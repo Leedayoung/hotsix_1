@@ -32,7 +32,7 @@ pair<float, float> Entity::get_position() {
 	}
 	return make_pair(-1, -1);
 }
-pair<int, int> Entity::move_test(int direc) {
+pair<float, float> Entity::move_test(int direc) {
 	switch (direc) {
 	case direction::up:
 		return make_pair(pos_x, pos_y + 1);

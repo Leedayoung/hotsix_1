@@ -13,7 +13,7 @@ Bullet::Bullet(float _pos_x, float _pos_y, int _direction, int _length) {
 	move();
 	length = _length + 1;
 }
-pair<int, int> Bullet::move_test() {
+pair<float, float> Bullet::move_test() {
 	return Entity::move_test(direc);
 }
 pair<int, int> Bullet::move_test2() {
