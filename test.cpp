@@ -80,6 +80,8 @@ void init() {
 	ctmParam = glGetUniformLocation(program, "ctm");
 	vColor = glGetUniformLocation(program, "color");
 	
+	
+	//load_obj_files("OBJ files/cu.txt", 0, WALL);
 	load_obj_files("OBJ files/dummy_obj_walk_pose_0.obj", 0, P_0);
 	load_obj_files("OBJ files/dummy_obj_walk_pose_1.obj", 0, P_1);
 	load_obj_files("OBJ files/dummy_obj_walk_pose_2.obj", 0, P_2);
@@ -94,48 +96,13 @@ void init() {
 	load_obj_files("OBJ files/M1911.obj", 0, GUN);
 	load_obj_files("OBJ files/bullet.obj", 0, BULL);
 	load_obj_files("OBJ files/cu.txt", 0, WALL);
-	/*
-	load_obj_files("OBJ files/dummy_obj_gun.obj", 2, P_0);
-
-	load_obj_files("OBJ files/cu.txt", 0, P_1);
-	load_obj_files("OBJ files/cu.txt", 0, P_2);
-	load_obj_files("OBJ files/cu.txt", 0, P_3);
-	load_obj_files("OBJ files/dummy_obj_gun.obj", 0, P_GUN);
-
-	load_obj_files("OBJ files/cu.txt", 0, E_0);
-	load_obj_files("OBJ files/cu.txt", 0, E_1);
-	load_obj_files("OBJ files/cu.txt", 0, E_2);
-	load_obj_files("OBJ files/cu.txt", 0, E_3);
-
-
-	load_obj_files("OBJ files/M1911.obj", 0, GUN);
-	load_obj_files("OBJ files/cu.txt", 0, BULL);
-	load_obj_files("OBJ files/cu.txt", 0, WALL);
-
-	*/
-
-	/*
-	load_obj_files("OBJ files/dummy_obj_walk_pose_0.obj", 0, P_0);
-	load_obj_files("OBJ files/dummy_obj_walk_pose_1.obj", 0, P_1);
-	load_obj_files("OBJ files/dummy_obj_walk_pose_2.obj", 0, P_2);
-	load_obj_files("OBJ files/dummy_obj_walk_pose_3.obj", 0, P_3);
-	load_obj_files("OBJ files/dummy_obj_gun.obj", 0, P_GUN);
-	
-	load_obj_files("OBJ files/Skeleton_pose0.obj", 0, E_0);
-	load_obj_files("OBJ files/Skeleton_pose1.obj", 0, E_1);
-	load_obj_files("OBJ files/Skeleton_pose2.obj", 0, E_2);
-	load_obj_files("OBJ files/Skeleton_pose3.obj", 0, E_3);
-
-	
-	load_obj_files("OBJ files/bullet.obj", 0, BULL);
-	load_obj_files("OBJ files/cu.txt", 0, WALL);
-	*/
 
 	glGenVertexArrays(1, &vao[RECT]);
 	glBindVertexArray(vao[RECT]);
 	GLuint buffer;
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	vao_size[RECT] = 4;
 	glBufferData(GL_ARRAY_BUFFER, sizeof(rect), rect, GL_STATIC_DRAW);
 	GLuint loc = glGetAttribLocation(program, "vPosition");
 	glEnableVertexAttribArray(loc);
@@ -143,7 +110,7 @@ void init() {
 
 	glGenVertexArrays(1, &vao[HEART]);
 	glBindVertexArray(vao[HEART]);
-	buffer;
+	vao_size[HEART] = 6;
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(heart), heart, GL_STATIC_DRAW);

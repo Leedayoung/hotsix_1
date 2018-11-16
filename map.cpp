@@ -118,102 +118,57 @@ void Map::display() {
 	}
 	player.display();
 
-	glutSwapBuffers();
-	return;
-
-
-
-	//dummy
-	/*pair<int, int> pos = player.get_position();
-	int x = pos.first, y = pos.second;
-	x -= view_size;
-	y -= view_size;
-	if (x < 0) x = 0;
-	if (y < 0) y = 0;
-	if (x + 2 * view_size > map_size) x = map_size - 2 * view_size;
-	if (y + 2 * view_size > map_size) y = map_size - 2 * view_size;
 	
-	glm::mat4 View = glm::lookAt(
-		glm::vec3((float)0, (float)0, -0.0), // 카메라는 (4,3,3) 에 있다. 월드 좌표에서
-		glm::vec3((float)70.0, (float)70, -0.0), // 그리고 카메라가 원점을 본다
-		glm::vec3(0, 0.0f, 1.0)  // 머리가 위쪽이다 (0,-1,0 으로 해보면, 뒤집어 볼것이다)
-	);
-	glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.01f, 10.0f);
-	ortho_mat = Projection*View;// * Projection;// *Projection;
-	//ortho_mat = glm::ortho((float)x, (float)x + 2 * view_size, (float)y, (float)y + 2 * view_size);
-	glClearColor(1.0, 1.0, 1.0, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT);
-	int NumPoints = 4;
-	//glm::lookAtRH(vec3(0, 0, 0), vec3(0, 0, 0), vec3(0, 0, 1));
-	//map_display
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	double wall_len = 1.0 / map_size;
-	for (int y = 0; y < map_size; y++) {
-		for (int x = 0; x < map_size; x++) {
-			if (map_arr[y][x] == map_info::wall) {
-				glBindVertexArray(vao[3]);
-
-				mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0));
-				mat4 final_mat = trans*ortho_mat;
-				vec4 vec_color = vec4(0.0, 0.0, 0.0, 1.0);
-				glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
-				glUniform4fv(vColor, 1, &vec_color[0]);
-				glDrawArrays(GL_TRIANGLE_FAN, 0, 8);
-				glBindVertexArray(vao[0]);
-			}
-			else if (map_arr[y][x] == map_info::item) {
-				glBindVertexArray(vao[1]);
-
-				mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0));
-				mat4 final_mat = trans*ortho_mat;
-				 vec4 vec_color = vec4(1.0, 0.0, 0.0, 1.0);
-				glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
-				glUniform4fv(vColor, 1, &vec_color[0]);
-				glDrawArrays(GL_TRIANGLE_FAN, 0, 7);
-				
-				glBindVertexArray(vao[0]);
-			}
-		}
-	}
-	player.display();
 	
-	//enemy display
-	for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
-		it->display();
-	}
-
-	//display bullet
-	for (vector<Bullet>::iterator it = bull_vec.begin(); it != bull_vec.end(); it++) {
-		it->display();
-	}
-
-	int item_size = view_size / 8;
-	int item_num = player.get_num_i();
-	//string s = " item";
-	glColor3f(1.0, 1.0, 0.0);
-	int display_num = 5;
-	//int display_num = item_num > 3 ? item_num : 3;
-	//display_num = display_num * 1 + 1;
+	index = RECT;
+	glBindVertexArray(vao[index]);
 	mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(0.5, -1, 0));
 	mat4 scale_mat = glm::scale(glm::mat4(1.0), glm::vec3(0.5, 0.1, 0));
 	mat4 final_mat = trans * scale_mat;
 	vec4 vec_color = vec4(1.0, 1.0, 0.0, 1.0);
 	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
 	glUniform4fv(vColor, 1, &vec_color[0]);
-	glDrawArrays(GL_TRIANGLE_FAN, 0, NumPoints);
-	//draw item
-	glBindVertexArray(vao[1]);
+	glDrawArrays(GL_TRIANGLE_FAN, 0, vao_size[index]);
+
+	index = HEART;
+	glBindVertexArray(vao[index]);
 	for (int i = 0; i < player.get_life(); i++) {
-		mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(0.5 + 0.1*i +0.01, -1, 0));
+		mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(0.5 + 0.1*i + 0.01, -1, 0));
 		mat4 scale_mat = glm::scale(glm::mat4(1.0), glm::vec3(0.09, 0.09, 0));
 		mat4 final_mat = trans * scale_mat;
 		vec4 vec_color = vec4(1.0, 0.0, 0.0, 1.0);
 		glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
 		glUniform4fv(vColor, 1, &vec_color[0]);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, vao_size[index]);
 	}
-	glBindVertexArray(vao[0]);
 
+	int second = time_limit % 60;
+	int minute = time_limit / 60;
+	int sec2 = second / 10;
+	int sec1 = second % 10;
+	int min2 = minute / 10;
+	int min1 = minute % 10;
+	draw_seven_seg(sec1, 0);
+	draw_seven_seg(sec2, 1);
+	draw_seven_seg(min1, 2);
+	draw_seven_seg(min2, 3);
+	draw_seven_seg(-1, -1);
+
+	string msg;
+	if (end) {
+		string end_msg = "PRESS R TO RESTART";
+		if (win) msg = "YOU WIN";
+		else msg = "YOU LOSE";
+		draw_string(msg, -0.30, 0.5);
+		draw_string(end_msg, -0.75, 0.3);
+	}
+	glFlush();
+	glutSwapBuffers();
+
+	return;
+	//dummy
+	/*
+	
 	//display time
 	int second = time_limit % 60;
 	int minute = time_limit / 60;

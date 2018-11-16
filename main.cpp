@@ -60,7 +60,7 @@ int main(int argc, char **argv) {
 
 	glutReshapeFunc(reshape_first);
 	glutDisplayFunc(display);
-	glutSpecialFunc(player_move_func);
+	//glutSpecialFunc(player_move_func);
 	glutKeyboardFunc(player_move_3d);
 	glutMouseFunc(mouse_bullet);
 	//glutKeyboardFunc(bullet_make);

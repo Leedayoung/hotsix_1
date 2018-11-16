@@ -24,6 +24,25 @@ extern mat4 per_look;
 extern mat4 look_at;
 extern mat4 perspec;
 extern vec3 hand_loc;
+
+/*#define P_0 v_size-1
+#define P_1 v_size-1
+#define P_2 v_size-1
+#define P_3 v_size-1
+
+#define E_0 v_size-1
+#define E_1 v_size-1
+#define E_2 v_size-1
+#define E_3 v_size-1
+
+#define GUN v_size-1
+#define P_GUN v_size-1
+#define RECT 7
+#define HEART 8
+#define BULL v_size-1
+#define WALL v_size-1
+#define ITEM v_size-1
+*/
 #define P_0 0
 #define P_1 1
 #define P_2 2
@@ -41,6 +60,7 @@ extern vec3 hand_loc;
 #define BULL v_size-2
 #define WALL v_size-1
 #define ITEM v_size-1
+
 
 class treenode {
 public:

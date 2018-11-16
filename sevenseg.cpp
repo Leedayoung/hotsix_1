@@ -12,6 +12,7 @@ double height = 0.03;
 double gap = 0.06;
 
 void draw_seven_seg(int num, int pos) {
+	glBindVertexArray(vao[RECT]);
 	mat4 trans_mtx_base;
 	scale_mtx_row = glm::scale(glm::mat4(1.0), glm::vec3(height, width, 0.0));
 	scale_mtx_col = glm::scale(glm::mat4(1.0), glm::vec3(width, height, 0.0));
