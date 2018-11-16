@@ -40,6 +40,7 @@ void Player::move() {
 
 void Player::display() {
 	int index = (4-jump)%4;
+	if (gun == true) index = P_GUN;
 
 	glBindVertexArray(vao[index]);
 	float mul;
