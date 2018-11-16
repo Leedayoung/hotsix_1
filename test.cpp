@@ -34,6 +34,7 @@ void init();
 void player_move_3d(unsigned char key, int x, int y);
 static char* readShaderSource(const char* shaderFile);
 GLuint InitShader(const char* vShaderFile, const char* fShaderFile);
+void move_enemies(int v);
 Map newmap;
 
 
@@ -53,6 +54,7 @@ int main(int argc, char **argv) {
 	glutReshapeFunc(reshape);
 	glutDisplayFunc(display);
 	glutKeyboardFunc(player_move_3d);
+	glutTimerFunc(1000, move_enemies, 1);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 	glutMainLoop();
 	return 0;
@@ -64,32 +66,9 @@ void init() {
 	ctmParam = glGetUniformLocation(program, "ctm");
 	vColor = glGetUniformLocation(program, "color");
 
-	glGenVertexArrays(1, &vao[0]);
-	glBindVertexArray(vao[0]);
-	GLuint buffer;
-
-	glGenBuffers(1, &buffer);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	vector<vec4> out_vertices = load_obj_files("OBJ files/dummy_obj.obj", 0, 0);
-	glBufferData(GL_ARRAY_BUFFER, out_vertices.size() * sizeof(vec4), &out_vertices[0], GL_STATIC_DRAW);
-	vao_size[0] = out_vertices.size();
-	GLuint loc = glGetAttribLocation(program, "vPosition");
-	glEnableVertexAttribArray(loc);
-	glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-
-	
-	
-	glGenVertexArrays(1, &vao[1]);
-	glBindVertexArray(vao[1]);
-	out_vertices = load_obj_files("OBJ files/cu.txt", 0, 1);
-	glGenBuffers(1, &buffer);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	glBufferData(GL_ARRAY_BUFFER, out_vertices.size() * sizeof(vec4), &out_vertices[0], GL_STATIC_DRAW);
-	vao_size[1] = out_vertices.size();
-	loc = glGetAttribLocation(program, "vPosition");
-	glEnableVertexAttribArray(loc);
-	glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-
+	load_obj_files("OBJ files/dummy_obj.obj", 0, 0);
+	load_obj_files("OBJ files/cu.txt", 0, 1);
+	load_obj_files("OBJ files/Skeleton.obj", 1, 2);
 }
 void reshape(int w, int h)
 {
@@ -154,14 +133,26 @@ vector < glm::vec4 > load_obj_files(string file_path,int type, int index) {
 			unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
 			
 			if (type == 0) {
-				int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
-				if (matches != 9) {
+				int v3, t;
+				int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2],&v3,&t,&t);
+				if (matches == 9){
+					vertexIndices.push_back(vertexIndex[0]);
+					vertexIndices.push_back(vertexIndex[1]);
+					vertexIndices.push_back(vertexIndex[2]);
+				}
+				else if (matches == 12) {
+					vertexIndices.push_back(vertexIndex[0]);
+					vertexIndices.push_back(vertexIndex[1]);
+					vertexIndices.push_back(vertexIndex[2]);
+
+					vertexIndices.push_back(vertexIndex[1]);
+					vertexIndices.push_back(vertexIndex[2]);
+					vertexIndices.push_back(v3);
+				}else{
 					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
 					return vector<glm::vec4>();
 				}
-				vertexIndices.push_back(vertexIndex[0]);
-				vertexIndices.push_back(vertexIndex[1]);
-				vertexIndices.push_back(vertexIndex[2]);
+				
 			}
 			else {
 				int v1, v2, v3, v4;
@@ -193,6 +184,17 @@ vector < glm::vec4 > load_obj_files(string file_path,int type, int index) {
 		out_vertices.push_back(vertex);
 	}
 	
+	
+	glGenVertexArrays(1, &vao[index]);
+	glBindVertexArray(vao[index]);
+	GLuint buffer;
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, out_vertices.size() * sizeof(vec4), &out_vertices[0], GL_STATIC_DRAW);
+	vao_size[index] = out_vertices.size();
+	GLuint loc = glGetAttribLocation(program, "vPosition");
+	glEnableVertexAttribArray(loc);
+	glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 	
 	return out_vertices;
 }
@@ -299,4 +301,18 @@ void player_move_3d(unsigned char key, int x, int y) {
 	}
 	glutPostRedisplay();
 	//glutTimerFunc(100, makedelay, 3);
+}
+void move_enemies(int v) {
+	newmap.update_enemies();
+	newmap.timer();
+	if (newmap.get_end()) {
+		//glutSpecialFunc(NULL);
+		glutMouseFunc(NULL);
+		//glutKeyboardFunc(restart);
+		glutPostRedisplay();
+		return;
+	}
+	glutPostRedisplay();
+	glutTimerFunc(1000, move_enemies, 1);
+	return;
 }
