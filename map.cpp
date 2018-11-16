@@ -274,6 +274,10 @@ void Map::wall_maker() {
 		}
 	}
 }
+void Map::change_mode() {
+	mode++;
+	mode = mode % 2;
+}
 void Map::world_init() {
 	map_arr = new int*[map_size];
 	for (int i = 0; i < map_size; ++i)

@@ -37,6 +37,9 @@ GLuint InitShader(const char* vShaderFile, const char* fShaderFile);
 void move_enemies(int v);
 void makedelay(int x);
 Map newmap;
+void mouse_bullet(int button, int state, int x, int y);
+void move_bullets(int v);
+void restart(unsigned char key, int x, int y);
 
 
 int main(int argc, char **argv) {
@@ -55,7 +58,9 @@ int main(int argc, char **argv) {
 	glutReshapeFunc(reshape);
 	glutDisplayFunc(display);
 	glutKeyboardFunc(player_move_3d);
+	glutMouseFunc(mouse_bullet);
 	glutTimerFunc(1000, move_enemies, 1);
+	glutTimerFunc(147, move_bullets, 1);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 	glutMainLoop();
 	return 0;
@@ -305,10 +310,12 @@ void player_move_3d(unsigned char key, int x, int y) {
 	case 'd':
 		newmap.rotate_3d(1);
 		break;
+	case ' ':
+		newmap.change_mode();
 	}
 	if (newmap.isEnd()) {
 		glutMouseFunc(NULL);
-		//glutKeyboardFunc(restart);
+		glutKeyboardFunc(restart);
 		glutPostRedisplay();
 	}
 	glutPostRedisplay();
@@ -320,11 +327,36 @@ void move_enemies(int v) {
 	if (newmap.get_end()) {
 		//glutSpecialFunc(NULL);
 		glutMouseFunc(NULL);
-		//glutKeyboardFunc(restart);
+		glutKeyboardFunc(restart);
 		glutPostRedisplay();
 		return;
 	}
 	glutPostRedisplay();
 	glutTimerFunc(1000, move_enemies, 1);
 	return;
+}
+void mouse_bullet(int button, int state, int x, int y) {
+	if (state == GLUT_DOWN) {
+		if (button == GLUT_LEFT_BUTTON) {
+			newmap.create_bullet();
+			glutPostRedisplay();
+		}
+	}
+}
+void move_bullets(int v) {
+	if (newmap.get_end())
+		return;
+	newmap.update_bullets();
+	glutPostRedisplay();
+	glutTimerFunc(147, move_bullets, 1);
+	return;
+}
+void restart(unsigned char key, int x, int y) {
+	if (key == 'r' || key == 'R') {
+		newmap = Map();
+		glutMouseFunc(mouse_bullet);
+		glutKeyboardFunc(player_move_3d);
+		glutTimerFunc(150, move_bullets, 1);
+		glutTimerFunc(1000, move_enemies, 1);
+	}
 }
