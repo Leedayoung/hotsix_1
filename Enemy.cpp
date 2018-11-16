@@ -28,16 +28,16 @@ void Enemy::display() {
 	float mul;
 	switch (direc) {
 	case direction::up:
-		mul = 2;
-		break;
-	case direction::down:
 		mul = 0;
 		break;
+	case direction::down:
+		mul = 2;
+		break;
 	case direction::left:
-		mul = 3;
+		mul = 1;
 		break;
 	case direction::right:
-		mul = 1;
+		mul = 3;
 		break;
 	}
 	mat4 scale = glm::scale(glm::mat4(1.0), vec3(0.1f, 0.05f, 0.1f));
