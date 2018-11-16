@@ -28,6 +28,7 @@ public:
 	int get_direction();
 	float get_x();
 	float get_y();
+	pair<float, float> get_jump_position();
 	void add_jump(int _jump) {
 		jump += _jump;
 	}

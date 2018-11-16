@@ -7,8 +7,8 @@ GLint ctmParam;
 glm::mat4 ortho_mat;
 GLint vColor;
 GLuint buffer[2];
-GLuint vao[3];
-int vao_size[3];
+GLuint vao[v_size];
+int vao_size[v_size];
 GLuint loc;
 mat4 per_look;
 mat4 look_at;
@@ -20,6 +20,7 @@ treenode * player_left;
 treenode * enemy_down;
 treenode * enemy_up;
 treenode * enemy_left;
+
 
 
 void make_character_up_down(treenode * player,bool set_color) {

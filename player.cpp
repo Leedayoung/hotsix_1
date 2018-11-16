@@ -20,7 +20,7 @@ void Player::add_num_i() {
 	num_i++;
 }
 void Player::move() {
-	float s = 1;
+	float s = 0.25;
 	switch (direc) {
 	case direction::up:
 		pos_y += s;
@@ -39,7 +39,8 @@ void Player::move() {
 }
 
 void Player::display() {
-	int index = 0;
+	int index = (4-jump)%4;
+
 	glBindVertexArray(vao[index]);
 	float mul;
 	switch (direc) {
@@ -68,6 +69,11 @@ void Player::display() {
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_FILL);
 	glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
+
+	if (jump != 0) {
+		jump--;
+		this->move();
+	}
 
 	/*treenode * player_direc;
 	switch (direc) {

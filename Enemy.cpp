@@ -23,7 +23,7 @@ bool Enemy::check_chase(pair<int, int> player_pos) {
 }
 void Enemy::display() {
 
-	int index = 2;
+	int index = 7;
 	glBindVertexArray(vao[index]);
 	float mul;
 	switch (direc) {

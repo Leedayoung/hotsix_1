@@ -35,6 +35,7 @@ void player_move_3d(unsigned char key, int x, int y);
 static char* readShaderSource(const char* shaderFile);
 GLuint InitShader(const char* vShaderFile, const char* fShaderFile);
 void move_enemies(int v);
+void makedelay(int x);
 Map newmap;
 
 
@@ -66,9 +67,14 @@ void init() {
 	ctmParam = glGetUniformLocation(program, "ctm");
 	vColor = glGetUniformLocation(program, "color");
 
-	load_obj_files("OBJ files/dummy_obj.obj", 0, 0);
-	load_obj_files("OBJ files/cu.txt", 0, 1);
-	load_obj_files("OBJ files/Skeleton.obj", 1, 2);
+	load_obj_files("OBJ files/dummy_obj_walk_pose_0.obj", 0, P_0);
+	load_obj_files("OBJ files/dummy_obj_walk_pose_1.obj", 0, P_1);
+	load_obj_files("OBJ files/dummy_obj_walk_pose_2.obj", 0, P_2);
+	load_obj_files("OBJ files/dummy_obj_walk_pose_3.obj", 0, P_3);
+
+
+	load_obj_files("OBJ files/cu.txt", 0, WALL);
+	load_obj_files("OBJ files/Skeleton.obj", 1, 7);
 }
 void reshape(int w, int h)
 {
@@ -282,6 +288,12 @@ GLuint InitShader(const char* vShaderFile, const char* fShaderFile)
 	glUseProgram(program);
 	return program;
 }
+void makedelay(int x)
+{
+	if (x == 0) return;
+	glutPostRedisplay();
+	glutTimerFunc(100, makedelay, x - 1);
+}
 void player_move_3d(unsigned char key, int x, int y) {
 	switch (key) {
 	case 'w':
@@ -300,7 +312,7 @@ void player_move_3d(unsigned char key, int x, int y) {
 		glutPostRedisplay();
 	}
 	glutPostRedisplay();
-	//glutTimerFunc(100, makedelay, 3);
+	glutTimerFunc(100, makedelay, 3);
 }
 void move_enemies(int v) {
 	newmap.update_enemies();

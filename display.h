@@ -10,19 +10,26 @@
 #include <glm/vec4.hpp>
 #include <glm/gtc/type_ptr.hpp>
 using namespace glm;
-
+#define v_size 10
 extern GLuint program;
 extern GLint ctmParam;
 extern glm::mat4 ortho_mat;
 extern GLint vColor;
 extern mat4 model_view;
 extern 	GLuint buffer[2];
-extern GLuint vao[3];
-extern int vao_size[3];
+extern GLuint vao[v_size];
+extern int vao_size[v_size];
 extern GLuint loc;
 extern mat4 per_look;
 extern mat4 look_at;
 extern mat4 perspec;
+#define P_0 0
+#define P_1 1
+#define P_2 2
+#define P_3 3
+
+#define WALL v_size-1
+#define ITEM v_size-1
 
 class treenode {
 public:

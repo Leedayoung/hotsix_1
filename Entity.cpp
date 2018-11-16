@@ -16,6 +16,9 @@ float Entity::get_x() {
 float Entity::get_y() {
 	return pos_y;
 }
+pair<float, float> Entity::get_jump_position() {
+	return make_pair(pos_x, pos_y);
+}
 pair<float, float> Entity::get_position() {
 	switch (direc) {
 	case direction::up:

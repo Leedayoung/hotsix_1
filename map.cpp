@@ -22,7 +22,7 @@
 using namespace std;
 using namespace glm;
 void Map::display() {
-	pair<float, float> pos = player.get_position();
+	pair<float, float> pos = player.get_jump_position();
 	int direc = player.get_direction();
 	float e_x = pos.first, e_y = pos.second;
 	float c_x=0, c_y=0;
@@ -77,32 +77,33 @@ void Map::display() {
 	glLineWidth(1);
 	glPointSize(1.0f);
 	
-
+	int index = 0;
 	for (int y = 0; y < map_size; y++) {
 		for (int x = 0; x < map_size; x++) { 
 			if (map_arr[y][x] == map_info::wall) {
-
+				index = WALL;
 				glPolygonMode(GL_FRONT, GL_LINE);
 				glPolygonMode(GL_BACK, GL_LINE);
-				glBindVertexArray(vao[1]);
+				glBindVertexArray(vao[index]);
 				mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0.5));
 				mat4 final_mat = per_look*trans;
 				vec4 vec_color = vec4(0.0, 0.0, 0.0, 1.0);
 				glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
 				glUniform4fv(vColor, 1, &vec_color[0]);
-				glDrawArrays(GL_TRIANGLES, 0, vao_size[1]);
+				glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
 			}
 			else if (map_arr[y][x] == map_info::item) {
+				index = ITEM;
 				glPolygonMode(GL_FRONT, GL_FILL);
 				glPolygonMode(GL_BACK, GL_FILL);
-				glBindVertexArray(vao[1]);
+				glBindVertexArray(vao[index]);
 				mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0.1));
 				mat4 scale = glm::scale(mat4(1.0), vec3(0.2, 0.2, 0.2));
 				mat4 final_mat = per_look * trans;
 				vec4 vec_color = vec4(1.0, 1.0, 0.0, 1.0);
 				glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
 				glUniform4fv(vColor, 1, &vec_color[0]);
-				glDrawArrays(GL_TRIANGLE_FAN, 0, vao_size[1]);
+				glDrawArrays(GL_TRIANGLE_FAN, 0, vao_size[index]);
 			}
 		}
 	}
@@ -500,7 +501,7 @@ void Map::valid_move_3d() {
 	if (player.get_jump() == 0 && check_range(test_pos) && map_arr[test_pos.second][test_pos.first] != wall) {
 		player.move();
 		get_item(test_pos);
-		//player.add_jump(3);
+		player.add_jump(3);
 		for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
 			if (player.get_position() == it->get_position()) {
 				player.die();
