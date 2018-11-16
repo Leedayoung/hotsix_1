@@ -18,9 +18,10 @@ using namespace glm;
 enum direction { up = 0, right, down, left};
 enum image { bullet_u = 0, bullet_d, bullet_l, bullet_r, player_u, player_d, player_l, player_r, item_p, wall_p, enemy_u, enemy_d, enemy_l, enemy_r };
 extern GLuint texture[16];
-
+extern int id_num;
 class Entity {
 public:
+	int id=0;
 	float pos_x;
 	float pos_y;
 	int direc;
@@ -28,6 +29,9 @@ public:
 	int get_direction();
 	float get_x();
 	float get_y();
+	int get_id() {
+		return id;
+	}
 	pair<float, float> get_jump_position();
 	void add_jump(int _jump) {
 		jump += _jump;

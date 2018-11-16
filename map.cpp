@@ -40,7 +40,7 @@ void Map::display() {
 		z = 1.3f;
 		break;
 	}
-	
+
 	switch (direc) {
 	case direction::up:
 		c_y = s;
@@ -75,57 +75,74 @@ void Map::display() {
 	glColor3f(1, float(0.7137), float(0.7568));
 	glLineWidth(1);
 	glPointSize(1.0f);
-	
-	int index = 0;
-	for (int y = 0; y < map_size; y++) {
-		for (int x = 0; x < map_size; x++) { 
-			if (map_arr[y][x] == map_info::wall) {
-				index = WALL;
-				glPolygonMode(GL_FRONT, GL_FILL);
-				glPolygonMode(GL_BACK, GL_FILL);
-				glBindVertexArray(vao[index]);
-				mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0.5));
-				mat4 final_mat = per_look*trans;
-				vec4 vec_color = vec4(0.58, 0.29, 0.0, 1.0);
-				glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
-				glUniform4fv(vColor, 1, &vec_color[0]);
-				glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
-			}
-			else if (map_arr[y][x] == map_info::item) {
-				index = ITEM;
-				glPolygonMode(GL_FRONT, GL_FILL);
-				glPolygonMode(GL_BACK, GL_FILL);
-				glBindVertexArray(vao[index]);
-				mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0.1));
-				mat4 scale = glm::scale(mat4(1.0), vec3(0.2, 0.2, 0.2));
-				mat4 final_mat = per_look * trans;
-				vec4 vec_color = vec4(1.0, 1.0, 0.0, 1.0);
-				glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
-				glUniform4fv(vColor, 1, &vec_color[0]);
-				glDrawArrays(GL_TRIANGLE_FAN, 0, vao_size[index]);
-			}
-		}
+
+	int e_map[map_size][map_size] = { 0 };
+	Enemy e_list[50];
+	int e_index = 1;
+	for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
+		pair<float, float> pos = it->get_position();
+		e_list[e_index] = *it;
+		e_map[(int)pos.second][(int)pos.first] = e_index++;
 	}
 
+	int b_map[map_size][map_size] = { 0 };
+	Bullet b_list[50];
+	int b_index = 1;
+	for (vector<Bullet>::iterator it = bull_vec.begin(); it != bull_vec.end(); it++) {
+		pair<float, float> pos = it->get_position();
+		b_list[b_index] = *it;
+		b_map[(int)pos.second][(int)pos.first] = b_index++;
+	}
+
+	int index = 0;
+
+	switch (direc) {
+	case direction::up:
+		for (int y = map_size-1; y >= 0; y--) {
+			for (int x = 0; x < map_size; x++) {
+				draw_map(y, x, e_map, e_list,b_map, b_list);
+			}
+		}
+		break;
+	case direction::down:
+		for (int y = 0; y < map_size; y++) {
+			for (int x = 0; x < map_size; x++) {
+				draw_map(y, x, e_map, e_list, b_map, b_list);
+			}
+		}
+		break;
+	case direction::left:
+		for (int x = 0; x < map_size; x++) {
+			for (int y = 0; y < map_size; y++) {
+				draw_map(y, x, e_map, e_list, b_map, b_list);
+			}
+		}
+		break;
+	case direction::right:
+		for (int x = map_size -1; x >= 0 ; x--) {
+			for (int y = 0; y < map_size; y ++) {
+				draw_map(y, x, e_map, e_list, b_map, b_list);
+			}
+		}
+		break;
+	}
+	
+
+	glPolygonMode(GL_FRONT, GL_FILL);
+	glPolygonMode(GL_BACK, GL_FILL);
 
 	//enemy display
 	for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
-		it->display();
+		it->update();
 	}
-	//display bullet
-	for (vector<Bullet>::iterator it = bull_vec.begin(); it != bull_vec.end(); it++) {
-		it->display();
-	}
+	
 	player.display();
-
-	
-	
 	index = RECT;
 	glBindVertexArray(vao[index]);
 	mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(0.5, -1, 0));
 	mat4 scale_mat = glm::scale(glm::mat4(1.0), glm::vec3(0.5, 0.1, 0));
 	mat4 final_mat = trans * scale_mat;
-	vec4 vec_color = vec4(1.0, 1.0, 0.0, 1.0);
+	vec4 vec_color = LIFE_LIST_COLOR;
 	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
 	glUniform4fv(vColor, 1, &vec_color[0]);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, vao_size[index]);
@@ -136,7 +153,7 @@ void Map::display() {
 		mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(0.5 + 0.1*i + 0.01, -1, 0));
 		mat4 scale_mat = glm::scale(glm::mat4(1.0), glm::vec3(0.09, 0.09, 0));
 		mat4 final_mat = trans * scale_mat;
-		vec4 vec_color = vec4(1.0, 0.0, 0.0, 1.0);
+		vec4 vec_color = LIFE_COLOR;
 		glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
 		glUniform4fv(vColor, 1, &vec_color[0]);
 		glDrawArrays(GL_TRIANGLE_FAN, 0, vao_size[index]);
@@ -163,40 +180,44 @@ void Map::display() {
 		draw_string(end_msg, -0.75, 0.3);
 	}
 	glFlush();
-	glutSwapBuffers();
-
 	return;
-	//dummy
-	/*
-	
-	//display time
-	int second = time_limit % 60;
-	int minute = time_limit / 60;
-	int sec2= second / 10;
-	int sec1 = second % 10;
-	int min2 = minute / 10;
-	int min1 = minute % 10;
-	draw_seven_seg(sec1, 0);
-	draw_seven_seg(sec2, 1);
-	draw_seven_seg(min1, 2);
-	draw_seven_seg(min2, 3);
-	draw_seven_seg(-1, -1);
-
-	//End
-	string msg;
-	if (end) {
-		string end_msg = "PRESS R TO RESTART";
-		if (win) msg = "YOU WIN";
-		else msg = "YOU LOSE";
-		draw_string(msg, -0.30, 0.5);
-		draw_string(end_msg, -0.75, 0.3);
-	}
-	glFlush();*/
 }
-
+void Map::draw_map(int y, int x, int e_map[map_size][map_size], Enemy e_list[50], int b_map[map_size][map_size], Bullet b_list[50]) {
+	int index;
+	if (map_arr[y][x] == map_info::wall) {
+		index = WALL;
+		glPolygonMode(GL_FRONT, GL_FILL);
+		glPolygonMode(GL_BACK, GL_FILL);
+		glBindVertexArray(vao[index]);
+		mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0.5));
+		mat4 final_mat = per_look * trans;
+		vec4 vec_color = WALL_COLOR;
+		glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
+		glUniform4fv(vColor, 1, &vec_color[0]);
+		glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
+	}
+	else if (map_arr[y][x] == map_info::item) {
+		index = ITEM;
+		glPolygonMode(GL_FRONT, GL_FILL);
+		glPolygonMode(GL_BACK, GL_FILL);
+		glBindVertexArray(vao[index]);
+		mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0.1));
+		mat4 scale = glm::scale(mat4(1.0), vec3(0.2, 0.2, 0.2));
+		mat4 final_mat = per_look * trans;
+		vec4 vec_color = ITEM_COLOR;
+		glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
+		glUniform4fv(vColor, 1, &vec_color[0]);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, vao_size[index]);
+	}
+	else if (e_map[y][x] != 0) {
+		e_list[e_map[y][x]].display();
+	}
+	else if (b_map[y][x] != 0) {
+		b_list[b_map[y][x]].display();
+	}
+}
 Map::Map() {
 	win = false;
-	map_size = 70;
 	view_size = map_size / 8;
 	numb_enemy = 35;
 	wall_maker();
@@ -447,7 +468,6 @@ void Map::valid_move(int dir) {
 	if (player.get_jump()==0 && check_range(test_pos) && map_arr[test_pos.second][test_pos.first] != wall) {
 		player.set_direction(dir);
 		int dir = player.get_direction();
-		cout << dir;
 		player.move();
 		get_item(test_pos);
 		//player.add_jump(3);
@@ -475,6 +495,7 @@ void Map::valid_move_3d() {
 }
 void Map::rotate_3d(int dir) {
 	int new_dir = (player.get_direction() + dir+4) % 4;
+	cout << new_dir << endl;
 	player.set_direction(new_dir);
 }
 //현재 위치의 item을 주워 없앤 뒤 empty를 return함

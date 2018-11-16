@@ -6,6 +6,7 @@ using namespace std;
 
 class Enemy : public Entity {
 public:
+	Enemy();
 	Enemy(int _pos_x, int _pos_y);
 	float s = 0.25;
 	void move() {
@@ -24,6 +25,7 @@ public:
 			break;
 		}
 	}
+	void update();
 	bool check_chase(pair<int, int> player_pos);
 	void display();
 };

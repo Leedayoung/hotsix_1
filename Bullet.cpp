@@ -50,7 +50,7 @@ void Bullet::display() {
 	//mat4 scale = glm::scale(glm::mat4(1.0), vec3(1.0f, 0.01f, 1.0f));
 	mat4 rot = glm::rotate(glm::mat4(1.0), 1.57f*mul, vec3(0.0, 0.0, 1.0));
 	mat4 final_mat = per_look * trans*rot * y_z;//  * y_z * scale;// *rot * scale;
-	vec4 vec_color = vec4(0.0, 0.0, 0.0, 0.5);
+	vec4 vec_color = BULLET_COLOR;
 	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
 	glUniform4fv(vColor, 1, &vec_color[0]);
 	glPolygonMode(GL_FRONT, GL_FILL);

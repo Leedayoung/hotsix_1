@@ -5,8 +5,11 @@
 #include "Enemy.h"
 #include "display.h"
 using namespace std;
+Enemy::Enemy() {
 
+}
 Enemy::Enemy(int _pos_x, int _pos_y) {
+	id = id_num++;
 	pos_x = (float)_pos_x;
 	pos_y = (float)_pos_y;
 	direc = direction::down;
@@ -20,6 +23,12 @@ bool Enemy::check_chase(pair<int, int> player_pos) {
 		return true;
 	else 
 		return false;
+}
+void Enemy::update() {
+	if (jump != 0) {
+		jump--;
+		this->move();
+	}
 }
 void Enemy::display() {
 
@@ -42,21 +51,18 @@ void Enemy::display() {
 	}
 	mat4 scale = glm::scale(glm::mat4(1.0), vec3(0.1f, 0.05f, 0.1f));
 	mat4 y_z = mat4(vec4(1.0, 0.0, 0.0, 0.0), vec4(0.0, 0.0, 1.0, 0.0), vec4(0.0, 1.0, 0.0, 0.0), vec4(0.0, 0.0, 0.0, 1.0));
-	mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(pos_x, pos_y, -0.5));
+	mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(pos_x, pos_y, -0.25));
 	//mat4 scale = glm::scale(glm::mat4(1.0), vec3(1.0f, 0.01f, 1.0f));
 	mat4 rot = glm::rotate(glm::mat4(1.0), 1.57f*mul, vec3(0.0, 0.0, 1.0));
 	mat4 final_mat = per_look * trans * rot * y_z * scale;// *rot * scale;
-	vec4 vec_color = vec4(1.0, 0.0, 1.0, 0.5);
+	vec4 vec_color = ENEMY_COLOR;
 	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
 	glUniform4fv(vColor, 1, &vec_color[0]);
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_FILL);
 	glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
-
-	if (jump != 0) {
-		jump--;
-		this->move();
-	}
+	
+	
 
 
 	/*treenode * enemy_direc;

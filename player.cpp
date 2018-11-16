@@ -35,7 +35,6 @@ void Player::move() {
 		pos_x += s;
 		break;
 	}
-	printf("Move : %lf %lf\n", pos_x, pos_y);
 }
 
 void Player::display() {
@@ -69,7 +68,7 @@ void Player::display() {
 		gun = false;
 		mat4 gun_trans = glm::translate(glm::mat4(1.0), hand_loc) *glm::scale(glm::mat4(1.0), vec3(3.0f, 3.0f, 3.0f));
 		mat4 gun_final_mat = final_mat * gun_trans;
-		vec4 vec_color = vec4(0.0, 1.0, 0.0, 0.5);
+		vec4 vec_color = PLAYER_COLOR;
 		glBindVertexArray(vao[g_index]);
 		glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &gun_final_mat[0][0]);
 		glUniform4fv(vColor, 1, &vec_color[0]);

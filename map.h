@@ -11,10 +11,10 @@
 using namespace std;
 enum map_info { wall, empty, item };
 extern GLuint texture[16];
-
+#define map_size 70
 class Map {
 private:
-	int map_size;
+	
 	int view_size;
 	int** map_arr;
 	int numb_enemy;
@@ -32,6 +32,7 @@ private:
 	int mode = 0;
 public:
 	Map();
+	void draw_map(int y, int x, int e_map[map_size][map_size], Enemy e_list[50], int b_map[map_size][map_size], Bullet b_list[50]);
 	bool get_end();
 	void timer();
 	void print(int x, int y, string string);

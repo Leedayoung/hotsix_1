@@ -3,7 +3,7 @@
 #include "Entity.h"
 using namespace std;
 GLuint texture[16];
-
+int id_num = 1;
 int Entity::get_direction() {
 	return direc;
 }
