@@ -34,6 +34,8 @@ extern mat4 perspec;
 #define E_3 7
 
 #define P_GUN v_size-3
+#define RECT 8
+#define HEART 9
 #define BULL v_size-2
 #define WALL v_size-1
 #define ITEM v_size-1
