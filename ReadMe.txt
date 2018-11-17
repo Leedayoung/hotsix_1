@@ -4,9 +4,13 @@
 
 본 게임의 플레이 방법은 다음과 같다.
 
-키보드의 상하좌우 방향키를 이용하여 플레이어 캐릭터를 움직일 수 있다.
+키보드의 w키를 이용하여 플레이어를 직진시킬 수 있다.
 
-또한 스페이스바를 눌러 총알을 발사하여 적 몬스터를 사살할 수 있다. 
+키보드의 a, d키를 이용하여 플레이어의 이동 방향을 바꿀 수 있다.
+
+또한 마우스 왼쪽 버튼을 클릭하여 총알을 발사하여 적 몬스터를 사살할 수 있다. 
+
+스페이스바를 클릭하여 시점을 3인칭에서 1인칭으로 1인칭에서 3인칭으로 변경할 수 있다.
 
 플레이어에게는 2개의 라이프가 주어지며 이를 다 소진할 시 패배하게 된다.
 
@@ -17,8 +21,8 @@
 게임 종료 후 R키를 누르면 재시작 할 수 있다.
 
 <File Description>
-1. main.cpp
-GLUT을 초기화 하고, 창을 띄우기 위한 display, reshape 함수와, keystroke을 처리하는 함수들이 구현되어있다.
+1. test.cpp
+GLSL을 초기화 하며 쉐이더를 호출한다. OBJ 파일을 읽으며 Key stroke, Mouse Event에 대한 처리를 하는 클래스이다.
 
 2.Entity.h/Entity.cpp
 Bullet,Enemy, Player의 부모 클래스이다.
@@ -39,7 +43,7 @@ Bullet,Enemy, Player의 부모 클래스이다.
 Shader를 이용하여 그림을 그리는 함수와 변수의 집합이다.
 
 8.Node.h
-계층모델을 구성할 node이다.
+계층모델을 구성할 node이다. --> 본 어싸인에서는 사용하지 않는다.
 
 9.sevenseg.h/sevenseg.cpp
 숫자를 표현하는 7-segment와 관련된 함수들이다.
@@ -52,3 +56,6 @@ ctm을 받아 position을 output으로 주는 vertex shader이다.
 
 12.fshader1.glsl
 fragment의 color를 ouput으로 주는 fragment shader이다.
+
+13. OBJ files
+OBJ 파일들과 mtl 파일들이 저장되어 있는 폴더로 mesh를 로딩할 수 있는 폴더이다.
