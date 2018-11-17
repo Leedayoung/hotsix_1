@@ -23,12 +23,16 @@ void Player::use_all_jump() {
 	switch (direc) {
 	case direction::up:
 		pos_y += jump * 0.25;
+		break;
 	case direction::down:
 		pos_y -= jump * 0.25;
+		break;
 	case direction::left:
 		pos_x -= jump * 0.25;
+		break;
 	case direction::right:
 		pos_x += jump * 0.25;
+		break;
 	}
 	jump = 0;
 	return;
