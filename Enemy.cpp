@@ -15,10 +15,10 @@ Enemy::Enemy(int _pos_x, int _pos_y) {
 	direc = direction::down;
 }
 
-bool Enemy::check_chase(pair<int, int> player_pos) {
-	int player_x = player_pos.first;
-	int player_y = player_pos.second;
-	int chase_distance = 5;
+bool Enemy::check_chase(pair<float, float> player_pos) {
+	float player_x = player_pos.first;
+	float player_y = player_pos.second;
+	float chase_distance = 5;
 	if (abs(player_x - pos_x) < chase_distance || abs(player_y - pos_y) < chase_distance) 
 		return true;
 	else 

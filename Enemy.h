@@ -26,6 +26,6 @@ public:
 		}
 	}
 	void update();
-	bool check_chase(pair<int, int> player_pos);
+	bool check_chase(pair<float, float> player_pos);
 	void display();
 };

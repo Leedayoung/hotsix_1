@@ -14,6 +14,7 @@ public:
 	Player(int _pos_x, int _pos_y);
 	int get_num_i();
 	void add_num_i();
+	void use_all_jump();
 	void set_life(int _life) {
 		life = _life;
 	}

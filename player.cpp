@@ -19,6 +19,21 @@ int Player::get_num_i() {
 void Player::add_num_i() {
 	num_i++;
 }
+void Player::use_all_jump() {
+	switch (direc) {
+	case direction::up:
+		pos_y += jump * 0.25;
+	case direction::down:
+		pos_y -= jump * 0.25;
+	case direction::left:
+		pos_x -= jump * 0.25;
+	case direction::right:
+		pos_x += jump * 0.25;
+	}
+	jump = 0;
+	return;
+}
+
 void Player::move() {
 	float s = 0.25;
 	switch (direc) {

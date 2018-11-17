@@ -11,10 +11,30 @@ void Entity::set_direction(int _direc) {
 	direc = _direc;
 }
 float Entity::get_x() {
-	return pos_x;
+	switch (direc) {
+	case direction::up:
+		return pos_x;
+	case direction::down:
+		return pos_x;
+	case direction::left:
+		return pos_x - jump * 0.25;
+	case direction::right:
+		return pos_x + jump * 0.25;
+	}
+	return 0;
 }
 float Entity::get_y() {
-	return pos_y;
+	switch (direc) {
+	case direction::up:
+		return pos_y + jump * 0.25;
+	case direction::down:
+		return  pos_y - jump * 0.25;
+	case direction::left:
+		return pos_y;
+	case direction::right:
+		return pos_y;
+	}
+	return 0;
 }
 pair<float, float> Entity::get_jump_position() {
 	return make_pair(pos_x, pos_y);

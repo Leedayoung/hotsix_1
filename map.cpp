@@ -183,10 +183,29 @@ void Map::display() {
 }
 void Map::draw_map(int y, int x, int e_map[map_size][map_size], Enemy e_list[50], int b_map[map_size][map_size], Bullet b_list[50]) {
 	int index;
+
+	index = WALL;
+	glBindVertexArray(vao[index]);
+	mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, -0.05))*scale(mat4(1.0), vec3(1.0, 1.0, 0.1));
+	mat4 final_mat = per_look * trans;
+	vec4 vec_color;
+
+	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
+
+	vec_color = BACK_COLOR;
+	glUniform4fv(vColor, 1, &vec_color[0]);
+	glPolygonMode(GL_FRONT, GL_FILL);
+	glPolygonMode(GL_BACK, GL_FILL);
+	glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
+
+	vec_color = WALL_COLOR;
+	glUniform4fv(vColor, 1, &vec_color[0]);
+	glPolygonMode(GL_FRONT, GL_LINE);
+	glPolygonMode(GL_BACK, GL_LINE);
+	glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
+
 	if (map_arr[y][x] == map_info::wall) {
 		index = WALL;
-		glPolygonMode(GL_FRONT, GL_LINE);
-		glPolygonMode(GL_BACK, GL_LINE);
 		glBindVertexArray(vao[index]);
 		mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0.5));
 		mat4 final_mat = per_look * trans;
@@ -415,16 +434,16 @@ bool Map::update_enemies() {
 		}
 		else {
 			direction = rand() % 4;
-			pair<int, int> new_pos = it->move_test(direction);
+			pair<float, float> new_pos = it->move_test(direction);
 			if (check_range(new_pos) == false) continue;
-			if (map_arr[new_pos.second][new_pos.first] == wall) continue;
+			if (map_arr[(int)new_pos.second][(int)new_pos.first] == wall) continue;
 			if (it->get_jump() != 0) continue;
 			it->add_jump(3);
 			it->set_direction(direction);
 			it->move();
 			bool die = false;
 			for (vector<Bullet>::iterator bl = bull_vec.begin(); bl != bull_vec.end();bl++) {
-				pair<int, int> bull_pos = bl->get_position();
+				pair<float, float> bull_pos = bl->get_position();
 				if (new_pos == bull_pos) {
 					bl = bull_vec.erase(bl);
 					die = true;
@@ -513,8 +532,8 @@ void Map::valid_move_3d() {
 	}
 }
 void Map::rotate_3d(int dir) {
+	player.use_all_jump();
 	int new_dir = (player.get_direction() + dir+4) % 4;
-	cout << new_dir << endl;
 	player.set_direction(new_dir);
 }
 //현재 위치의 item을 주워 없앤 뒤 empty를 return함
