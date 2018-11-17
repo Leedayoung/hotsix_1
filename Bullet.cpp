@@ -48,10 +48,20 @@ void Bullet::display() {
 	mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(pos_x, pos_y, 0.0));
 	mat4 rot = glm::rotate(glm::mat4(1.0), 1.57f*mul, vec3(0.0, 0.0, 1.0));
 	mat4 final_mat = per_look * trans*rot * y_z;//  * y_z * scale;// *rot * scale;
-	vec4 vec_color = BULLET_COLOR;
+	vec4 vec_color;
 	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
+	
+	
+	vec_color = BACK_COLOR;
 	glUniform4fv(vColor, 1, &vec_color[0]);
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_FILL);
+	glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
+
+	glLineWidth(0.00001);
+	vec_color = BULLET_COLOR;
+	glUniform4fv(vColor, 1, &vec_color[0]);
+	glPolygonMode(GL_FRONT, GL_LINE);
+	glPolygonMode(GL_BACK, GL_LINE);
 	glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
 }

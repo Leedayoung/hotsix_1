@@ -35,7 +35,7 @@ void display();
 vector<glm::vec4> vertices;
 void reshape(int w, int h);
 void display();
-vector < glm::vec4 > load_obj_files(string file_path, string texture_path, int type,int index);
+void load_obj_files(string file_path, string texture_path, int type,int index);
 void init();
 void player_move_3d(unsigned char key, int x, int y);
 static char* readShaderSource(const char* shaderFile);
@@ -158,15 +158,14 @@ void display() {
 	glutSwapBuffers();
 	return;
 }
-vector < glm::vec4 > load_obj_files(string file_path, string texture_path, int type, int index) {
-	vector< unsigned int > vertexIndices, uvIndices, normalIndices;
+void load_obj_files(string file_path, string texture_path, int type, int index) {
+	vector< unsigned int > vertexIndices;
 	vector< glm::vec3 > temp_vertices;
-	vector< glm::vec2 > temp_uvs;
 
 	FILE * file = fopen(&file_path[0], "r");
 	if (file == NULL) {
 		printf("Impossible to open the file !\n");
-		return vector<glm::vec4>();
+		return ;
 	}
 	int num = 0;
 	int m_num = 1;
@@ -188,11 +187,6 @@ vector < glm::vec4 > load_obj_files(string file_path, string texture_path, int t
 			fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
 			temp_vertices.push_back(vertex);
 		}
-		else if (strcmp(lineHeader, "vt") == 0) {
-			glm::vec2 uv;
-			fscanf(file, "%f %f\n", &uv.x, &uv.y);
-			temp_uvs.push_back(uv);
-		}
 		else if (strcmp(lineHeader, "f") == 0) {
 			if (num == 0) num = 1;
 			std::string vertex1, vertex2, vertex3;
@@ -211,9 +205,6 @@ vector < glm::vec4 > load_obj_files(string file_path, string texture_path, int t
 					vertexIndices.push_back(vertexIndex[0]);
 					vertexIndices.push_back(vertexIndex[1]);
 					vertexIndices.push_back(vertexIndex[2]);
-					uvIndices.push_back(uvIndex[0]);
-					uvIndices.push_back(uvIndex[1]);
-					uvIndices.push_back(uvIndex[2]);
 				}
 				else if (matches == 12) {
 					if (type == 2 && m_num == 17) {
@@ -226,19 +217,12 @@ vector < glm::vec4 > load_obj_files(string file_path, string texture_path, int t
 					vertexIndices.push_back(vertexIndex[0]);
 					vertexIndices.push_back(vertexIndex[1]);
 					vertexIndices.push_back(vertexIndex[2]);
-					uvIndices.push_back(uvIndex[0]);
-					uvIndices.push_back(uvIndex[1]);
-					uvIndices.push_back(uvIndex[2]);
-
 					vertexIndices.push_back(vertexIndex[1]);
 					vertexIndices.push_back(vertexIndex[2]);
 					vertexIndices.push_back(v3);
-					uvIndices.push_back(uvIndex[1]);
-					uvIndices.push_back(uvIndex[2]);
-					uvIndices.push_back(uv3);
 				}else{
 					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
-					return vector<glm::vec4>();
+					return ;
 				}
 				
 			}
@@ -251,24 +235,15 @@ vector < glm::vec4 > load_obj_files(string file_path, string texture_path, int t
 					vertexIndices.push_back(v1);
 					vertexIndices.push_back(v2);
 					vertexIndices.push_back(v3);
-					uvIndices.push_back(uv1);
-					uvIndices.push_back(uv2);
-					uvIndices.push_back(uv3);
 
 					vertexIndices.push_back(v2);
 					vertexIndices.push_back(v3);
 					vertexIndices.push_back(v4);
-					uvIndices.push_back(uv2);
-					uvIndices.push_back(uv3);
-					uvIndices.push_back(uv4);
 				}
 				else if (matches == 6) {
 					vertexIndices.push_back(v1);
 					vertexIndices.push_back(v2);
 					vertexIndices.push_back(v3);
-					uvIndices.push_back(uv1);
-					uvIndices.push_back(uv2);
-					uvIndices.push_back(uv3);
 				}
 				
 			}
@@ -284,13 +259,14 @@ vector < glm::vec4 > load_obj_files(string file_path, string texture_path, int t
 		glm::vec4 vertex = glm::vec4(t.x, t.y, t.z, 1.0);
 		out_vertices.push_back(vertex);
 	}
-	for (unsigned int i = 0; i < uvIndices.size(); i++) {
+
+	/*for (unsigned int i = 0; i < uvIndices.size(); i++) {
 		unsigned int uvIndex = uvIndices[i];
 		glm::vec2 t = temp_uvs[uvIndex - 1];
 		out_uv_map.push_back(t);
 		//glm::vec4 vertex = glm::vec4(t.x, t.y, 0.0, 1.0);
 		//out_vertices.push_back(vertex);
-	}
+	}*/
 	/*
 	unsigned int texture;
 	glGenTextures(1, &texture);
@@ -327,7 +303,7 @@ vector < glm::vec4 > load_obj_files(string file_path, string texture_path, int t
 	glEnableVertexAttribArray(loc);
 	glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 	
-	return out_vertices;
+	return;
 }
 static char* readShaderSource(const char* shaderFile)
 {

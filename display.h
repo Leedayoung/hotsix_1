@@ -28,10 +28,12 @@ extern vec3 hand_loc;
 #define LIFE_LIST_COLOR vec4(1.0, 1.0, 0.0, 1.0)
 #define LIFE_COLOR vec4(1.0, 0.0, 0.0, 1.0)
 #define WALL_COLOR vec4(0.58, 0.29, 0.0, 1.0)
-#define ITEM_COLOR vec4(1.0, 1.0, 0.0, 1.0)
-#define PLAYER_COLOR vec4(0.0, 1.0, 0.0, 0.5)
+#define ITEM_COLOR vec4(1.0, 0.0, 0.0, 1.0)
+#define PLAYER_COLOR vec4(0.01, 0.5, 0.5, 0.5)
 #define BULLET_COLOR vec4(0.0, 0.0, 0.0, 0.5)
-#define ENEMY_COLOR vec4(1.0, 0.0, 1.0, 0.5)
+#define ENEMY_COLOR vec4(0.6, 0.6, 0.6, 0.5)
+#define BACK_COLOR vec4(1.0, 1.0, 1.0, 1.0)
+#define GUN_COLOR vec4(0.2, 0.2, 0.2, 0.5)
 
 #define P_0 0
 #define P_1 1
