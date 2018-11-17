@@ -1,5 +1,7 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
+#define STB_IMAGE_IMPLEMENTATION
+
 #include <iostream>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -21,6 +23,9 @@
 #include "Entity.h"
 #include "display.h"
 #include "sphere.h"
+#include "stb_image.h"
+
+
 using namespace std;
 using namespace glm;
 
@@ -30,7 +35,7 @@ void display();
 vector<glm::vec4> vertices;
 void reshape(int w, int h);
 void display();
-vector < glm::vec4 > load_obj_files(string file_path,int type,int index);
+vector < glm::vec4 > load_obj_files(string file_path, string texture_path, int type,int index);
 void init();
 void player_move_3d(unsigned char key, int x, int y);
 static char* readShaderSource(const char* shaderFile);
@@ -82,22 +87,22 @@ void init() {
 	
 	
 	//load_obj_files("OBJ files/cu.txt", 0, WALL);
-	load_obj_files("OBJ files/dummy_obj_walk_pose_0.obj", 0, P_0);
-	load_obj_files("OBJ files/dummy_obj_walk_pose_1.obj", 0, P_1);
-	load_obj_files("OBJ files/dummy_obj_walk_pose_2.obj", 0, P_2);
-	load_obj_files("OBJ files/dummy_obj_walk_pose_3.obj", 0, P_3);
-	load_obj_files("OBJ files/dummy_obj_gun.obj", 2, P_GUN);
+	load_obj_files("OBJ files/dummy_obj_walk_pose_0.obj","OBJ files/dummy_red.jpg", 0, P_0);
+	load_obj_files("OBJ files/dummy_obj_walk_pose_1.obj","OBJ files/dummy_red.jpg", 0, P_1);
+	load_obj_files("OBJ files/dummy_obj_walk_pose_2.obj","OBJ files/dummy_red.jpg", 0, P_2);
+	load_obj_files("OBJ files/dummy_obj_walk_pose_3.obj","OBJ files/dummy_red.jpg", 0, P_3);
+	load_obj_files("OBJ files/dummy_obj_gun.obj", "OBJ files/dummy_red.jpg", 2, P_GUN);
 	
 	
-	load_obj_files("OBJ files/Skeleton_pose0.obj", 0, E_0);
-	load_obj_files("OBJ files/Skeleton_pose1.obj", 0, E_1);
-	load_obj_files("OBJ files/Skeleton_pose2.obj", 0, E_2);
-	load_obj_files("OBJ files/Skeleton_pose3.obj", 0, E_3);
+	load_obj_files("OBJ files/Skeleton_pose0.obj","OBJ files/dummy_wood.jpg", 0, E_0);
+	load_obj_files("OBJ files/Skeleton_pose1.obj","OBJ files/dummy_wood.jpg", 0, E_1);
+	load_obj_files("OBJ files/Skeleton_pose2.obj","OBJ files/dummy_wood.jpg", 0, E_2);
+	load_obj_files("OBJ files/Skeleton_pose3.obj","OBJ files/dummy_wood.jpg", 0, E_3);
 	
 
-	load_obj_files("OBJ files/M1911.obj", 0, GUN);
-	load_obj_files("OBJ files/bullet.obj", 0, BULL);
-	load_obj_files("OBJ files/cu.txt", 0, WALL);
+	load_obj_files("OBJ files/M1911.obj","OBJ files/M1911-RIGHT.jpg", 0, GUN);
+	load_obj_files("OBJ files/bullet.obj","OBJ files/bullet.jpg", 0, BULL);
+	load_obj_files("OBJ files/cu.txt","OBJ files/wall.jpg", 0, WALL);
 
 	glGenVertexArrays(1, &vao[RECT]);
 	glBindVertexArray(vao[RECT]);
@@ -153,7 +158,7 @@ void display() {
 	glutSwapBuffers();
 	return;
 }
-vector < glm::vec4 > load_obj_files(string file_path,int type, int index) {
+vector < glm::vec4 > load_obj_files(string file_path, string texture_path, int type, int index) {
 	vector< unsigned int > vertexIndices, uvIndices, normalIndices;
 	vector< glm::vec3 > temp_vertices;
 	vector< glm::vec2 > temp_uvs;
@@ -272,6 +277,7 @@ vector < glm::vec4 > load_obj_files(string file_path,int type, int index) {
 	vec3 hand_loc = accumulate(rhand.begin(), rhand.end(), glm::vec3(0.0, 0.0, 0.0));
 	hand_loc = vec3(hand_loc.x / rhand.size(), hand_loc.y / rhand.size(), hand_loc.z / rhand.size());
 	std::vector < glm::vec4 > out_vertices;
+	std::vector <glm::vec2> out_uv_map;
 	for (unsigned int i = 0; i < vertexIndices.size(); i++) {
 		unsigned int vertexIndex = vertexIndices[i];
 		glm::vec3 t = temp_vertices[vertexIndex - 1];
@@ -281,11 +287,35 @@ vector < glm::vec4 > load_obj_files(string file_path,int type, int index) {
 	for (unsigned int i = 0; i < uvIndices.size(); i++) {
 		unsigned int uvIndex = uvIndices[i];
 		glm::vec2 t = temp_uvs[uvIndex - 1];
-		glm::vec4 vertex = glm::vec4(t.x, t.y, t.z, 1.0);
-		out_vertices.push_back(vertex);
+		out_uv_map.push_back(t);
+		//glm::vec4 vertex = glm::vec4(t.x, t.y, 0.0, 1.0);
+		//out_vertices.push_back(vertex);
 	}
-	
-	
+	/*
+	unsigned int texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	// set the texture wrapping/filtering options (on the currently bound texture object)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	int width, height, nrChannels;
+	unsigned char *data = stbi_load(&texture_path[0], &width, &height, &nrChannels, 0);
+	if (data) {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else {
+		cout << "Faile to load texture" << endl;
+	}
+	stbi_image_free(data);
+
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);	
+	*/
+
 	glGenVertexArrays(1, &vao[index]);
 	glBindVertexArray(vao[index]);
 	GLuint buffer;
@@ -414,7 +444,7 @@ void player_move_3d(unsigned char key, int x, int y) {
 void move_enemies(int v) {
 	newmap.update_enemies();
 	newmap.timer();
-	if (newmap.get_end()) {
+	if (newmap.isEnd()) {
 		glutSpecialFunc(NULL);
 		glutMouseFunc(NULL);
 		glutKeyboardFunc(restart);
