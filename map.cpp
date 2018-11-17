@@ -128,8 +128,8 @@ void Map::display() {
 	}
 	
 
-	glPolygonMode(GL_FRONT, GL_FILL);
-	glPolygonMode(GL_BACK, GL_FILL);
+	glPolygonMode(GL_FRONT, GL_LINE);
+	glPolygonMode(GL_BACK, GL_LINE);
 
 	//enemy display
 	for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
@@ -186,8 +186,8 @@ void Map::draw_map(int y, int x, int e_map[map_size][map_size], Enemy e_list[50]
 	int index;
 	if (map_arr[y][x] == map_info::wall) {
 		index = WALL;
-		glPolygonMode(GL_FRONT, GL_FILL);
-		glPolygonMode(GL_BACK, GL_FILL);
+		glPolygonMode(GL_FRONT, GL_LINE);
+		glPolygonMode(GL_BACK, GL_LINE);
 		glBindVertexArray(vao[index]);
 		mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0.5));
 		mat4 final_mat = per_look * trans;
@@ -198,8 +198,8 @@ void Map::draw_map(int y, int x, int e_map[map_size][map_size], Enemy e_list[50]
 	}
 	else if (map_arr[y][x] == map_info::item) {
 		index = ITEM;
-		glPolygonMode(GL_FRONT, GL_FILL);
-		glPolygonMode(GL_BACK, GL_FILL);
+		glPolygonMode(GL_FRONT, GL_LINE);
+		glPolygonMode(GL_BACK, GL_LINE);
 		glBindVertexArray(vao[index]);
 		mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0.1));
 		mat4 scale = glm::scale(mat4(1.0), vec3(0.2, 0.2, 0.2));
