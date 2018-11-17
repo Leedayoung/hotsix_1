@@ -32,20 +32,20 @@ using namespace glm;
 #define BUFFER_OFFSET( offset ) ((GLvoid*) (offset))
 const int NumPoints = 4;
 void display();
-vector<glm::vec4> vertices;
 void reshape(int w, int h);
-void display();
-void load_obj_files(string file_path, string texture_path, int type,int index);
-void init();
-void player_move_3d(unsigned char key, int x, int y);
 static char* readShaderSource(const char* shaderFile);
 GLuint InitShader(const char* vShaderFile, const char* fShaderFile);
 void move_enemies(int v);
 void makedelay(int x);
 Map newmap;
-void mouse_bullet(int button, int state, int x, int y);
 void move_bullets(int v);
 void restart(unsigned char key, int x, int y);
+
+vector<glm::vec4> vertices;
+void load_obj_files(string file_path, string texture_path, int type, int index);
+void mouse_bullet(int button, int state, int x, int y);
+void player_move_3d(unsigned char key, int x, int y);
+void init();
 
 
 int main(int argc, char **argv) {
@@ -139,6 +139,7 @@ void display() {
 	newmap.display();
 	return;
 	
+	/*
 	mat4 look_at = glm::lookAt(glm::vec3(2.0f, 2.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 	mat4 perspec = glm::perspective(glm::radians(90.0f), 1.0f, 0.001f, 1000.0f);
 	
@@ -157,6 +158,7 @@ void display() {
 	glDrawArrays(GL_TRIANGLES, 0, vao_size[0]);
 	glutSwapBuffers();
 	return;
+	*/
 }
 void load_obj_files(string file_path, string texture_path, int type, int index) {
 	vector< unsigned int > vertexIndices;

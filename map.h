@@ -55,10 +55,10 @@ public:
 	void update_bullets();
 	void create_bullet();
 	void valid_move(int dir);
-	void valid_move_3d();
-	void rotate_3d(int dir);
 	bool get_item(pair<int, int> current);
 	bool isEnd();
 	bool get_win();
 	void change_mode();
+	void valid_move_3d();
+	void rotate_3d(int dir);
 };
