@@ -487,17 +487,39 @@ void Map::update_bullets() {
 void Map::create_bullet() {
 	float _posx = player.get_x();
 	float _posy = player.get_y();
+	int posx = int(_posx);
+	int posy = int(_posy);	
 	int _direction = player.get_direction();
-	Bullet newbullet = Bullet(_posx, _posy, _direction, bull_length);
-	
-	player.set_gun(true);
+	switch(_direction) {
+	case direction::up:
+		posy++;
+		break;
+	case direction::down:
+		posy--;
+		break;
+	case direction::left:
+		posx--;
+		break;
+	case direction::right:
+		posx++;
+		break;
 
-	pair<float, float> new_pos = newbullet.get_position();
-	if (kill_enemies(new_pos)) {
-		
+	}
+	if (map_arr[posy][posx] == map_info::wall) {
+		player.set_gun(true);
 	}
 	else {
-		bull_vec.push_back(newbullet);
+		Bullet newbullet = Bullet(_posx, _posy, _direction, bull_length);
+
+		player.set_gun(true);
+
+		pair<float, float> new_pos = newbullet.get_position();
+		if (kill_enemies(new_pos)) {
+
+		}
+		else {
+			bull_vec.push_back(newbullet);
+		}
 	}
 }
 //Player에 대하여 Valid한 Move후 Direction update
