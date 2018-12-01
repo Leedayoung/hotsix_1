@@ -81,6 +81,7 @@ void Player::display() {
 	mat4 final_mat = per_look * trans*rot* y_z *scale;// *rot * scale;
 	vec4 vec_color;
 
+	glUseProgram(program);
 	index = (4 - jump) % 4;
 	if (gun == true) {
 		int g_index = GUN;

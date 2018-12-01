@@ -24,7 +24,7 @@ GLint light_ambient;
 GLint light_specular;
 GLint light_shine;
 GLint light_dir;
-
+GLint light_color;
 
 treenode * player_down;
 treenode * player_up;

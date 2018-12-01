@@ -10,7 +10,9 @@
 #include <glm/vec4.hpp>
 #include <glm/gtc/type_ptr.hpp>
 using namespace glm;
-#define v_size 20
+#define v_size 50
+#define DEBUG 20
+
 extern GLuint program;
 extern GLint ctmParam;
 extern glm::mat4 ortho_mat;
@@ -34,6 +36,7 @@ extern GLint light_ambient;
 extern GLint light_specular;
 extern GLint light_shine;
 extern GLint light_dir;
+extern GLint light_color;
 
 
 #define LIFE_LIST_COLOR vec4(1.0, 1.0, 0.0, 1.0)
@@ -64,11 +67,13 @@ extern GLint light_dir;
 #define E_3 7
 */
 
-#define GUN v_size-4
+#define GUN v_size-1
+//#define GUN v_size-4
 #define P_GUN v_size-3
 #define RECT 8
 #define HEART 9
-#define BULL v_size-2
+#define BULL v_size-1
+//#define BULL v_size-2
 #define WALL v_size-1
 #define ITEM v_size-1
 

@@ -5,14 +5,13 @@ in vec4 vPosition;
 
 uniform mat4 ctm;
 uniform mat4 view_model;
-uniform mat3 normal_mtx;
 
-out vec4 eye;
 out vec3 normal_out;
 
 void main()
 {
-   normal_out = normalize(normal_mtx * vNormal);
-   eye = -(view_model * vPosition);
+	vec4 u_vNormal = vec4(vNormal,1);
+	u_vNormal = view_model * u_vNormal;
+   normal_out = normalize(u_vNormal.xyz);
    gl_Position = ctm * vPosition;
 }

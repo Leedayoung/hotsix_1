@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
 
 	glutReshapeFunc(reshape);
 	glutDisplayFunc(display);
-	//glutKeyboardFunc(player_move_3d);
+	glutKeyboardFunc(player_move_3d);
 	//glutMouseFunc(mouse_bullet);
 	//glutTimerFunc(1000, move_enemies, 1);
 	//glutTimerFunc(150, move_bullets, 1);
@@ -79,7 +79,7 @@ void init() {
 		vec4(0.5, 0.75, 0.0, 1.0), vec4(0.25, 1.0, 0.0, 1.0), vec4(0.0, 0.75, 0.0, 1.0)
 		, vec4(0.5, 0.0, 0.0, 1.0), vec4(1.0, 0.75, 0.0, 1.0), vec4(0.75, 1.0, 0.0, 1.0) };
 	
-	light_program = InitShader("light_vertex.glsl", "light_frag.glsl");
+	light_program = InitShader("light_vertex_test.glsl", "light_frag_test.glsl");
 	light_ctm = glGetUniformLocation(light_program, "ctm");
 	light_view = glGetUniformLocation(light_program, "view_model");
 	normal_light = glGetUniformLocation(light_program, "normal_mtx");
@@ -88,12 +88,13 @@ void init() {
 	light_specular = glGetUniformLocation(light_program, "specular");
 	light_shine = glGetUniformLocation(light_program, "shiness");
 	light_dir = glGetUniformLocation(light_program, "l_dir");
+	light_color = glGetUniformLocation(light_program, "LightColor");
 
 	program = InitShader("vshader1.glsl", "fshader1.glsl");
 	ctmParam = glGetUniformLocation(program, "ctm");
 	vColor = glGetUniformLocation(program, "color");
 	
-	glUseProgram(light_program);
+	//glUseProgram(light_program);
 
 	//load_obj_files("OBJ files/cu.txt", 0, WALL);
 	load_obj_files("OBJ files/dummy_obj_walk_pose_0.obj","OBJ files/dummy_red.jpg", 0, P_0);
@@ -109,8 +110,8 @@ void init() {
 	//load_obj_files("OBJ files/Skeleton_pose3.obj","OBJ files/dummy_wood.jpg", 0, E_3);
 	
 
-	load_obj_files("OBJ files/M1911.obj","OBJ files/M1911-RIGHT.jpg", 0, GUN);
-	load_obj_files("OBJ files/bullet.obj","OBJ files/bullet.jpg", 0, BULL);
+	//load_obj_files("OBJ files/M1911.obj","OBJ files/M1911-RIGHT.jpg", 0, GUN);
+	//load_obj_files("OBJ files/bullet.obj","OBJ files/bullet.jpg", 0, BULL);
 	load_obj_files("OBJ files/cu.txt","OBJ files/wall.jpg", 0, WALL);
 
 
@@ -150,32 +151,12 @@ void reshape(int w, int h)
 void display() {
 	newmap.display();
 	return;
-	
-	/*
-	mat4 look_at = glm::lookAt(glm::vec3(2.0f, 2.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	mat4 perspec = glm::perspective(glm::radians(90.0f), 1.0f, 0.001f, 1000.0f);
-	
-	glClearColor(1.0, 1.0, 1.0, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	glColor3f(1, float(0.7137), float(0.7568));
-	glLineWidth(1);
-	glPointSize(1.0f);
-
-	glPolygonMode(GL_FRONT, GL_FILL);
-	glPolygonMode(GL_BACK, GL_FILL);
-
-	mat4 final_mat = perspec * look_at;
-	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
-	glDrawArrays(GL_TRIANGLES, 0, vao_size[0]);
-	glutSwapBuffers();
-	return;
-	*/
 }
 void load_obj_files(string file_path, string texture_path, int type, int index) {
 	vector< unsigned int > vertexIndices, uvIndices, normalIndices;
 	vector< glm::vec3 > temp_vertices;
 	vector< glm::vec2 > temp_uvs;
+	std::vector< glm::vec3 > temp_normals;
 
 	FILE * file = fopen(&file_path[0], "r");
 	if (file == NULL) {
@@ -207,6 +188,11 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 			fscanf(file, "%f %f\n", &uv.x, &uv.y);
 			temp_uvs.push_back(uv);
 		}
+		else if (strcmp(lineHeader, "vn") == 0) {
+			glm::vec3 normal;
+			fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z);
+			temp_normals.push_back(normal);
+		}
 		else if (strcmp(lineHeader, "f") == 0) {
 			if (num == 0) num = 1;
 			std::string vertex1, vertex2, vertex3;
@@ -228,6 +214,9 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 					uvIndices.push_back(uvIndex[0]);
 					uvIndices.push_back(uvIndex[1]);
 					uvIndices.push_back(uvIndex[2]);
+					normalIndices.push_back(normalIndex[0]);
+					normalIndices.push_back(normalIndex[1]);
+					normalIndices.push_back(normalIndex[2]);
 				}
 				else if (matches == 12) {
 					if (type == 2 && m_num == 17) {
@@ -243,6 +232,9 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 					uvIndices.push_back(uvIndex[0]);
 					uvIndices.push_back(uvIndex[1]);
 					uvIndices.push_back(uvIndex[2]);
+					normalIndices.push_back(normalIndex[0]);
+					normalIndices.push_back(normalIndex[1]);
+					normalIndices.push_back(normalIndex[2]);
 
 					vertexIndices.push_back(vertexIndex[1]);
 					vertexIndices.push_back(vertexIndex[2]);
@@ -250,6 +242,9 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 					uvIndices.push_back(uvIndex[1]);
 					uvIndices.push_back(uvIndex[2]);
 					uvIndices.push_back(uv3);
+					normalIndices.push_back(normalIndex[1]);
+					normalIndices.push_back(normalIndex[2]);
+					normalIndices.push_back(t);
 				}
 				else {
 					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
@@ -292,6 +287,8 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 	hand_loc = vec3(hand_loc.x / rhand.size(), hand_loc.y / rhand.size(), hand_loc.z / rhand.size());
 	std::vector < glm::vec4 > out_vertices;
 	std::vector <glm::vec2> out_uv_map;
+	std::vector <glm::vec3> out_normal_map;
+
 	for (unsigned int i = 0; i < vertexIndices.size(); i++) {
 		unsigned int vertexIndex = vertexIndices[i];
 		glm::vec3 t = temp_vertices[vertexIndex - 1];
@@ -303,9 +300,13 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 		unsigned int uvIndex = uvIndices[i];
 		glm::vec2 t = temp_uvs[uvIndex - 1];
 		out_uv_map.push_back(t);
-		//glm::vec4 vertex = glm::vec4(t.x, t.y, 0.0, 1.0);
-		//out_vertices.push_back(vertex);
 	}
+	for (unsigned int i = 0; i < normalIndices.size(); i++) {
+		unsigned int normalIndex = normalIndices[i];
+		glm::vec3 normal = temp_normals[normalIndex - 1];
+		out_normal_map.push_back(normal);
+	}
+
 	
 	unsigned int texture;
 	glGenTextures(1, &texture);
@@ -316,7 +317,7 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	
-	int width, height, nrChannels;
+	/*int width, height, nrChannels;
 	unsigned char *data = stbi_load(&texture_path[0], &width, &height, &nrChannels, 0);
 	if (data) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -326,9 +327,10 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 		cout << "Faile to load texture" << endl;
 	}
 	stbi_image_free(data);
+	*/
 
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);	
+	//glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	//glEnableVertexAttribArray(2);	
 	
 
 	glGenVertexArrays(1, &vao[index]);
@@ -341,6 +343,29 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 	GLuint loc = glGetAttribLocation(program, "vPosition");
 	glEnableVertexAttribArray(loc);
 	glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+
+	glGenVertexArrays(1, &vao[index+DEBUG]);
+	glBindVertexArray(vao[index+DEBUG]);
+	loc = glGetAttribLocation(light_program, "vPosition");
+	glEnableVertexAttribArray(loc);
+	glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));	
+	//vertex normal setting
+	GLuint normalbuffer;
+	glGenBuffers(1, &normalbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+	glBufferData(GL_ARRAY_BUFFER, out_normal_map.size() * sizeof(glm::vec3), &out_normal_map[0], GL_STATIC_DRAW);
+	// 3rd attribute buffer : normals
+	GLuint vNormal = glGetAttribLocation(light_program, "vNormal");
+	glEnableVertexAttribArray(vNormal);
+	glVertexAttribPointer(
+		vNormal,                          // attribute
+		3,                                // size
+		GL_FLOAT,                         // type
+		GL_FALSE,                         // normalized?
+		0,                                // stride
+		BUFFER_OFFSET(0)                  // array buffer offset
+	);
+	
 	
 	return;
 }
