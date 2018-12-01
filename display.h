@@ -25,6 +25,17 @@ extern mat4 look_at;
 extern mat4 perspec;
 extern vec3 hand_loc;
 
+extern GLuint light_program;
+extern GLint light_ctm;
+extern GLint light_view;
+extern GLint normal_light;
+extern GLint light_diffuse;
+extern GLint light_ambient;
+extern GLint light_specular;
+extern GLint light_shine;
+extern GLint light_dir;
+
+
 #define LIFE_LIST_COLOR vec4(1.0, 1.0, 0.0, 1.0)
 #define LIFE_COLOR vec4(1.0, 0.0, 0.0, 1.0)
 #define WALL_COLOR vec4(0.58, 0.29, 0.0, 1.0)

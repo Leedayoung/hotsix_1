@@ -77,6 +77,7 @@ void Player::display() {
 	mat4 y_z = mat4(vec4(1.0, 0.0, 0.0, 0.0), vec4(0.0, 0.0, 1.0, 0.0), vec4(0.0, 1.0, 0.0, 0.0), vec4(0.0, 0.0, 0.0, 1.0));
 	mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(pos_x, pos_y, 0));
 	mat4 rot = glm::rotate(glm::mat4(1.0), 3.14f, vec3(0.0, 0.0, 1.0)) * glm::rotate(glm::mat4(1.0), 1.57f*mul, vec3(0.0, 0.0, 1.0));
+	mat4 view_mat = trans * rot* y_z *scale;
 	mat4 final_mat = per_look * trans*rot* y_z *scale;// *rot * scale;
 	vec4 vec_color;
 

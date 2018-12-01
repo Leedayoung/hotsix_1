@@ -22,7 +22,6 @@
 #include "Enemy.h"
 #include "Entity.h"
 #include "display.h"
-#include "sphere.h"
 #include "stb_image.h"
 
 
@@ -80,12 +79,22 @@ void init() {
 		vec4(0.5, 0.75, 0.0, 1.0), vec4(0.25, 1.0, 0.0, 1.0), vec4(0.0, 0.75, 0.0, 1.0)
 		, vec4(0.5, 0.0, 0.0, 1.0), vec4(1.0, 0.75, 0.0, 1.0), vec4(0.75, 1.0, 0.0, 1.0) };
 	
+	light_program = InitShader("light_vertex.glsl", "light_frag.glsl");
+	light_ctm = glGetUniformLocation(light_program, "ctm");
+	light_view = glGetUniformLocation(light_program, "view_model");
+	normal_light = glGetUniformLocation(light_program, "normal_mtx");
+	light_diffuse = glGetUniformLocation(light_program, "diffuse");
+	light_ambient = glGetUniformLocation(light_program, "ambient");
+	light_specular = glGetUniformLocation(light_program, "specular");
+	light_shine = glGetUniformLocation(light_program, "shiness");
+	light_dir = glGetUniformLocation(light_program, "l_dir");
+
 	program = InitShader("vshader1.glsl", "fshader1.glsl");
-	glUseProgram(program);
 	ctmParam = glGetUniformLocation(program, "ctm");
 	vColor = glGetUniformLocation(program, "color");
 	
-	
+	glUseProgram(light_program);
+
 	//load_obj_files("OBJ files/cu.txt", 0, WALL);
 	load_obj_files("OBJ files/dummy_obj_walk_pose_0.obj","OBJ files/dummy_red.jpg", 0, P_0);
 	//load_obj_files("OBJ files/dummy_obj_walk_pose_1.obj","OBJ files/dummy_red.jpg", 0, P_1);
@@ -103,6 +112,9 @@ void init() {
 	load_obj_files("OBJ files/M1911.obj","OBJ files/M1911-RIGHT.jpg", 0, GUN);
 	load_obj_files("OBJ files/bullet.obj","OBJ files/bullet.jpg", 0, BULL);
 	load_obj_files("OBJ files/cu.txt","OBJ files/wall.jpg", 0, WALL);
+
+
+	glUseProgram(program);
 
 	glGenVertexArrays(1, &vao[RECT]);
 	glBindVertexArray(vao[RECT]);

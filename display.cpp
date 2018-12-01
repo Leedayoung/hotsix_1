@@ -14,6 +14,18 @@ mat4 per_look;
 mat4 look_at;
 mat4 perspec;
 vec3 hand_loc;
+
+GLuint light_program;
+GLint light_ctm;
+GLint light_view;
+GLint normal_light;
+GLint light_diffuse;
+GLint light_ambient;
+GLint light_specular;
+GLint light_shine;
+GLint light_dir;
+
+
 treenode * player_down;
 treenode * player_up;
 treenode * player_left;
