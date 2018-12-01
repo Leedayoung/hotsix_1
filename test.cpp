@@ -196,11 +196,11 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 		else if (strcmp(lineHeader, "f") == 0) {
 			if (num == 0) num = 1;
 			std::string vertex1, vertex2, vertex3;
-			unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
+			unsigned int vertexIndex[4], uvIndex[4], normalIndex[4];
 
 			if (type == 0 || type == 2) {
 				int v3, uv3, t;
-				int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2], &v3, &uv3, &t);
+				int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2], &vertexIndex[3], &uvIndex[3], &normalIndex[3]);
 				if (matches == 9) {
 					if (type == 2 && m_num == 17) {
 						hand_loc = temp_vertices[vertexIndex[0] - 1];
@@ -224,7 +224,7 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 						rhand.push_back(temp_vertices[vertexIndex[0] - 1]);
 						rhand.push_back(temp_vertices[vertexIndex[1] - 1]);
 						rhand.push_back(temp_vertices[vertexIndex[2] - 1]);
-						rhand.push_back(temp_vertices[v3 - 1]);
+						rhand.push_back(temp_vertices[vertexIndex[3] - 1]);
 					}
 					vertexIndices.push_back(vertexIndex[0]);
 					vertexIndices.push_back(vertexIndex[1]);
@@ -236,7 +236,17 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 					normalIndices.push_back(normalIndex[1]);
 					normalIndices.push_back(normalIndex[2]);
 
-					vertexIndices.push_back(vertexIndex[1]);
+					vertexIndices.push_back(vertexIndex[0]);
+					vertexIndices.push_back(vertexIndex[2]);
+					vertexIndices.push_back(vertexIndex[3]);
+					uvIndices.push_back(uvIndex[0]);
+					uvIndices.push_back(uvIndex[2]);
+					uvIndices.push_back(uvIndex[3]);
+					normalIndices.push_back(normalIndex[0]);
+					normalIndices.push_back(normalIndex[2]);
+					normalIndices.push_back(normalIndex[3]);
+
+					/*vertexIndices.push_back(vertexIndex[1]);
 					vertexIndices.push_back(vertexIndex[2]);
 					vertexIndices.push_back(v3);
 					uvIndices.push_back(uvIndex[1]);
@@ -244,7 +254,7 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 					uvIndices.push_back(uv3);
 					normalIndices.push_back(normalIndex[1]);
 					normalIndices.push_back(normalIndex[2]);
-					normalIndices.push_back(t);
+					normalIndices.push_back(t);*/
 				}
 				else {
 					printf("File can't be read by our simple parser : ( Try exporting with other options\n");

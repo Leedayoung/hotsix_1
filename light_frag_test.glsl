@@ -14,6 +14,6 @@ out vec4 fcolor;
 void main()
 {
    float cosTheta = clamp( dot( normalize(normal_out),normalize(l_dir)), 0,1 );
-   fcolor = LightColor * cosTheta;
+   fcolor = LightColor * (cosTheta);
  
 }
