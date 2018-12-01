@@ -34,7 +34,7 @@ treenode * enemy_down;
 treenode * enemy_up;
 treenode * enemy_left;
 
-
+bool shading_mode;
 
 void make_character_up_down(treenode * player,bool set_color) {
 	vec4 grey = vec4(0.5, 0.5, 0.5, 1.0);

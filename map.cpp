@@ -266,6 +266,7 @@ Map::Map() {
 	object_init();
 	end = false;
 	player.set_life(2);
+	shading_mode = true;
 }
 /*Initializing Functions*/
 void Map::wall_maker() {
@@ -635,3 +636,7 @@ void Map::print(int x, int y, string string)
 	for (int i = 0; i < int(string.size()); i++)
 		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, string[i]);
 };
+
+void Map::change_shading_mode() {
+	shading_mode = !shading_mode;
+}

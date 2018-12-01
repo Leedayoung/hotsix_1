@@ -245,16 +245,6 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 					normalIndices.push_back(normalIndex[0]);
 					normalIndices.push_back(normalIndex[2]);
 					normalIndices.push_back(normalIndex[3]);
-
-					/*vertexIndices.push_back(vertexIndex[1]);
-					vertexIndices.push_back(vertexIndex[2]);
-					vertexIndices.push_back(v3);
-					uvIndices.push_back(uvIndex[1]);
-					uvIndices.push_back(uvIndex[2]);
-					uvIndices.push_back(uv3);
-					normalIndices.push_back(normalIndex[1]);
-					normalIndices.push_back(normalIndex[2]);
-					normalIndices.push_back(t);*/
 				}
 				else {
 					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
@@ -482,6 +472,9 @@ void player_move_3d(unsigned char key, int x, int y) {
 		break;
 	case ' ':
 		newmap.change_mode();
+		break;
+	case 'c':
+		newmap.change_shading_mode();
 	}
 	if (newmap.isEnd()) {
 		glutMouseFunc(NULL);

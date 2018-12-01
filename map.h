@@ -61,4 +61,5 @@ public:
 	void change_mode();
 	void valid_move_3d();
 	void rotate_3d(int dir);
+	void change_shading_mode();
 };
