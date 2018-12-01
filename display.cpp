@@ -26,6 +26,16 @@ GLint light_shine;
 GLint light_dir;
 GLint light_color;
 GLint shading_mod;
+
+GLint v_mod;
+GLint p_loc;
+GLint p_dir;
+GLint p_col;
+
+vec3 point_light_loc;
+vec3 point_light_dir;
+vec4 point_light_col;
+
 treenode * player_down;
 treenode * player_up;
 treenode * player_left;

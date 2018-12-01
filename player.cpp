@@ -12,6 +12,9 @@ Player::Player(int _pos_x, int _pos_y) {
 	pos_y = (float)_pos_y;
 	num_i = 0;
 	direc = direction::down;
+
+	point_light_loc = vec3(pos_x, pos_y, 1.0);
+	point_light_dir = vec3(0.0, 1.0, 0.0);
 }
 int Player::get_num_i() {
 	return num_i;
@@ -54,6 +57,7 @@ void Player::move() {
 		pos_x += s;
 		break;
 	}
+	point_light_loc = vec3(pos_x, pos_y, 1.0);
 }
 
 void Player::display() {

@@ -56,13 +56,14 @@ void Enemy::display() {
 	mat4 rot = glm::rotate(glm::mat4(1.0), 1.57f*mul, vec3(0.0, 0.0, 1.0));
 
 	mat4 view_mat = rot* y_z;
+	mat4 view_mat_pos = trans * rot * y_z * scale;
 	mat4 final_mat = per_look * trans * rot * y_z * scale;// *rot * scale;
 	vec4 vec_color;
 	float shiness = 0.5;
 	vec3 lighting = vec3(1.0, 1.0, 1.0);
 	glUniformMatrix4fv(light_ctm, 1, GL_FALSE, &final_mat[0][0]);
 	glUniformMatrix4fv(light_view, 1, GL_FALSE, &view_mat[0][0]);
-	vec_color = vec4(0.0, 0.0, 0.5, 1);
+	vec_color = vec4(0.0, 0.0, 1.0, 1.0);
 	glUniform4fv(light_diffuse, 1, &vec_color[0]);
 	glUniform4fv(light_ambient, 1, &vec_color[0]);
 	glUniform4fv(light_specular, 1, &vec_color[0]);
@@ -71,6 +72,12 @@ void Enemy::display() {
 
 	glUniform1i(shading_mod, (int)shading_mode);
 	glUniform4fv(light_color, 1, &vec_color[0]);
+	
+	glUniformMatrix4fv(v_mod, 1, GL_FALSE, &view_mat_pos[0][0]);
+	glUniform3fv(p_loc, 1, &point_light_loc[0]);
+	glUniform3fv(p_dir, 1, &point_light_dir[0]);
+	glUniform4fv(p_col, 1, &point_light_col[0]);
+
 	/*
 	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
 	vec_color = BACK_COLOR;

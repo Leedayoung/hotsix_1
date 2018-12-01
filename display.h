@@ -26,6 +26,7 @@ extern mat4 per_look;
 extern mat4 look_at;
 extern mat4 perspec;
 extern vec3 hand_loc;
+extern bool shading_mode;
 
 extern GLuint light_program;
 extern GLint light_ctm;
@@ -38,7 +39,15 @@ extern GLint light_shine;
 extern GLint light_dir;
 extern GLint light_color;
 extern GLint shading_mod;
-extern bool shading_mode;
+
+extern GLint v_mod;
+extern GLint p_loc;
+extern GLint p_dir;
+extern GLint p_col;
+
+extern vec3 point_light_loc;
+extern vec3 point_light_dir;
+extern vec4 point_light_col;
 
 
 #define LIFE_LIST_COLOR vec4(1.0, 1.0, 0.0, 1.0)

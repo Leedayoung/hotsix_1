@@ -267,6 +267,8 @@ Map::Map() {
 	end = false;
 	player.set_life(2);
 	shading_mode = true;
+
+	point_light_col = vec4(1.0, 0.0, 0.0, 1.0);
 }
 /*Initializing Functions*/
 void Map::wall_maker() {
