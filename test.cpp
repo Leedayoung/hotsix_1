@@ -64,10 +64,10 @@ int main(int argc, char **argv) {
 
 	glutReshapeFunc(reshape);
 	glutDisplayFunc(display);
-	glutKeyboardFunc(player_move_3d);
-	glutMouseFunc(mouse_bullet);
-	glutTimerFunc(1000, move_enemies, 1);
-	glutTimerFunc(150, move_bullets, 1);
+	//glutKeyboardFunc(player_move_3d);
+	//glutMouseFunc(mouse_bullet);
+	//glutTimerFunc(1000, move_enemies, 1);
+	//glutTimerFunc(150, move_bullets, 1);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 	glutMainLoop();
 	return 0;
@@ -88,16 +88,16 @@ void init() {
 	
 	//load_obj_files("OBJ files/cu.txt", 0, WALL);
 	load_obj_files("OBJ files/dummy_obj_walk_pose_0.obj","OBJ files/dummy_red.jpg", 0, P_0);
-	load_obj_files("OBJ files/dummy_obj_walk_pose_1.obj","OBJ files/dummy_red.jpg", 0, P_1);
-	load_obj_files("OBJ files/dummy_obj_walk_pose_2.obj","OBJ files/dummy_red.jpg", 0, P_2);
-	load_obj_files("OBJ files/dummy_obj_walk_pose_3.obj","OBJ files/dummy_red.jpg", 0, P_3);
-	load_obj_files("OBJ files/dummy_obj_gun.obj", "OBJ files/dummy_red.jpg", 2, P_GUN);
+	//load_obj_files("OBJ files/dummy_obj_walk_pose_1.obj","OBJ files/dummy_red.jpg", 0, P_1);
+	//load_obj_files("OBJ files/dummy_obj_walk_pose_2.obj","OBJ files/dummy_red.jpg", 0, P_2);
+	//load_obj_files("OBJ files/dummy_obj_walk_pose_3.obj","OBJ files/dummy_red.jpg", 0, P_3);
+	//load_obj_files("OBJ files/dummy_obj_gun.obj", "OBJ files/dummy_red.jpg", 2, P_GUN);
 	
 	
 	load_obj_files("OBJ files/Skeleton_pose0.obj","OBJ files/dummy_wood.jpg", 0, E_0);
-	load_obj_files("OBJ files/Skeleton_pose1.obj","OBJ files/dummy_wood.jpg", 0, E_1);
-	load_obj_files("OBJ files/Skeleton_pose2.obj","OBJ files/dummy_wood.jpg", 0, E_2);
-	load_obj_files("OBJ files/Skeleton_pose3.obj","OBJ files/dummy_wood.jpg", 0, E_3);
+	//load_obj_files("OBJ files/Skeleton_pose1.obj","OBJ files/dummy_wood.jpg", 0, E_1);
+	//load_obj_files("OBJ files/Skeleton_pose2.obj","OBJ files/dummy_wood.jpg", 0, E_2);
+	//load_obj_files("OBJ files/Skeleton_pose3.obj","OBJ files/dummy_wood.jpg", 0, E_3);
 	
 
 	load_obj_files("OBJ files/M1911.obj","OBJ files/M1911-RIGHT.jpg", 0, GUN);
@@ -161,8 +161,9 @@ void display() {
 	*/
 }
 void load_obj_files(string file_path, string texture_path, int type, int index) {
-	vector< unsigned int > vertexIndices;
+	vector< unsigned int > vertexIndices, uvIndices, normalIndices;
 	vector< glm::vec3 > temp_vertices;
+	vector< glm::vec2 > temp_uvs;
 
 	FILE * file = fopen(&file_path[0], "r");
 	if (file == NULL) {
@@ -189,24 +190,32 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 			fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
 			temp_vertices.push_back(vertex);
 		}
+		else if (strcmp(lineHeader, "vt") == 0) {
+			glm::vec2 uv;
+			fscanf(file, "%f %f\n", &uv.x, &uv.y);
+			temp_uvs.push_back(uv);
+		}
 		else if (strcmp(lineHeader, "f") == 0) {
 			if (num == 0) num = 1;
 			std::string vertex1, vertex2, vertex3;
 			unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
-			
-			if (type == 0 || type ==2) {
+
+			if (type == 0 || type == 2) {
 				int v3, uv3, t;
-				int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2],&v3,&uv3,&t);
-				if (matches == 9){
-					if ( type == 2 && m_num == 17) {
+				int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2], &v3, &uv3, &t);
+				if (matches == 9) {
+					if (type == 2 && m_num == 17) {
 						hand_loc = temp_vertices[vertexIndex[0] - 1];
-						rhand.push_back(temp_vertices[vertexIndex[0]-1]);
-						rhand.push_back(temp_vertices[vertexIndex[1]-1]);
-						rhand.push_back(temp_vertices[vertexIndex[2]-1]);
+						rhand.push_back(temp_vertices[vertexIndex[0] - 1]);
+						rhand.push_back(temp_vertices[vertexIndex[1] - 1]);
+						rhand.push_back(temp_vertices[vertexIndex[2] - 1]);
 					}
 					vertexIndices.push_back(vertexIndex[0]);
 					vertexIndices.push_back(vertexIndex[1]);
 					vertexIndices.push_back(vertexIndex[2]);
+					uvIndices.push_back(uvIndex[0]);
+					uvIndices.push_back(uvIndex[1]);
+					uvIndices.push_back(uvIndex[2]);
 				}
 				else if (matches == 12) {
 					if (type == 2 && m_num == 17) {
@@ -219,14 +228,21 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 					vertexIndices.push_back(vertexIndex[0]);
 					vertexIndices.push_back(vertexIndex[1]);
 					vertexIndices.push_back(vertexIndex[2]);
+					uvIndices.push_back(uvIndex[0]);
+					uvIndices.push_back(uvIndex[1]);
+					uvIndices.push_back(uvIndex[2]);
+
 					vertexIndices.push_back(vertexIndex[1]);
 					vertexIndices.push_back(vertexIndex[2]);
 					vertexIndices.push_back(v3);
-				}else{
-					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
-					return ;
+					uvIndices.push_back(uvIndex[1]);
+					uvIndices.push_back(uvIndex[2]);
+					uvIndices.push_back(uv3);
 				}
-				
+				else {
+					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
+					return;
+				}
 			}
 			else {
 				int v1, v2, v3, v4;
@@ -237,17 +253,26 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 					vertexIndices.push_back(v1);
 					vertexIndices.push_back(v2);
 					vertexIndices.push_back(v3);
+					uvIndices.push_back(uv1);
+					uvIndices.push_back(uv2);
+					uvIndices.push_back(uv3);
 
 					vertexIndices.push_back(v2);
 					vertexIndices.push_back(v3);
 					vertexIndices.push_back(v4);
+					uvIndices.push_back(uv2);
+					uvIndices.push_back(uv3);
+					uvIndices.push_back(uv4);
 				}
 				else if (matches == 6) {
 					vertexIndices.push_back(v1);
 					vertexIndices.push_back(v2);
 					vertexIndices.push_back(v3);
+					uvIndices.push_back(uv1);
+					uvIndices.push_back(uv2);
+					uvIndices.push_back(uv3);
 				}
-				
+
 			}
 		}
 	}
@@ -262,14 +287,14 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 		out_vertices.push_back(vertex);
 	}
 
-	/*for (unsigned int i = 0; i < uvIndices.size(); i++) {
+	for (unsigned int i = 0; i < uvIndices.size(); i++) {
 		unsigned int uvIndex = uvIndices[i];
 		glm::vec2 t = temp_uvs[uvIndex - 1];
 		out_uv_map.push_back(t);
 		//glm::vec4 vertex = glm::vec4(t.x, t.y, 0.0, 1.0);
 		//out_vertices.push_back(vertex);
-	}*/
-	/*
+	}
+	
 	unsigned int texture;
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
@@ -278,12 +303,12 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
+	
 	int width, height, nrChannels;
 	unsigned char *data = stbi_load(&texture_path[0], &width, &height, &nrChannels, 0);
 	if (data) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
+		//glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else {
 		cout << "Faile to load texture" << endl;
@@ -292,7 +317,7 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);	
-	*/
+	
 
 	glGenVertexArrays(1, &vao[index]);
 	glBindVertexArray(vao[index]);

@@ -36,14 +36,22 @@ extern vec3 hand_loc;
 #define GUN_COLOR vec4(0.2, 0.2, 0.2, 0.5)
 
 #define P_0 0
-#define P_1 1
+#define P_1 0
+#define P_2 0
+#define P_3 0
+
+/*#define P_1 1
 #define P_2 2
 #define P_3 3
-
+*/
 #define E_0 4
-#define E_1 5
+#define E_1 4
+#define E_2 4
+#define E_3 4
+/*#define E_1 5
 #define E_2 6
 #define E_3 7
+*/
 
 #define GUN v_size-4
 #define P_GUN v_size-3
