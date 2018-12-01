@@ -37,7 +37,9 @@ extern GLint light_specular;
 extern GLint light_shine;
 extern GLint light_dir;
 extern GLint light_color;
+extern GLint shading_mod;
 extern bool shading_mode;
+
 
 #define LIFE_LIST_COLOR vec4(1.0, 1.0, 0.0, 1.0)
 #define LIFE_COLOR vec4(1.0, 0.0, 0.0, 1.0)

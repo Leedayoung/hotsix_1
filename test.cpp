@@ -89,6 +89,7 @@ void init() {
 	light_shine = glGetUniformLocation(light_program, "shiness");
 	light_dir = glGetUniformLocation(light_program, "l_dir");
 	light_color = glGetUniformLocation(light_program, "LightColor");
+	shading_mod = glGetUniformLocation(light_program, "flat");
 
 	program = InitShader("vshader1.glsl", "fshader1.glsl");
 	ctmParam = glGetUniformLocation(program, "ctm");
@@ -287,7 +288,7 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 	hand_loc = vec3(hand_loc.x / rhand.size(), hand_loc.y / rhand.size(), hand_loc.z / rhand.size());
 	std::vector < glm::vec4 > out_vertices;
 	std::vector <glm::vec2> out_uv_map;
-	std::vector <glm::vec3> out_normal_map;
+	std::vector <glm::vec3> out_normal_map, out_normal_map_flat;
 
 	for (unsigned int i = 0; i < vertexIndices.size(); i++) {
 		unsigned int vertexIndex = vertexIndices[i];
@@ -301,10 +302,20 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 		glm::vec2 t = temp_uvs[uvIndex - 1];
 		out_uv_map.push_back(t);
 	}
+	glm::vec3 sum_vec = vec3(0.0, 0.0, 0.0);
 	for (unsigned int i = 0; i < normalIndices.size(); i++) {
 		unsigned int normalIndex = normalIndices[i];
 		glm::vec3 normal = temp_normals[normalIndex - 1];
 		out_normal_map.push_back(normal);
+		sum_vec += normal;
+		
+		if (i % 3 == 2) {
+			sum_vec /= 3;
+			out_normal_map_flat.push_back(sum_vec);
+			out_normal_map_flat.push_back(sum_vec);
+			out_normal_map_flat.push_back(sum_vec);
+			sum_vec = vec3(0.0, 0.0, 0.0);
+		}
 	}
 
 	
@@ -366,7 +377,21 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 		BUFFER_OFFSET(0)                  // array buffer offset
 	);
 	
-	
+	//flat shading setting
+	glGenBuffers(1, &normalbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+	glBufferData(GL_ARRAY_BUFFER, out_normal_map_flat.size() * sizeof(glm::vec3), &out_normal_map_flat[0], GL_STATIC_DRAW);
+	// 3rd attribute buffer : normals
+	GLuint vNormal_flat = glGetAttribLocation(light_program, "vNormal_flat");
+	glEnableVertexAttribArray(vNormal_flat);
+	glVertexAttribPointer(
+		vNormal_flat,                          // attribute
+		3,                                // size
+		GL_FLOAT,                         // type
+		GL_FALSE,                         // normalized?
+		0,                                // stride
+		BUFFER_OFFSET(0)                  // array buffer offset
+	);
 	return;
 }
 static char* readShaderSource(const char* shaderFile)
