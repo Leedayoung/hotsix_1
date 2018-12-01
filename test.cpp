@@ -90,11 +90,11 @@ void init() {
 	light_dir = glGetUniformLocation(light_program, "l_dir");
 
 	program = InitShader("vshader1.glsl", "fshader1.glsl");
-	glUseProgram(program);
 	ctmParam = glGetUniformLocation(program, "ctm");
 	vColor = glGetUniformLocation(program, "color");
 	
-	
+	glUseProgram(light_program);
+
 	//load_obj_files("OBJ files/cu.txt", 0, WALL);
 	load_obj_files("OBJ files/dummy_obj_walk_pose_0.obj","OBJ files/dummy_red.jpg", 0, P_0);
 	load_obj_files("OBJ files/dummy_obj_walk_pose_1.obj","OBJ files/dummy_red.jpg", 0, P_1);
@@ -112,6 +112,9 @@ void init() {
 	load_obj_files("OBJ files/M1911.obj","OBJ files/M1911-RIGHT.jpg", 0, GUN);
 	load_obj_files("OBJ files/bullet.obj","OBJ files/bullet.jpg", 0, BULL);
 	load_obj_files("OBJ files/cu.txt","OBJ files/wall.jpg", 0, WALL);
+
+
+	glUseProgram(program);
 
 	glGenVertexArrays(1, &vao[RECT]);
 	glBindVertexArray(vao[RECT]);

@@ -40,7 +40,6 @@ void Map::display() {
 		z = 1.3f;
 		break;
 	}
-
 	switch (direc) {
 	case direction::up:
 		c_y = s;
@@ -59,7 +58,6 @@ void Map::display() {
 		e_x -= e;
 		break;
 	}
-	
 	mat4 look_at;
 	if (mode == 1) {
 		look_at = glm::lookAt(glm::vec3(e_x, e_y, z), glm::vec3(e_x + c_x, e_y + c_y, 0.4f), glm::vec3(0.0f, 0.0f, 1.0f));
@@ -132,7 +130,9 @@ void Map::display() {
 		it->update();
 	}
 	
+	glUseProgram(program);
 	player.display();
+
 
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_FILL);
