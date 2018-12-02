@@ -30,9 +30,9 @@ void Map::display() {
 	
 	switch (mode) {
 	case 0://3 person
-		s = 2;
+		s = 3.0;
 		e = 1;
-		z = 2.0f;
+		z = 4.5f;
 		break;
 	case 1://1 person
 		s = 1.3;
@@ -66,7 +66,17 @@ void Map::display() {
 		look_at = glm::lookAt(glm::vec3(e_x, e_y, z), glm::vec3(e_x + c_x, e_y + c_y, 0.4f), glm::vec3(0.0f, 0.0f, 1.0f));
 	}
 
+	//Pre-define-directional light
+	glUseProgram(light_program);
+	float shiness = 100;
+	vec4 light_color_ = vec4(1.0, 1.0, 1.0, 1.0);
+	vec3 lighting = vec3(0.004, 0.008, 0.0);
 	cam_position = vec4(e_x, e_y, z, 1.0);
+	glUniform4fv(light_cam, 1, &cam_position[0]);
+	glUniform4fv(light_color, 1, &light_color_[0]);
+	glUniform1f(light_shine, shiness);
+	glUniform3fv(light_dir, 1, &lighting[0]);
+
 
 	mat4 perspec = glm::perspective(glm::radians(80.0f), 1.0f, 0.001f, 5000.0f);
 	per_look = perspec * look_at;
@@ -187,69 +197,78 @@ void Map::display() {
 	return;
 }
 void Map::draw_map(int y, int x, int e_map[map_size][map_size], Enemy e_list[50], int b_map[map_size][map_size], Bullet b_list[50]) {
+	glUseProgram(light_program);
 	int index;
-
 	index = WALL;
-	glBindVertexArray(vao[index]);
+	glBindVertexArray(vao[index+DEBUG]);
 	mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, -0.05))*scale(mat4(1.0), vec3(1.0, 1.0, 0.1));
 	mat4 final_mat = per_look * trans;
-	vec4 vec_color;
+	vec4 vec_color = vec4(0.5, 0.5, 0.0, 1.0);
+	vec4 ambient_color = vec4(0.15, 0.15, 0.0, 1.0);
+	mat4 inv_view_mat = inverse(trans);
+	mat4 MVI = transpose(inv_view_mat);
+	mat3 normal_mtx = mat3(MVI);
 
-	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
+	glUniformMatrix4fv(light_ctm, 1, GL_FALSE, &final_mat[0][0]);
+	glUniformMatrix4fv(light_view, 1, GL_FALSE, &trans[0][0]);
+	glUniformMatrix3fv(light_normal, 1, GL_FALSE, &normal_mtx[0][0]);
 
-	vec_color = BACK_COLOR;
-	glUniform4fv(vColor, 1, &vec_color[0]);
+	glUniform4fv(light_diffuse, 1, &vec_color[0]);
+	glUniform4fv(light_ambient, 1, &ambient_color[0]);
+	glUniform4fv(light_specular, 1, &vec_color[0]);
+
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_FILL);
 	glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
 
-	vec_color = WALL_COLOR;
-	glUniform4fv(vColor, 1, &vec_color[0]);
-	glPolygonMode(GL_FRONT, GL_LINE);
-	glPolygonMode(GL_BACK, GL_LINE);
-	glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
-
 	if (map_arr[y][x] == map_info::wall) {
 		index = WALL;
-		glBindVertexArray(vao[index]);
-		mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0.5));
-		mat4 final_mat = per_look * trans;
-		vec4 vec_color;
-		
-		glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
-		
-		vec_color = BACK_COLOR;
-		glUniform4fv(vColor, 1, &vec_color[0]);
+		glBindVertexArray(vao[index+DEBUG]);
+		trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0.5));
+		mat4 scale = glm::scale(mat4(1.0), vec3(1.0, 1.0, 4.0));
+		final_mat = per_look * trans *scale;
+		mat4 vm = trans *scale;
+		vec_color = WALL_COLOR;
+		ambient_color = vec4(0.29, 0.15, 0.0, 1.0);
+		inv_view_mat = inverse(vm);
+		MVI = transpose(inv_view_mat);
+		normal_mtx = mat3(MVI);
+
+		glUniformMatrix4fv(light_ctm, 1, GL_FALSE, &final_mat[0][0]);
+		glUniformMatrix4fv(light_view, 1, GL_FALSE, &trans[0][0]);
+		glUniformMatrix3fv(light_normal, 1, GL_FALSE, &normal_mtx[0][0]);
+
+		glUniform4fv(light_diffuse, 1, &vec_color[0]);
+		glUniform4fv(light_ambient, 1, &ambient_color[0]);
+		glUniform4fv(light_specular, 1, &vec_color[0]);
+
 		glPolygonMode(GL_FRONT, GL_FILL);
 		glPolygonMode(GL_BACK, GL_FILL);
-		glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
-
-		vec_color = WALL_COLOR;
-		glUniform4fv(vColor, 1, &vec_color[0]);
-		glPolygonMode(GL_FRONT, GL_LINE);
-		glPolygonMode(GL_BACK, GL_LINE);
 		glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
 	}
 	else if (map_arr[y][x] == map_info::item) {
 		index = ITEM;
-		glBindVertexArray(vao[index]);
+		glBindVertexArray(vao[index+DEBUG]);
 		mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0.1));
 		mat4 scale = glm::scale(mat4(1.0), vec3(0.2, 0.2, 0.2));
 		mat4 final_mat = per_look * trans;
-		vec4 vec_color;
+		vec4 vec_color = vec4(0.5, 0.0, 0.0, 1.0);
+		ambient_color = vec4(0.25, 0.0, 0.0, 1.0);
 
-		glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
+		inv_view_mat = inverse(trans);
+		MVI = transpose(inv_view_mat);
+		normal_mtx = mat3(MVI);
 
-		vec_color = BACK_COLOR;
-		glUniform4fv(vColor, 1, &vec_color[0]);
+		glUniformMatrix4fv(light_ctm, 1, GL_FALSE, &final_mat[0][0]);
+		glUniformMatrix4fv(light_view, 1, GL_FALSE, &trans[0][0]);
+		glUniformMatrix3fv(light_normal, 1, GL_FALSE, &normal_mtx[0][0]);
+
+		glUniform4fv(light_diffuse, 1, &vec_color[0]);
+		glUniform4fv(light_ambient, 1, &ambient_color[0]);
+		glUniform4fv(light_specular, 1, &vec_color[0]);
+
 		glPolygonMode(GL_FRONT, GL_FILL);
 		glPolygonMode(GL_BACK, GL_FILL);
-		glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
-
-		vec_color = ITEM_COLOR;
-		glUniform4fv(vColor, 1, &vec_color[0]);
-		glPolygonMode(GL_FRONT, GL_LINE);
-		glPolygonMode(GL_BACK, GL_LINE);
 		glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
 	}
 	else if (e_map[y][x] != 0) {

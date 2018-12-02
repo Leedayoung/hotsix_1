@@ -10,6 +10,7 @@ uniform vec4 cam;
 
 out vec4 eye;
 out vec3 normal_out;
+out vec3 cam_out;
 
 void main()
 {
@@ -17,4 +18,5 @@ void main()
    normal_out = normalize(normal_mtx*vNormal);
    eye = cam - (view_model * vPosition);
    gl_Position = ctm * vPosition;
+   cam_out = vec3(cam);
 }

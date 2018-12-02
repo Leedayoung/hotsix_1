@@ -63,9 +63,9 @@ int main(int argc, char **argv) {
 	glutReshapeFunc(reshape);
 	glutDisplayFunc(display);
 	glutKeyboardFunc(player_move_3d);
-	//glutMouseFunc(mouse_bullet);
-	//glutTimerFunc(1000, move_enemies, 1);
-	//glutTimerFunc(150, move_bullets, 1);
+	glutMouseFunc(mouse_bullet);
+	glutTimerFunc(1000, move_enemies, 1);
+	glutTimerFunc(150, move_bullets, 1);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 	init();
 	
@@ -108,20 +108,20 @@ void init() {
 
 	//load_obj_files("OBJ files/cu.txt", 0, WALL);
 	load_obj_files("OBJ files/dummy_obj_walk_pose_0.obj","OBJ files/dummy_red.jpg", 0, P_0);
-	//load_obj_files("OBJ files/dummy_obj_walk_pose_1.obj","OBJ files/dummy_red.jpg", 0, P_1);
-	//load_obj_files("OBJ files/dummy_obj_walk_pose_2.obj","OBJ files/dummy_red.jpg", 0, P_2);
-	//load_obj_files("OBJ files/dummy_obj_walk_pose_3.obj","OBJ files/dummy_red.jpg", 0, P_3);
-	//load_obj_files("OBJ files/dummy_obj_gun.obj", "OBJ files/dummy_red.jpg", 2, P_GUN);
+	load_obj_files("OBJ files/dummy_obj_walk_pose_1.obj","OBJ files/dummy_red.jpg", 0, P_1);
+	load_obj_files("OBJ files/dummy_obj_walk_pose_2.obj","OBJ files/dummy_red.jpg", 0, P_2);
+	load_obj_files("OBJ files/dummy_obj_walk_pose_3.obj","OBJ files/dummy_red.jpg", 0, P_3);
+	load_obj_files("OBJ files/dummy_obj_gun.obj", "OBJ files/dummy_red.jpg", 2, P_GUN);
 	
 	
 	load_obj_files("OBJ files/Skeleton_pose0.obj","OBJ files/dummy_wood.jpg", 0, E_0);
-	//load_obj_files("OBJ files/Skeleton_pose1.obj","OBJ files/dummy_wood.jpg", 0, E_1);
-	//load_obj_files("OBJ files/Skeleton_pose2.obj","OBJ files/dummy_wood.jpg", 0, E_2);
-	//load_obj_files("OBJ files/Skeleton_pose3.obj","OBJ files/dummy_wood.jpg", 0, E_3);
+	load_obj_files("OBJ files/Skeleton_pose1.obj","OBJ files/dummy_wood.jpg", 0, E_1);
+	load_obj_files("OBJ files/Skeleton_pose2.obj","OBJ files/dummy_wood.jpg", 0, E_2);
+	load_obj_files("OBJ files/Skeleton_pose3.obj","OBJ files/dummy_wood.jpg", 0, E_3);
 	
 
-	//load_obj_files("OBJ files/M1911.obj","OBJ files/M1911-RIGHT.jpg", 0, GUN);
-	//load_obj_files("OBJ files/bullet.obj","OBJ files/bullet.jpg", 0, BULL);
+	load_obj_files("OBJ files/M1911.obj","OBJ files/M1911-RIGHT.jpg", 0, GUN);
+	load_obj_files("OBJ files/bullet.obj","OBJ files/bullet.jpg", 0, BULL);
 	load_obj_files("OBJ files/cu.txt","OBJ files/wall.jpg", 0, WALL);
 
 

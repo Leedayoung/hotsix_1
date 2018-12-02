@@ -43,25 +43,31 @@ void Bullet::display() {
 		break;
 	}
 	int index = BULL;
-	glBindVertexArray(vao[index]);
+
+	glBindVertexArray(vao[index+DEBUG]);
 	mat4 y_z = mat4(vec4(1.0, 0.0, 0.0, 0.0), vec4(0.0, 0.0, 1.0, 0.0), vec4(0.0, 1.0, 0.0, 0.0), vec4(0.0, 0.0, 0.0, 1.0));
 	mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(pos_x, pos_y, 0.0));
+	mat4 scale = glm::scale(glm::mat4(1.0), vec3(0.4f, 0.4f, 0.4f));
 	mat4 rot = glm::rotate(glm::mat4(1.0), 1.57f*mul, vec3(0.0, 0.0, 1.0));
-	mat4 final_mat = per_look * trans*rot * y_z;//  * y_z * scale;// *rot * scale;
-	vec4 vec_color;
-	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
-	
-	
-	vec_color = BACK_COLOR;
-	glUniform4fv(vColor, 1, &vec_color[0]);
+	mat4 view_mat_pos = trans * rot * y_z * scale;
+	mat4 final_mat = per_look * trans*rot * y_z* scale;//  * y_z * scale;// *rot * scale;
+	vec4 ambient_color = vec4(0.2, 0.0, 0.2, 1.0);
+	mat4 inv_view_mat = inverse(view_mat_pos);
+	mat4 MVI = transpose(inv_view_mat);
+	mat3 normal_mtx = mat3(MVI);
+
+	vec4 vec_color = BULLET_COLOR;
+	glUniformMatrix4fv(light_ctm, 1, GL_FALSE, &final_mat[0][0]);
+	glUniformMatrix4fv(light_view, 1, GL_FALSE, &view_mat_pos[0][0]);
+	glUniformMatrix3fv(light_normal, 1, GL_FALSE, &normal_mtx[0][0]);
+
+	glUniform4fv(light_diffuse, 1, &vec_color[0]);
+	glUniform4fv(light_ambient, 1, &ambient_color[0]);
+	glUniform4fv(light_specular, 1, &vec_color[0]);
+
+	glUniform1i(shading_mod, (int)shading_mode);
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_FILL);
 	glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
 
-	glLineWidth(0.00001);
-	vec_color = BULLET_COLOR;
-	glUniform4fv(vColor, 1, &vec_color[0]);
-	glPolygonMode(GL_FRONT, GL_LINE);
-	glPolygonMode(GL_BACK, GL_LINE);
-	glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
 }

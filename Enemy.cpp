@@ -49,20 +49,18 @@ void Enemy::display() {
 		mul = 3;
 		break;
 	}
-	mat4 scale = glm::scale(glm::mat4(1.0), vec3(0.1f, 0.05f, 0.1f));
+	mat4 scale = glm::scale(glm::mat4(1.0), vec3(0.08f, 0.04f, 0.08f));
 	mat4 y_z = mat4(vec4(1.0, 0.0, 0.0, 0.0), vec4(0.0, 0.0, 1.0, 0.0), vec4(0.0, 1.0, 0.0, 0.0), vec4(0.0, 0.0, 0.0, 1.0));
 	
-	mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(pos_x, pos_y, -0.25));
+	mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(pos_x, pos_y, -0.0));
 	mat4 rot = glm::rotate(glm::mat4(1.0), 1.57f*mul, vec3(0.0, 0.0, 1.0));
 
 	mat4 view_mat = rot* y_z;
 	mat4 view_mat_pos = trans * rot * y_z * scale;
 	mat4 final_mat = per_look * trans * rot * y_z * scale;// *rot * scale;
-	vec4 vec_color;
+	vec4 vec_color = vec4(0.5, 0.5, 0.5, 1.0);
+	vec4 ambient_color = vec4(0.1, 0.1, 0.1, 1.0);
 
-
-	float shiness = 10.0;
-	vec3 lighting = vec3(1.0, 1.0, 1.0);
 	mat4 inv_view_mat = inverse(view_mat_pos);
 	mat4 MVI = transpose(inv_view_mat);
 	mat3 normal_mtx = mat3(MVI);
@@ -71,16 +69,11 @@ void Enemy::display() {
 	glUniformMatrix4fv(light_view, 1, GL_FALSE, &view_mat[0][0]);
 	glUniformMatrix3fv(light_normal, 1, GL_FALSE, &normal_mtx[0][0]);
 
-	vec_color = vec4(0.5, 0.5, 0.5, 1.0);
-	glUniform4fv(light_cam, 1, &cam_position[0]);
 	glUniform4fv(light_diffuse, 1, &vec_color[0]);
-	glUniform4fv(light_ambient, 1, &vec_color[0]);
+	glUniform4fv(light_ambient, 1, &ambient_color[0]);
 	glUniform4fv(light_specular, 1, &vec_color[0]);
-	glUniform1f(light_shine, shiness);
-	glUniform3fv(light_dir, 1, &lighting[0]);
 
 	glUniform1i(shading_mod, (int)shading_mode);
-	glUniform4fv(light_color, 1, &vec_color[0]);
 	
 	/*
 	glUniformMatrix4fv(v_mod, 1, GL_FALSE, &view_mat_pos[0][0]);

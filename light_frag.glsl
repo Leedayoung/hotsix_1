@@ -2,6 +2,7 @@
 
 in vec4 eye;
 in vec3 normal_out;
+in vec3 cam_out;
 
 uniform vec4 diffuse;
 uniform vec4 ambient;
@@ -17,11 +18,11 @@ void main()
 
     vec3 n = normalize(normal_out);
     vec3 e = normalize(vec3(eye));
- 
-    float intensity = max(dot(n,l_dir), 0.0);
+    vec3 l_fixed = normalize(l_dir);
+    float intensity = max(dot(n,l_fixed), 0.0);
 
     if (intensity > 0.0) {
-        vec3 h = normalize(l_dir + e);  
+        vec3 h = normalize(l_fixed + e);  
 		float intSpec = max(dot(h,n), 0.0);
         spec = specular * pow(intSpec, shiness);
     }

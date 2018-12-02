@@ -113,7 +113,7 @@ void draw_seven_seg(int num, int pos) {
 void draw_a(mat4 trans_mtx_base) {
 	mat4 trans_mtx = glm::translate(trans_mtx_base, glm::vec3(width, 2*width+2*height, 0));
 	mat4 final_mtx = trans_mtx*scale_mtx_row;
-	vec4 vec_color = vec4(0.0, 0.0, 1.0, 1.0);
+	vec4 vec_color = TIME_SEG_COLOR;
 	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mtx[0][0]);
 	glUniform4fv(vColor, 1, &vec_color[0]);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
@@ -121,7 +121,7 @@ void draw_a(mat4 trans_mtx_base) {
 void draw_b(mat4 trans_mtx_base) {
 	mat4 trans_mtx = glm::translate(trans_mtx_base, glm::vec3(width+height, 2 * width + height, 0));
 	mat4 final_mtx = trans_mtx*scale_mtx_col;
-	vec4 vec_color = vec4(0.0, 0.0, 1.0, 1.0);
+	vec4 vec_color = TIME_SEG_COLOR;
 	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mtx[0][0]);
 	glUniform4fv(vColor, 1, &vec_color[0]);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
@@ -129,7 +129,7 @@ void draw_b(mat4 trans_mtx_base) {
 void draw_c(mat4 trans_mtx_base) {
 	mat4 trans_mtx = glm::translate(trans_mtx_base, glm::vec3(width + height, width, 0));
 	mat4 final_mtx = trans_mtx*scale_mtx_col;
-	vec4 vec_color = vec4(0.0, 0.0, 1.0, 1.0);
+	vec4 vec_color = TIME_SEG_COLOR;
 	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mtx[0][0]);
 	glUniform4fv(vColor, 1, &vec_color[0]);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
@@ -137,7 +137,7 @@ void draw_c(mat4 trans_mtx_base) {
 void draw_d(mat4 trans_mtx_base) {
 	mat4 trans_mtx = glm::translate(trans_mtx_base, glm::vec3(width,0, 0));
 	mat4 final_mtx = trans_mtx*scale_mtx_row;
-	vec4 vec_color = vec4(0.0, 0.0, 1.0, 1.0);
+	vec4 vec_color = TIME_SEG_COLOR;
 	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mtx[0][0]);
 	glUniform4fv(vColor, 1, &vec_color[0]);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
@@ -145,7 +145,7 @@ void draw_d(mat4 trans_mtx_base) {
 void draw_e(mat4 trans_mtx_base) {
 	mat4 trans_mtx = glm::translate(trans_mtx_base, glm::vec3(0, width, 0));
 	mat4 final_mtx = trans_mtx*scale_mtx_col;
-	vec4 vec_color = vec4(0.0, 0.0, 1.0, 1.0);
+	vec4 vec_color = TIME_SEG_COLOR;
 	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mtx[0][0]);
 	glUniform4fv(vColor, 1, &vec_color[0]);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
@@ -153,7 +153,7 @@ void draw_e(mat4 trans_mtx_base) {
 void draw_f(mat4 trans_mtx_base) {
 	mat4 trans_mtx = glm::translate(trans_mtx_base, glm::vec3(0, 2 * width + height, 0));
 	mat4 final_mtx = trans_mtx*scale_mtx_col;
-	vec4 vec_color = vec4(0.0, 0.0, 1.0, 1.0);
+	vec4 vec_color = TIME_SEG_COLOR;
 	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mtx[0][0]);
 	glUniform4fv(vColor, 1, &vec_color[0]);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
@@ -161,7 +161,7 @@ void draw_f(mat4 trans_mtx_base) {
 void draw_g(mat4 trans_mtx_base) {
 	mat4 trans_mtx = glm::translate(trans_mtx_base, glm::vec3(width, width + height, 0));
 	mat4 final_mtx = trans_mtx*scale_mtx_row;
-	vec4 vec_color = vec4(0.0, 0.0, 1.0, 1.0);
+	vec4 vec_color = TIME_SEG_COLOR;
 	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mtx[0][0]);
 	glUniform4fv(vColor, 1, &vec_color[0]);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
@@ -169,7 +169,7 @@ void draw_g(mat4 trans_mtx_base) {
 void draw_dots(mat4 trans_mtx_base) {
 	mat4 trans_mtx1 = glm::translate(trans_mtx_base, glm::vec3(width + height, 2 * width + height, 0));
 	mat4 final_mtx1 = trans_mtx1*scale_dots;
-	vec4 vec_color = vec4(0.0, 0.0, 1.0, 1.0);
+	vec4 vec_color = TIME_SEG_COLOR;
 	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mtx1[0][0]);
 	glUniform4fv(vColor, 1, &vec_color[0]);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);

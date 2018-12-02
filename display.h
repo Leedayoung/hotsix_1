@@ -57,36 +57,29 @@ extern vec4 point_light_col;
 #define WALL_COLOR vec4(0.58, 0.29, 0.0, 1.0)
 #define ITEM_COLOR vec4(1.0, 0.0, 0.0, 1.0)
 #define PLAYER_COLOR vec4(0.01, 0.5, 0.5, 0.5)
-#define BULLET_COLOR vec4(0.0, 0.0, 0.0, 0.5)
-#define ENEMY_COLOR vec4(0.6, 0.6, 0.6, 0.5)
-#define BACK_COLOR vec4(1.0, 1.0, 1.0, 1.0)
-#define GUN_COLOR vec4(0.2, 0.2, 0.2, 0.5)
+#define BULLET_COLOR vec4(0.7, 0.0, 0.7, 1.0)
+#define ENEMY_COLOR vec4(0.8, 0.8, 0.8, 0.5)
+#define BACK_COLOR vec4(0.5, 0.5, 0.5, 1.0)
+#define GUN_COLOR vec4(0.3, 0.3, 0.3, 0.5)
+#define TIME_SEG_COLOR vec4(1.0, 0.7, 0.7, 1.0)
+
 
 #define P_0 0
-#define P_1 0
-#define P_2 0
-#define P_3 0
-
-/*#define P_1 1
+#define P_1 1
 #define P_2 2
 #define P_3 3
-*/
+
 #define E_0 4
-#define E_1 4
-#define E_2 4
-#define E_3 4
-/*#define E_1 5
+#define E_1 5
 #define E_2 6
 #define E_3 7
-*/
 
-#define GUN v_size-1
-//#define GUN v_size-4
+
+#define GUN v_size-4
 #define P_GUN v_size-3
 #define RECT 8
 #define HEART 9
-#define BULL v_size-1
-//#define BULL v_size-2
+#define BULL v_size-2
 #define WALL v_size-1
 #define ITEM v_size-1
 
