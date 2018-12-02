@@ -45,6 +45,10 @@ GLint normal_ambient;
 GLint normal_specular;
 GLint normal_shine;
 GLint normal_dir;
+GLint normal_power1;
+GLint normal_power2;
+GLint normal_power3;
+GLint normal_player_dir;
 
 GLint v_mod;
 GLint p_loc;

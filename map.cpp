@@ -69,9 +69,9 @@ void Map::display() {
 	//Pre-define-directional light
 	glUseProgram(light_program);
 	float shiness = 10;
-	float light1 = 0.4;
-	float light2 = 0.5;
-	float light3 = 0.5;
+	float light1 = 0.25;
+	float light2 = 0.3;
+	float light3 = 0.3;
 	vec4 light_color_ = vec4(1.0, 1.0, 1.0, 1.0);
 	vec3 lighting = vec3(1.0, 1.0, 0.5);
 	float x = player.get_x();
@@ -93,6 +93,10 @@ void Map::display() {
 	glUniform1f(normal_shine, shiness);
 	glUniform3fv(normal_dir, 1, &lighting[0]);
 	glUniform3fv(normal_player, 1, &player_vec[0]);
+	glUniform1i(normal_player_dir, player.get_direction());
+	glUniform1f(normal_power1, light1);
+	glUniform1f(normal_power2, light2);
+	glUniform1f(normal_power3, light3);
 
 	glUseProgram(light_program);
 	mat4 perspec = glm::perspective(glm::radians(80.0f), 1.0f, 0.001f, 5000.0f);
@@ -192,8 +196,8 @@ void Map::draw_map(int y, int x, int e_map[map_size][map_size], Enemy e_list[50]
 	glBindVertexArray(vao[index+DEBUG]);
 	mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, -0.05))*scale(mat4(1.0), vec3(1.0, 1.0, 0.1));
 	mat4 final_mat = per_look * trans;
-	vec4 vec_color = vec4(0.5, 0.5, 0.0, 1.0);
-	vec4 ambient_color = vec4(0.15, 0.15, 0.0, 1.0);
+	vec4 vec_color = vec4(0.2, 0.5, 0.0, 1.0);
+	vec4 ambient_color = vec4(0.02, 0.05, 0.0, 1.0);
 	mat4 inv_view_mat = inverse(trans);
 	mat4 MVI = transpose(inv_view_mat);
 	mat3 normal_mtx = mat4(1.0);
@@ -220,7 +224,7 @@ void Map::draw_map(int y, int x, int e_map[map_size][map_size], Enemy e_list[50]
 		final_mat = per_look * trans *scale;
 		mat4 vm = trans *scale;
 		vec_color = WALL_COLOR;
-		ambient_color = vec4(0.29, 0.15, 0.0, 0.5);
+		ambient_color = vec4(0.10, 0.05, 0.0, 0.5);
 		inv_view_mat = inverse(vm);
 		MVI = transpose(inv_view_mat);
 		normal_mtx = mat4(1.0);

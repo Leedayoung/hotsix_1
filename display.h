@@ -47,6 +47,7 @@ extern GLint light_power2;
 extern GLint light_power3;
 extern GLint light_player_dir;
 
+
 extern GLuint normal_program;
 extern GLint normal_ctm;
 extern GLint normal_normal_model;
@@ -58,6 +59,10 @@ extern GLint normal_ambient;
 extern GLint normal_specular;
 extern GLint normal_shine;
 extern GLint normal_dir;
+extern GLint normal_power1;
+extern GLint normal_power2;
+extern GLint normal_power3;
+extern GLint normal_player_dir;
 
 extern GLint v_mod;
 extern GLint p_loc;

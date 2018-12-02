@@ -92,6 +92,10 @@ void init() {
 	normal_specular = glGetUniformLocation(normal_program, "specular");
 	normal_shine = glGetUniformLocation(normal_program, "shiness");
 	normal_dir = glGetUniformLocation(normal_program, "l_dir");
+	normal_power1 = glGetUniformLocation(normal_program, "light_power1");
+	normal_power2 = glGetUniformLocation(normal_program, "light_power2");
+	normal_power3 = glGetUniformLocation(normal_program, "light_power3");
+	normal_player_dir = glGetUniformLocation(normal_program, "dir");
 
 
 	light_program = InitShader("light_vertex.glsl", "light_frag.glsl");

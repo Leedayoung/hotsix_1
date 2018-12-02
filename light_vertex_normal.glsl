@@ -11,6 +11,8 @@ uniform mat4 normal_model;
 uniform mat4 view_model;
 uniform vec4 cam;
 uniform vec3 player;
+uniform int dir;
+
 
 out mat3 TBN;
 out vec2 UV;
@@ -24,6 +26,9 @@ void main()
 {
 	gl_Position = ctm * vPosition;
 	
+	float w = 1.0;
+    float h = 1.2;
+    float al = 1.0;
 	UV = _uv;
 	vec3 T = (vec4(normalize(tangent),1)).xyz;
     vec3 N = (vec4(normalize(vNormal),1)).xyz;
@@ -32,8 +37,26 @@ void main()
 
 	eye = TBN*vec3(cam - (view_model * vPosition));
 	cam_out = vec3(cam);
-	vec3 light1_dir = TBN * (player + vec3(1.0,1.0,1.0));
-	vec3 light2_dir = TBN * (player + vec3(-1.0,-1.0,1.0));
+	vec3 light1_dir;
+	vec3 light2_dir;
+	 if(dir == 0){
+    light1_dir = TBN * (player + vec3(w,h,al));
+	light2_dir = TBN * (player + vec3(-w,h,al));
+	}
+   else if(dir == 1){
+    light1_dir = TBN * (player + vec3(h,w,al));
+	light2_dir = TBN * (player + vec3(h,-w,al));
+   }
+   else if(dir == 2){ 
+    light1_dir = TBN * (player + vec3(w,-h,al));
+	light2_dir = TBN * (player + vec3(-w,-h,al));
+   }
+   else if(dir == 3){  
+    light1_dir = TBN * (player + vec3(-h,-w,al));
+	light2_dir = TBN * (player + vec3(-h, w,al));
+   }
+
+
 	point1_light = TBN * (light1_dir - vec3(view_model * vPosition));
 	point2_light = TBN * (light2_dir - vec3(view_model * vPosition));
 }
