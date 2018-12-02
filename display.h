@@ -40,6 +40,13 @@ extern GLint light_dir;
 extern GLint light_color;
 extern GLint shading_mod;
 
+extern GLuint normal_program;
+extern GLint normal_light_pos;
+extern GLint normal_view_pos;
+extern GLint normal_ctm;
+extern GLint normal_view_model;
+extern GLint normal_view_model_pos;
+
 extern GLint v_mod;
 extern GLint p_loc;
 extern GLint p_dir;

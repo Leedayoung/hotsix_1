@@ -27,6 +27,14 @@ GLint light_dir;
 GLint light_color;
 GLint shading_mod;
 
+GLuint normal_program;
+GLint normal_light_pos;
+GLint normal_view_pos;
+GLint normal_ctm;
+GLint normal_view_model;
+GLint normal_view_model_pos;
+
+
 GLint v_mod;
 GLint p_loc;
 GLint p_dir;

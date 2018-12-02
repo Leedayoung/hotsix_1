@@ -23,7 +23,7 @@
 #include "Entity.h"
 #include "display.h"
 #include "stb_image.h"
-
+#include "TextureLoading.h"
 
 using namespace std;
 using namespace glm;
@@ -58,8 +58,8 @@ int main(int argc, char **argv) {
 	glutCreateWindow("GAME");
 	glutMouseFunc(mouse_bullet);
 	glewInit();
-	//glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 	glutReshapeFunc(reshape);
 	glutDisplayFunc(display);
 	glutKeyboardFunc(player_move_3d);
@@ -80,7 +80,14 @@ void init() {
 	vec4 heart[6] = {
 		vec4(0.5, 0.75, 0.0, 1.0), vec4(0.25, 1.0, 0.0, 1.0), vec4(0.0, 0.75, 0.0, 1.0)
 		, vec4(0.5, 0.0, 0.0, 1.0), vec4(1.0, 0.75, 0.0, 1.0), vec4(0.75, 1.0, 0.0, 1.0) };
-	
+
+	normal_program = InitShader("light_vertex_test_normal.glsl", "light_frag_test_normal.glsl");
+	normal_light_pos = glGetUniformLocation(normal_program, "lightPos");
+	normal_view_pos = glGetUniformLocation(normal_program, "viewPos");
+	normal_ctm = glGetUniformLocation(normal_program, "ctm");
+	normal_view_model = glGetUniformLocation(normal_program, "view_model");
+	normal_view_model_pos = glGetUniformLocation(normal_program, "viewPos");
+
 	light_program = InitShader("light_vertex_test.glsl", "light_frag_test.glsl");
 	light_ctm = glGetUniformLocation(light_program, "ctm");
 	light_view = glGetUniformLocation(light_program, "view_model");
@@ -121,7 +128,8 @@ void init() {
 
 	//load_obj_files("OBJ files/M1911.obj","OBJ files/M1911-RIGHT.jpg", 0, GUN);
 	//load_obj_files("OBJ files/bullet.obj","OBJ files/bullet.jpg", 0, BULL);
-	load_obj_files("OBJ files/cu.txt","OBJ files/wall.jpg", 0, WALL);
+	load_obj_files_normal("OBJ files/cube.obj", WALL);
+	//load_obj_files("OBJ files/cube.obj","OBJ files/wall.jpg", 0, WALL);
 
 
 	glUseProgram(program);
@@ -325,7 +333,6 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 			sum_vec = vec3(0.0, 0.0, 0.0);
 		}
 	}
-
 	
 	unsigned int texture;
 	glGenTextures(1, &texture);
@@ -385,6 +392,285 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 		BUFFER_OFFSET(0)                  // array buffer offset
 	);
 	
+	//flat shading setting
+	glGenBuffers(1, &normalbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+	glBufferData(GL_ARRAY_BUFFER, out_normal_map_flat.size() * sizeof(glm::vec3), &out_normal_map_flat[0], GL_STATIC_DRAW);
+	// 3rd attribute buffer : normals
+	GLuint vNormal_flat = glGetAttribLocation(light_program, "vNormal_flat");
+	glEnableVertexAttribArray(vNormal_flat);
+	glVertexAttribPointer(
+		vNormal_flat,                          // attribute
+		3,                                // size
+		GL_FLOAT,                         // type
+		GL_FALSE,                         // normalized?
+		0,                                // stride
+		BUFFER_OFFSET(0)                  // array buffer offset
+	);
+	return;
+}
+GLuint loadTGA_glfw(const char * imagepath) {
+
+	// Create one OpenGL texture
+	GLuint textureID;
+	glGenTextures(1, &textureID);
+	// "Bind" the newly created texture : all future texture functions will modify this texture
+	glBindTexture(GL_TEXTURE_2D, textureID);
+	
+	unsigned int width, height;
+	unsigned char * data = loadBMPRaw(imagepath, width, height, false);
+	// Read the file, call glTexImage2D with the right parameters
+	//glfwLoadTexture2D(imagepath, 0);
+	
+	GLint mode = GL_RGB;                   // Set the mode
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	// Create the texture. We get the offsets from the image, then we use it with the image's
+	// pixel data to create it.
+	glTexImage2D(GL_TEXTURE_2D, 0, mode, width, height, 0, mode, GL_UNSIGNED_BYTE, data);
+	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	// Return the ID of the texture we just created
+	return textureID;
+}
+
+/*void computeTangentBasis(
+	// inputs
+	std::vector<glm::vec3> & vertices,
+	std::vector<glm::vec2> & uvs,
+	std::vector<glm::vec3> & normals,
+	// outputs
+	std::vector<glm::vec3> & tangents,
+	std::vector<glm::vec3> & bitangents
+) {
+	for (int i = 0; i < vertices.size(); i += 3) {
+
+		// Shortcuts for vertices
+		glm::vec3 & v0 = vertices[i + 0];
+		glm::vec3 & v1 = vertices[i + 1];
+		glm::vec3 & v2 = vertices[i + 2];
+
+		// Shortcuts for UVs
+		glm::vec2 & uv0 = uvs[i + 0];
+		glm::vec2 & uv1 = uvs[i + 1];
+		glm::vec2 & uv2 = uvs[i + 2];
+
+		// Edges of the triangle : postion delta
+		glm::vec3 deltaPos1 = v1 - v0;
+		glm::vec3 deltaPos2 = v2 - v0;
+
+		// UV delta
+		glm::vec2 deltaUV1 = uv1 - uv0;
+		glm::vec2 deltaUV2 = uv2 - uv0;
+
+		float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+		glm::vec3 tangent = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y)*r;
+		glm::vec3 bitangent = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x)*r;
+
+		tangents.push_back(tangent);
+		tangents.push_back(tangent);
+		tangents.push_back(tangent);
+
+		// Same thing for binormals
+		bitangents.push_back(bitangent);
+		bitangents.push_back(bitangent);
+		bitangents.push_back(bitangent);
+	}
+
+	// 4th attribute buffer : tangents
+	GLuint tangentbuffer;
+	glGenBuffers(1, &tangentbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, tangentbuffer);
+	glBufferData(GL_ARRAY_BUFFER, tangents.size() * sizeof(glm::vec3), &tangents[0], GL_STATIC_DRAW);
+	GLuint tangent = glGetAttribLocation(normal_program, "tangent");
+	glEnableVertexAttribArray(tangent);
+	glBindBuffer(GL_ARRAY_BUFFER, tangentbuffer);
+	glVertexAttribPointer(
+		tangent,                                // attribute
+		3,                                // size
+		GL_FLOAT,                         // type
+		GL_FALSE,                         // normalized?
+		0,                                // stride
+		(void*)0                          // array buffer offset
+	);
+
+	// 5th attribute buffer : bitangents	
+	GLuint bitangentbuffer;
+	glGenBuffers(1, &bitangentbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, bitangentbuffer);
+	glBufferData(GL_ARRAY_BUFFER, bitangents.size() * sizeof(glm::vec3), &bitangents[0], GL_STATIC_DRAW);
+	GLuint bitangent = glGetAttribLocation(normal_program, "bitangent");
+	glEnableVertexAttribArray(bitangent);
+	glBindBuffer(GL_ARRAY_BUFFER, bitangentbuffer);
+	glVertexAttribPointer(
+		bitangent,                                // attribute
+		3,                                // size
+		GL_FLOAT,                         // type
+		GL_FALSE,                         // normalized?
+		0,                                // stride
+		(void*)0                          // array buffer offset
+	);
+	
+	
+	GLuint NormalTexture = loadTGA_glfw("normal.bmp");
+	GLuint NormalTextureID = glGetUniformLocation(normal_program, "NormalTextureSampler");
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, NormalTexture);
+	// Set our "Normal    TextureSampler" sampler to user Texture Unit 0
+	glUniform1i(NormalTextureID, 1);
+
+}*/
+void load_obj_files_normal(string file_path, int index) {
+	vector< unsigned int > vertexIndices, uvIndices, normalIndices;
+	vector< glm::vec3 > temp_vertices;
+	vector< glm::vec2 > temp_uvs;
+	std::vector< glm::vec3 > temp_normals;
+
+	FILE * file = fopen(&file_path[0], "r");
+	if (file == NULL) {
+		printf("Impossible to open the file !\n");
+		return;
+	}
+	int num = 0;
+	int m_num = 1;
+	bool hand_check = false;
+	vector<glm::vec3> rhand;
+	while (1) {
+
+		char lineHeader[128];
+		// read the first word of the line
+		int res = fscanf(file, "%s", lineHeader);
+		if (res == EOF)
+			break; // EOF = End Of File. Quit the loop.
+		if (strcmp(lineHeader, "v") == 0) {
+			if (num == 1) {
+				m_num++;
+				num = 0;
+			}
+			glm::vec3 vertex;
+			fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
+			temp_vertices.push_back(vertex);
+		}
+		else if (strcmp(lineHeader, "vt") == 0) {
+			glm::vec2 uv;
+			fscanf(file, "%f %f\n", &uv.x, &uv.y);
+			temp_uvs.push_back(uv);
+		}
+		else if (strcmp(lineHeader, "vn") == 0) {
+			glm::vec3 normal;
+			fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z);
+			temp_normals.push_back(normal);
+		}
+		else if (strcmp(lineHeader, "f") == 0) {
+			unsigned int vertexIndex[4], uvIndex[4], normalIndex[4];
+			fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
+			vertexIndices.push_back(vertexIndex[0]);
+			vertexIndices.push_back(vertexIndex[1]);
+			vertexIndices.push_back(vertexIndex[2]);
+			uvIndices.push_back(uvIndex[0]);
+			uvIndices.push_back(uvIndex[1]);
+			uvIndices.push_back(uvIndex[2]);
+			normalIndices.push_back(normalIndex[0]);
+			normalIndices.push_back(normalIndex[1]);
+			normalIndices.push_back(normalIndex[2]);
+		}
+	}
+
+	std::vector < glm::vec4 > out_vertices;
+	std::vector <glm::vec2> out_uv_map;
+	std::vector <glm::vec3> out_normal_map, out_normal_map_flat;
+
+	for (unsigned int i = 0; i < vertexIndices.size(); i++) {
+		unsigned int vertexIndex = vertexIndices[i];
+		glm::vec3 t = temp_vertices[vertexIndex - 1];
+		glm::vec4 vertex = glm::vec4(t.x, t.y, t.z, 1.0);
+		out_vertices.push_back(vertex);
+	}
+
+	for (unsigned int i = 0; i < uvIndices.size(); i++) {
+		unsigned int uvIndex = uvIndices[i];
+		glm::vec2 t = temp_uvs[uvIndex - 1];
+		out_uv_map.push_back(t);
+	}
+	glm::vec3 sum_vec = vec3(0.0, 0.0, 0.0);
+	for (unsigned int i = 0; i < normalIndices.size(); i++) {
+		unsigned int normalIndex = normalIndices[i];
+		glm::vec3 normal = temp_normals[normalIndex - 1];
+		out_normal_map.push_back(normal);
+		sum_vec += normal;
+
+		if (i % 3 == 2) {
+			sum_vec /= 3;
+			out_normal_map_flat.push_back(sum_vec);
+			out_normal_map_flat.push_back(sum_vec);
+			out_normal_map_flat.push_back(sum_vec);
+			sum_vec = vec3(0.0, 0.0, 0.0);
+		}
+	}
+	std::vector<glm::vec3> tangents;
+	std::vector<glm::vec3> bitangents;
+	for (int i = 0; i < vertices.size(); i += 3) {
+
+		// Shortcuts for vertices
+		glm::vec4 & v0 = vertices[i + 0];
+		glm::vec4 & v1 = vertices[i + 1];
+		glm::vec4 & v2 = vertices[i + 2];
+
+		// Shortcuts for UVs
+		glm::vec2 & uv0 = out_uv_map[i + 0];
+		glm::vec2 & uv1 = out_uv_map[i + 1];
+		glm::vec2 & uv2 = out_uv_map[i + 2];
+
+		// Edges of the triangle : postion delta
+		glm::vec3 deltaPos1 = vec3((v1 - v0).x, (v1 - v0).y, (v1 - v0).z);
+		glm::vec3 deltaPos2 = vec3((v2 - v0).x, (v2 - v0).y, (v2 - v0).z);
+
+		// UV delta
+		glm::vec2 deltaUV1 = uv1 - uv0;
+		glm::vec2 deltaUV2 = uv2 - uv0;
+
+		float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+		glm::vec3 tangent = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y)*r;
+		glm::vec3 bitangent = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x)*r;
+
+		tangents.push_back(tangent);
+		tangents.push_back(tangent);
+		tangents.push_back(tangent);
+
+		// Same thing for binormals
+		bitangents.push_back(bitangent);
+		bitangents.push_back(bitangent);
+		bitangents.push_back(bitangent);
+	}
+
+	glGenVertexArrays(1, &vao[index]);
+	glBindVertexArray(vao[index]);
+	loc = glGetAttribLocation(normal_program, "vPosition");
+	glEnableVertexAttribArray(loc);
+	glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+	//vertex normal setting
+	GLuint normalbuffer;
+	glGenBuffers(1, &normalbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+	glBufferData(GL_ARRAY_BUFFER, out_normal_map.size() * sizeof(glm::vec3), &out_normal_map[0], GL_STATIC_DRAW);
+	// 3rd attribute buffer : normals
+	GLuint vNormal = glGetAttribLocation(light_program, "vNormal");
+	glEnableVertexAttribArray(vNormal);
+	glVertexAttribPointer(
+		vNormal,                          // attribute
+		3,                                // size
+		GL_FLOAT,                         // type
+		GL_FALSE,                         // normalized?
+		0,                                // stride
+		BUFFER_OFFSET(0)                  // array buffer offset
+	);
+
 	//flat shading setting
 	glGenBuffers(1, &normalbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
