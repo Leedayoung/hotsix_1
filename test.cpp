@@ -94,6 +94,10 @@ void init() {
 	light_cam = glGetUniformLocation(light_program, "cam");
 	shading_mod = glGetUniformLocation(light_program, "flat");
 	player_parsing = glGetUniformLocation(light_program, "player");
+	light_power1 = glGetUniformLocation(light_program, "light_power1");
+	light_power2 = glGetUniformLocation(light_program, "light_power2");
+	light_power3 = glGetUniformLocation(light_program, "light_power3");
+	light_player_dir = glGetUniformLocation(light_program, "dir");
 
 	program = InitShader("vshader1.glsl", "fshader1.glsl");
 	ctmParam = glGetUniformLocation(program, "ctm");

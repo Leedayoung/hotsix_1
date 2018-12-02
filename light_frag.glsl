@@ -11,14 +11,14 @@ uniform vec4 ambient;
 uniform vec4 specular;
 uniform float shiness;
 uniform vec3 l_dir;
-
+uniform float light_power1;
+uniform float light_power2;
+uniform float light_power3;
 out vec4 fcolor;
 
 void main()
 {
-   float shine_point = 50000;
-   vec4 spec = vec4(0.0);
-
+    vec4 spec = vec4(0.0);
     vec3 n = normalize(normal_out);
     vec3 e = normalize(vec3(eye));
     vec3 l_fixed = normalize(l_dir);
@@ -31,18 +31,18 @@ void main()
     if (intensity1 > 0.0) {
         vec3 h = normalize(l_fixed + e);  
 		float intSpec = max(dot(h,n), 0.0);
-        spec += specular * pow(intSpec, shiness);
+        spec += light_power1 * specular * pow(intSpec, shiness);
     }
 	if (intensity2 > 0.0) {
         vec3 h = normalize(l_point1 + e);  
 		float intSpec = max(dot(h,n), 0.0);
-        spec += specular * pow(intSpec, shine_point);
+        spec += light_power2 * specular * pow(intSpec, shiness);
     }
 	if (intensity3 > 0.0) {
         vec3 h = normalize(l_point2 + e);  
 		float intSpec = max(dot(h,n), 0.0);
-        spec += specular * pow(intSpec, shine_point);
+        spec += light_power3 *specular * pow(intSpec, shiness);
     }
-	float intensity = (intensity1+intensity2+intensity3);
+	float intensity = (light_power1*intensity1+light_power2*intensity2+light_power3*intensity3);
     fcolor = max(intensity * diffuse + spec, ambient);
 }

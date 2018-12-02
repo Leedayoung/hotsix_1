@@ -42,6 +42,10 @@ extern GLint light_color;
 extern GLint light_cam;
 extern GLint shading_mod;
 extern GLint player_parsing;
+extern GLint light_power1;
+extern GLint light_power2;
+extern GLint light_power3;
+extern GLint light_player_dir;
 
 extern GLint v_mod;
 extern GLint p_loc;

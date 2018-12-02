@@ -68,9 +68,12 @@ void Map::display() {
 
 	//Pre-define-directional light
 	glUseProgram(light_program);
-	float shiness = 100;
+	float shiness = 10;
+	float light1 = 0.4;
+	float light2 = 0.5;
+	float light3 = 0.5;
 	vec4 light_color_ = vec4(1.0, 1.0, 1.0, 1.0);
-	vec3 lighting = vec3(0.004, 0.008, 0.0);
+	vec3 lighting = vec3(1.0, 1.0, 0.5);
 	float x = player.get_x();
 	float y= player.get_y();
 	vec3 player_vec = vec3(x, y, 0.0);
@@ -78,6 +81,10 @@ void Map::display() {
 	glUniform4fv(light_cam, 1, &cam_position[0]);
 	glUniform4fv(light_color, 1, &light_color_[0]);
 	glUniform1f(light_shine, shiness);
+	glUniform1f(light_power1, light1);
+	glUniform1f(light_power2, light2);
+	glUniform1f(light_power3, light3);
+	glUniform1i(light_player_dir, player.get_direction());
 	glUniform3fv(light_dir, 1, &lighting[0]);
 	glUniform3fv(player_parsing, 1, &player_vec[0]);
 	
