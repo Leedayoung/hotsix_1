@@ -28,6 +28,7 @@ GLint light_dir;
 GLint light_color;
 GLint light_cam;
 GLint shading_mod;
+GLint player_parsing;
 
 GLint v_mod;
 GLint p_loc;

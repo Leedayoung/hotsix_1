@@ -71,11 +71,16 @@ void Map::display() {
 	float shiness = 100;
 	vec4 light_color_ = vec4(1.0, 1.0, 1.0, 1.0);
 	vec3 lighting = vec3(0.004, 0.008, 0.0);
+	float x = player.get_x();
+	float y= player.get_y();
+	vec3 player_vec = vec3(x, y, 0.0);
 	cam_position = vec4(e_x, e_y, z, 1.0);
 	glUniform4fv(light_cam, 1, &cam_position[0]);
 	glUniform4fv(light_color, 1, &light_color_[0]);
 	glUniform1f(light_shine, shiness);
 	glUniform3fv(light_dir, 1, &lighting[0]);
+	glUniform3fv(player_parsing, 1, &player_vec[0]);
+	
 
 
 	mat4 perspec = glm::perspective(glm::radians(80.0f), 1.0f, 0.001f, 5000.0f);
