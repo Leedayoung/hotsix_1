@@ -1,7 +1,7 @@
 #version 120
 
 
-in vec4 eye;
+in vec3 eye;
 in vec3 cam_out;
 in vec3 point1_light;
 in vec3 point2_light;
@@ -21,7 +21,6 @@ void main()
 {
 	vec3 normal_out = texture2D(NormalTextureSampler, UV).rgb;
 	normal_out = normalize(normal_out * 2.0 - 1.0);  // this normal is in tangent space
-	normal_out = TBN * normal_out;
 	float shine_point = 50000;
    
     vec4 spec = vec4(0.0);

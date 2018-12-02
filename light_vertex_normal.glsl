@@ -14,7 +14,7 @@ uniform vec3 player;
 
 out mat3 TBN;
 out vec2 UV;
-out vec4 eye;
+out vec3 eye;
 out vec3 normal_out;
 out vec3 cam_out;
 out vec3 point1_light;
@@ -30,10 +30,10 @@ void main()
     vec3 B = (vec4(normalize(bitangent),1)).xyz;
 	TBN = mat3(T, B, N);
 
-	eye = cam - (view_model * vPosition);
+	eye = TBN*vec3(cam - (view_model * vPosition));
 	cam_out = vec3(cam);
-	vec3 light1_dir = player + vec3(1.0,1.0,1.0);
-	vec3 light2_dir = player + vec3(-1.0,-1.0,1.0);
-	point1_light = light1_dir - vec3(view_model * vPosition);
-	point2_light = light2_dir - vec3(view_model * vPosition);
+	vec3 light1_dir = TBN * (player + vec3(1.0,1.0,1.0));
+	vec3 light2_dir = TBN * (player + vec3(-1.0,-1.0,1.0));
+	point1_light = TBN * (light1_dir - vec3(view_model * vPosition));
+	point2_light = TBN * (light2_dir - vec3(view_model * vPosition));
 }

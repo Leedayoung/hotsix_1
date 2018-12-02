@@ -213,7 +213,7 @@ void Map::draw_map(int y, int x, int e_map[map_size][map_size], Enemy e_list[50]
 		final_mat = per_look * trans *scale;
 		mat4 vm = trans *scale;
 		vec_color = WALL_COLOR;
-		ambient_color = vec4(0.29, 0.15, 0.0, 1.0);
+		ambient_color = vec4(0.29, 0.15, 0.0, 0.5);
 		inv_view_mat = inverse(vm);
 		MVI = transpose(inv_view_mat);
 		normal_mtx = mat4(1.0);
