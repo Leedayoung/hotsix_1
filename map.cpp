@@ -120,38 +120,12 @@ void Map::display() {
 	}
 
 	int index = 0;
-
-	switch (direc) {
-	case direction::up:
-		for (int y = map_size-1; y >= 0; y--) {
-			for (int x = 0; x < map_size; x++) {
-				draw_map(y, x, e_map, e_list,b_map, b_list);
-			}
-		}
-		break;
-	case direction::down:
-		for (int y = 0; y < map_size; y++) {
-			for (int x = 0; x < map_size; x++) {
-				draw_map(y, x, e_map, e_list, b_map, b_list);
-			}
-		}
-		break;
-	case direction::left:
+	for (int y = 0; y < map_size; y++) {
 		for (int x = 0; x < map_size; x++) {
-			for (int y = 0; y < map_size; y++) {
-				draw_map(y, x, e_map, e_list, b_map, b_list);
-			}
+			draw_map(y, x, e_map, e_list, b_map, b_list);
 		}
-		break;
-	case direction::right:
-		for (int x = map_size -1; x >= 0 ; x--) {
-			for (int y = 0; y < map_size; y ++) {
-				draw_map(y, x, e_map, e_list, b_map, b_list);
-			}
-		}
-		break;
 	}
-	
+
 	//enemy display
 	for (vector<Enemy>::iterator it = enem_vec.begin(); it != enem_vec.end(); it++) {
 		it->update();
@@ -159,8 +133,6 @@ void Map::display() {
 	
 	glUseProgram(program);
 	player.display();
-
-
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_FILL);
 	index = RECT;
