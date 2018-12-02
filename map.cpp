@@ -81,8 +81,13 @@ void Map::display() {
 	glUniform3fv(light_dir, 1, &lighting[0]);
 	glUniform3fv(player_parsing, 1, &player_vec[0]);
 	
+	glUseProgram(normal_program);
+	glUniform4fv(normal_cam, 1, &cam_position[0]);
+	glUniform1f(normal_shine, shiness);
+	glUniform3fv(normal_dir, 1, &lighting[0]);
+	glUniform3fv(normal_player, 1, &player_vec[0]);
 
-
+	glUseProgram(light_program);
 	mat4 perspec = glm::perspective(glm::radians(80.0f), 1.0f, 0.001f, 5000.0f);
 	per_look = perspec * look_at;
 
@@ -199,6 +204,7 @@ void Map::draw_map(int y, int x, int e_map[map_size][map_size], Enemy e_list[50]
 	glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
 
 	if (map_arr[y][x] == map_info::wall) {
+		glUseProgram(normal_program);
 		index = WALL;
 		glBindVertexArray(vao[index+DEBUG]);
 		trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0.5));
@@ -209,19 +215,21 @@ void Map::draw_map(int y, int x, int e_map[map_size][map_size], Enemy e_list[50]
 		ambient_color = vec4(0.29, 0.15, 0.0, 1.0);
 		inv_view_mat = inverse(vm);
 		MVI = transpose(inv_view_mat);
-		normal_mtx = mat3(MVI);
+		normal_mtx = mat4(1.0);
 
-		glUniformMatrix4fv(light_ctm, 1, GL_FALSE, &final_mat[0][0]);
-		glUniformMatrix4fv(light_view, 1, GL_FALSE, &trans[0][0]);
-		glUniformMatrix3fv(light_normal, 1, GL_FALSE, &normal_mtx[0][0]);
+		glUniformMatrix4fv(normal_ctm, 1, GL_FALSE, &final_mat[0][0]);
+		glUniformMatrix4fv(normal_view_model, 1, GL_FALSE, &trans[0][0]);
+		glUniformMatrix3fv(normal_normal_model, 1, GL_FALSE, &normal_mtx[0][0]);
 
-		glUniform4fv(light_diffuse, 1, &vec_color[0]);
-		glUniform4fv(light_ambient, 1, &ambient_color[0]);
-		glUniform4fv(light_specular, 1, &vec_color[0]);
+		glUniform4fv(normal_diffuse, 1, &vec_color[0]);
+		glUniform4fv(normal_ambient, 1, &ambient_color[0]);
+		glUniform4fv(normal_specular, 1, &vec_color[0]);
 
 		glPolygonMode(GL_FRONT, GL_FILL);
 		glPolygonMode(GL_BACK, GL_FILL);
 		glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
+
+		glUseProgram(light_program);
 	}
 	else if (map_arr[y][x] == map_info::item) {
 		index = ITEM;

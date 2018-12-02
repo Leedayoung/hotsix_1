@@ -82,11 +82,17 @@ void init() {
 		, vec4(0.5, 0.0, 0.0, 1.0), vec4(1.0, 0.75, 0.0, 1.0), vec4(0.75, 1.0, 0.0, 1.0) };
 	
 	normal_program = InitShader("light_vertex_normal.glsl", "light_frag_normal.glsl");
-	normal_light_pos = glGetUniformLocation(normal_program, "lightPos");
-	normal_view_pos = glGetUniformLocation(normal_program, "viewPos");
 	normal_ctm = glGetUniformLocation(normal_program, "ctm");
+	normal_normal_model = glGetUniformLocation(normal_program, "normal_model");
 	normal_view_model = glGetUniformLocation(normal_program, "view_model");
-	normal_view_model_pos = glGetUniformLocation(normal_program, "viewPos");
+	normal_cam = glGetUniformLocation(normal_program, "cam");
+	normal_player = glGetUniformLocation(normal_program, "player");
+	normal_diffuse = glGetUniformLocation(normal_program, "diffuse");
+	normal_ambient = glGetUniformLocation(normal_program, "ambient");
+	normal_specular = glGetUniformLocation(normal_program, "specular");
+	normal_shine = glGetUniformLocation(normal_program, "shiness");
+	normal_dir = glGetUniformLocation(normal_program, "l_dir");
+
 
 	light_program = InitShader("light_vertex.glsl", "light_frag.glsl");
 	light_ctm = glGetUniformLocation(light_program, "ctm");
@@ -620,9 +626,6 @@ void load_obj_files_normal(string file_path, int index) {
 
 	GLuint NormalTexture = loadTGA_glfw("OBJ files/wall/normal.bmp");
 	GLuint NormalTextureID = glGetUniformLocation(normal_program, "NormalTextureSampler");
-	//glActiveTexture(GL_TEXTURE0);
-	//glBindTexture(GL_TEXTURE_2D, NormalTexture);
-	// Set our "Normal    TextureSampler" sampler to user Texture Unit 0
 	glUniform1i(NormalTextureID, 0);
 }
 static char* readShaderSource(const char* shaderFile)

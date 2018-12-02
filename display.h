@@ -43,6 +43,18 @@ extern GLint light_cam;
 extern GLint shading_mod;
 extern GLint player_parsing;
 
+extern GLuint normal_program;
+extern GLint normal_ctm;
+extern GLint normal_normal_model;
+extern GLint normal_view_model;
+extern GLint normal_cam;
+extern GLint normal_player;
+extern GLint normal_diffuse;
+extern GLint normal_ambient;
+extern GLint normal_specular;
+extern GLint normal_shine;
+extern GLint normal_dir;
+
 extern GLint v_mod;
 extern GLint p_loc;
 extern GLint p_dir;

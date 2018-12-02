@@ -30,6 +30,18 @@ GLint light_cam;
 GLint shading_mod;
 GLint player_parsing;
 
+GLuint normal_program;
+GLint normal_ctm;
+GLint normal_normal_model;
+GLint normal_view_model;
+GLint normal_cam;
+GLint normal_player;
+GLint normal_diffuse;
+GLint normal_ambient;
+GLint normal_specular;
+GLint normal_shine;
+GLint normal_dir;
+
 GLint v_mod;
 GLint p_loc;
 GLint p_dir;
