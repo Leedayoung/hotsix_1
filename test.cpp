@@ -45,7 +45,7 @@ void load_obj_files(string file_path, string texture_path, int type, int index);
 void mouse_bullet(int button, int state, int x, int y);
 void player_move_3d(unsigned char key, int x, int y);
 void init();
-
+void load_obj_files_normal(string file_path, int index);
 
 int main(int argc, char **argv) {
 
@@ -81,6 +81,13 @@ void init() {
 		vec4(0.5, 0.75, 0.0, 1.0), vec4(0.25, 1.0, 0.0, 1.0), vec4(0.0, 0.75, 0.0, 1.0)
 		, vec4(0.5, 0.0, 0.0, 1.0), vec4(1.0, 0.75, 0.0, 1.0), vec4(0.75, 1.0, 0.0, 1.0) };
 	
+	normal_program = InitShader("light_vertex_normal.glsl", "light_frag_normal.glsl");
+	normal_light_pos = glGetUniformLocation(normal_program, "lightPos");
+	normal_view_pos = glGetUniformLocation(normal_program, "viewPos");
+	normal_ctm = glGetUniformLocation(normal_program, "ctm");
+	normal_view_model = glGetUniformLocation(normal_program, "view_model");
+	normal_view_model_pos = glGetUniformLocation(normal_program, "viewPos");
+
 	light_program = InitShader("light_vertex.glsl", "light_frag.glsl");
 	light_ctm = glGetUniformLocation(light_program, "ctm");
 	light_view = glGetUniformLocation(light_program, "view_model");
@@ -117,7 +124,8 @@ void init() {
 
 	load_obj_files("OBJ files/M1911.obj","OBJ files/M1911-RIGHT.jpg", 0, GUN);
 	load_obj_files("OBJ files/bullet.obj","OBJ files/bullet.jpg", 0, BULL);
-	load_obj_files("OBJ files/cu.txt","OBJ files/wall.jpg", 0, WALL);
+	load_obj_files_normal("OBJ files/cube.obj", WALL);
+
 
 
 	glUseProgram(program);
@@ -365,6 +373,257 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 		BUFFER_OFFSET(0)                  // array buffer offset
 	);
 	return;
+}
+int LoadBMP(const char* location, GLuint &texture) {
+
+	unsigned char* pixels; //[number of lines][number of columns *3 (because in row is bytes (3 per pixel))]
+	unsigned char* datBuff[2] = { nullptr, nullptr }; // Header buffers
+
+	BITMAPFILEHEADER* bmpHeader = nullptr; // Header
+	BITMAPINFOHEADER* bmpInfo = nullptr; // Info 
+
+	ifstream file(location, ios::binary);
+	if (!file)
+	{
+		std::cout << "Failure to open bitmap file.\n";
+		return 0;
+	}
+
+	datBuff[0] = new unsigned char[sizeof(BITMAPFILEHEADER)];
+	datBuff[1] = new unsigned char[sizeof(BITMAPINFOHEADER)];
+
+	file.read((char*)datBuff[0], sizeof(BITMAPFILEHEADER));
+	file.read((char*)datBuff[1], sizeof(BITMAPINFOHEADER));
+
+	bmpHeader = (BITMAPFILEHEADER*)datBuff[0];
+	bmpInfo = (BITMAPINFOHEADER*)datBuff[1];
+
+	if (bmpHeader->bfType != 0x4D42)
+	{
+		std::cout << "File \"" << location << "\" isn't a bitmap file\n";
+		return 0;
+	}
+	pixels = new unsigned char[bmpInfo->biHeight*bmpInfo->biWidth * 3];
+	file.read((char*)pixels, bmpInfo->biHeight*bmpInfo->biWidth * 3);
+	// Set width and height to the values loaded from the file
+	int width = bmpInfo->biWidth;
+	int height = bmpInfo->biHeight;
+	for (int i = 0; i < width*height * 3; i += 3)
+	{
+		unsigned char tmp = pixels[i];
+		pixels[i] = pixels[i + 2];
+		pixels[i + 2] = tmp;
+	}
+	cout << " COMPLETED. " << endl;
+	// Set width and height to the values loaded from the file
+	GLuint w = bmpInfo->biWidth;
+	GLuint h = bmpInfo->biHeight;
+
+
+	GLint mode = GL_RGB;                   // Set the mode
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	// Create the texture. We get the offsets from the image, then we use it with the image's
+	// pixel data to create it.
+	glTexImage2D(GL_TEXTURE_2D, 0, mode, w, h, 0, mode, GL_UNSIGNED_BYTE, pixels);
+
+	// Output a successful message
+	std::cout << "Texture \"" << location << "\" successfully loaded.\n";
+
+	delete datBuff[0];
+	delete datBuff[1];
+	delete pixels;
+	// Delete the two buffers.
+	return 0; // Return success code 
+
+}
+GLuint loadTGA_glfw(const char * imagepath) {
+
+	glUseProgram(normal_program);
+	// Create one OpenGL texture
+	GLuint textureID;
+	glGenTextures(1, &textureID);
+	// "Bind" the newly created texture : all future texture functions will modify this texture
+	glBindTexture(GL_TEXTURE_2D, textureID);
+
+	unsigned int width, height;
+	LoadBMP(imagepath, textureID);
+	return textureID;
+}
+void load_obj_files_normal(string file_path, int index) {
+	vector< unsigned int > vertexIndices, uvIndices, normalIndices;
+	vector< glm::vec3 > temp_vertices;
+	vector< glm::vec2 > temp_uvs;
+	std::vector< glm::vec3 > temp_normals;
+
+	FILE * file = fopen(&file_path[0], "r");
+	if (file == NULL) {
+		printf("Impossible to open the file !\n");
+		return;
+	}
+	int num = 0;
+	int m_num = 1;
+	bool hand_check = false;
+	vector<glm::vec3> rhand;
+	while (1) {
+
+		char lineHeader[128];
+		// read the first word of the line
+		int res = fscanf(file, "%s", lineHeader);
+		if (res == EOF)
+			break; // EOF = End Of File. Quit the loop.
+		if (strcmp(lineHeader, "v") == 0) {
+			if (num == 1) {
+				m_num++;
+				num = 0;
+			}
+			glm::vec3 vertex;
+			fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
+			temp_vertices.push_back(vertex);
+		}
+		else if (strcmp(lineHeader, "vt") == 0) {
+			glm::vec2 uv;
+			fscanf(file, "%f %f\n", &uv.x, &uv.y);
+			temp_uvs.push_back(uv);
+		}
+		else if (strcmp(lineHeader, "vn") == 0) {
+			glm::vec3 normal;
+			fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z);
+			temp_normals.push_back(normal);
+		}
+		else if (strcmp(lineHeader, "f") == 0) {
+			unsigned int vertexIndex[4], uvIndex[4], normalIndex[4];
+			fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
+			vertexIndices.push_back(vertexIndex[0]);
+			vertexIndices.push_back(vertexIndex[1]);
+			vertexIndices.push_back(vertexIndex[2]);
+			uvIndices.push_back(uvIndex[0]);
+			uvIndices.push_back(uvIndex[1]);
+			uvIndices.push_back(uvIndex[2]);
+			normalIndices.push_back(normalIndex[0]);
+			normalIndices.push_back(normalIndex[1]);
+			normalIndices.push_back(normalIndex[2]);
+		}
+	}
+
+	std::vector < glm::vec4 > out_vertices;
+	std::vector <glm::vec2> out_uv_map;
+	std::vector <glm::vec3> out_normal_map, out_normal_map_flat;
+
+	for (unsigned int i = 0; i < vertexIndices.size(); i++) {
+		unsigned int vertexIndex = vertexIndices[i];
+		glm::vec3 t = temp_vertices[vertexIndex - 1];
+		glm::vec4 vertex = glm::vec4(t.x, t.y, t.z, 1.0);
+		out_vertices.push_back(vertex);
+	}
+
+	for (unsigned int i = 0; i < uvIndices.size(); i++) {
+		unsigned int uvIndex = uvIndices[i];
+		glm::vec2 t = temp_uvs[uvIndex - 1];
+		out_uv_map.push_back(t);
+	}
+	glm::vec3 sum_vec = vec3(0.0, 0.0, 0.0);
+	for (unsigned int i = 0; i < normalIndices.size(); i++) {
+		unsigned int normalIndex = normalIndices[i];
+		glm::vec3 normal = temp_normals[normalIndex - 1];
+		out_normal_map.push_back(normal);
+		sum_vec += normal;
+
+		if (i % 3 == 2) {
+			sum_vec /= 3;
+			out_normal_map_flat.push_back(sum_vec);
+			out_normal_map_flat.push_back(sum_vec);
+			out_normal_map_flat.push_back(sum_vec);
+			sum_vec = vec3(0.0, 0.0, 0.0);
+		}
+	}
+	std::vector<glm::vec3> tangents;
+	std::vector<glm::vec3> bitangents;
+	for (int i = 0; i < out_vertices.size(); i += 3) {
+
+		// Shortcuts for vertices
+		glm::vec4 & v0 = out_vertices[i + 0];
+		glm::vec4 & v1 = out_vertices[i + 1];
+		glm::vec4 & v2 = out_vertices[i + 2];
+
+		// Shortcuts for UVs
+		glm::vec2 & uv0 = out_uv_map[i + 0];
+		glm::vec2 & uv1 = out_uv_map[i + 1];
+		glm::vec2 & uv2 = out_uv_map[i + 2];
+
+		// Edges of the triangle : postion delta
+		glm::vec3 deltaPos1 = vec3((v1 - v0).x, (v1 - v0).y, (v1 - v0).z);
+		glm::vec3 deltaPos2 = vec3((v2 - v0).x, (v2 - v0).y, (v2 - v0).z);
+
+		// UV delta
+		glm::vec2 deltaUV1 = uv1 - uv0;
+		glm::vec2 deltaUV2 = uv2 - uv0;
+
+		float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+		glm::vec3 tangent = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y)*r;
+		glm::vec3 bitangent = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x)*r;
+
+		tangents.push_back(tangent);
+		tangents.push_back(tangent);
+		tangents.push_back(tangent);
+
+		// Same thing for binormals
+		bitangents.push_back(bitangent);
+		bitangents.push_back(bitangent);
+		bitangents.push_back(bitangent);
+	}
+	//position
+	glGenVertexArrays(1, &vao[index]);
+	glBindVertexArray(vao[index]);
+	GLuint buffer;
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, out_vertices.size() * sizeof(vec4), &out_vertices[0], GL_STATIC_DRAW);
+	vao_size[index] = out_vertices.size();
+	GLuint loc = glGetAttribLocation(normal_program, "vPosition");
+	glEnableVertexAttribArray(loc);
+	glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+	//uv
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, out_uv_map.size() * sizeof(vec2), &out_uv_map[0], GL_STATIC_DRAW);
+	loc = glGetAttribLocation(normal_program, "_uv");
+	glEnableVertexAttribArray(loc);
+	glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+
+	//normal
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, out_normal_map.size() * sizeof(vec3), &out_normal_map[0], GL_STATIC_DRAW);
+	loc = glGetAttribLocation(normal_program, "vNormal");
+	glEnableVertexAttribArray(loc);
+	glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+
+	//tangent
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, tangents.size() * sizeof(vec3), &tangents[0], GL_STATIC_DRAW);
+	loc = glGetAttribLocation(normal_program, "tangent");
+	glEnableVertexAttribArray(loc);
+	glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+
+	//bitangent
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, bitangents.size() * sizeof(vec3), &bitangents[0], GL_STATIC_DRAW);
+	loc = glGetAttribLocation(normal_program, "bitangent");
+	glEnableVertexAttribArray(loc);
+	glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+
+
+	GLuint NormalTexture = loadTGA_glfw("OBJ files/wall/normal.bmp");
+	GLuint NormalTextureID = glGetUniformLocation(normal_program, "NormalTextureSampler");
+	//glActiveTexture(GL_TEXTURE0);
+	//glBindTexture(GL_TEXTURE_2D, NormalTexture);
+	// Set our "Normal    TextureSampler" sampler to user Texture Unit 0
+	glUniform1i(NormalTextureID, 0);
 }
 static char* readShaderSource(const char* shaderFile)
 {
