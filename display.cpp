@@ -18,7 +18,7 @@ vec3 hand_loc;
 GLuint light_program;
 GLint light_ctm;
 GLint light_view;
-GLint normal_light;
+GLint light_normal;
 GLint light_diffuse;
 GLint light_ambient;
 GLint light_specular;

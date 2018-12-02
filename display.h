@@ -31,7 +31,7 @@ extern bool shading_mode;
 extern GLuint light_program;
 extern GLint light_ctm;
 extern GLint light_view;
-extern GLint normal_light;
+extern GLint light_normal;
 extern GLint light_diffuse;
 extern GLint light_ambient;
 extern GLint light_specular;

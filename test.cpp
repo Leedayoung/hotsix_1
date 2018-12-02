@@ -58,7 +58,7 @@ int main(int argc, char **argv) {
 	glutCreateWindow("GAME");
 	glutMouseFunc(mouse_bullet);
 	glewInit();
-	//glEnable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glutReshapeFunc(reshape);
 	glutDisplayFunc(display);
@@ -81,10 +81,10 @@ void init() {
 		vec4(0.5, 0.75, 0.0, 1.0), vec4(0.25, 1.0, 0.0, 1.0), vec4(0.0, 0.75, 0.0, 1.0)
 		, vec4(0.5, 0.0, 0.0, 1.0), vec4(1.0, 0.75, 0.0, 1.0), vec4(0.75, 1.0, 0.0, 1.0) };
 	
-	light_program = InitShader("light_vertex_test.glsl", "light_frag_test.glsl");
+	light_program = InitShader("light_vertex.glsl", "light_frag.glsl");
 	light_ctm = glGetUniformLocation(light_program, "ctm");
 	light_view = glGetUniformLocation(light_program, "view_model");
-	normal_light = glGetUniformLocation(light_program, "normal_mtx");
+	light_normal = glGetUniformLocation(light_program, "normal_mtx");
 	light_diffuse = glGetUniformLocation(light_program, "diffuse");
 	light_ambient = glGetUniformLocation(light_program, "ambient");
 	light_specular = glGetUniformLocation(light_program, "specular");

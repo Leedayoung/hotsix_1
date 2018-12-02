@@ -12,7 +12,7 @@ out vec3 normal_out;
 
 void main()
 {
-   normal_out = normalize(normal_mtx * vNormal);
+   normal_out = normalize(vNormal);
    eye = -(view_model * vPosition);
    gl_Position = ctm * vPosition;
 }
