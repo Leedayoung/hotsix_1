@@ -65,6 +65,9 @@ void Map::display() {
 	else {
 		look_at = glm::lookAt(glm::vec3(e_x, e_y, z), glm::vec3(e_x + c_x, e_y + c_y, 0.4f), glm::vec3(0.0f, 0.0f, 1.0f));
 	}
+
+	cam_position = vec4(e_x, e_y, z, 1.0);
+
 	mat4 perspec = glm::perspective(glm::radians(80.0f), 1.0f, 0.001f, 5000.0f);
 	per_look = perspec * look_at;
 

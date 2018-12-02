@@ -91,6 +91,7 @@ void init() {
 	light_shine = glGetUniformLocation(light_program, "shiness");
 	light_dir = glGetUniformLocation(light_program, "l_dir");
 	light_color = glGetUniformLocation(light_program, "LightColor");
+	light_cam = glGetUniformLocation(light_program, "cam");
 	shading_mod = glGetUniformLocation(light_program, "flat");
 
 	v_mod = glGetUniformLocation(light_program, "view_model_pos");

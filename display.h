@@ -27,6 +27,7 @@ extern mat4 look_at;
 extern mat4 perspec;
 extern vec3 hand_loc;
 extern bool shading_mode;
+extern vec4 cam_position;
 
 extern GLuint light_program;
 extern GLint light_ctm;
@@ -38,6 +39,7 @@ extern GLint light_specular;
 extern GLint light_shine;
 extern GLint light_dir;
 extern GLint light_color;
+extern GLint light_cam;
 extern GLint shading_mod;
 
 extern GLint v_mod;

@@ -77,15 +77,22 @@ void Player::display() {
 		mul = 1;
 		break;
 	}
+	glUseProgram(light_program);
+
 	mat4 scale = glm::scale(glm::mat4(1.0), vec3(0.01f, 0.01f, 0.01f));
 	mat4 y_z = mat4(vec4(1.0, 0.0, 0.0, 0.0), vec4(0.0, 0.0, 1.0, 0.0), vec4(0.0, 1.0, 0.0, 0.0), vec4(0.0, 0.0, 0.0, 1.0));
 	mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(pos_x, pos_y, 0));
 	mat4 rot = glm::rotate(glm::mat4(1.0), 3.14f, vec3(0.0, 0.0, 1.0)) * glm::rotate(glm::mat4(1.0), 1.57f*mul, vec3(0.0, 0.0, 1.0));
-	mat4 view_mat = trans * rot* y_z *scale;
-	mat4 final_mat = per_look * trans*rot* y_z *scale;// *rot * scale;
-	vec4 vec_color;
+	mat4 view_mat = rot* y_z;
+	mat4 view_mat_pos = trans * rot * y_z * scale;
+	mat4 final_mat = per_look * trans * rot * y_z * scale;// *rot * scale;
+	vec4 vec_color = vec4(0.1, 0.5, 0.5, 1.0);
+	float shiness = 10.0;
+	vec3 lighting = vec3(1.0, 1.0, 1.0);
+	mat4 inv_view_mat = inverse(view_mat_pos);
+	mat4 MVI = transpose(inv_view_mat);
+	mat3 normal_mtx = mat3(MVI);
 
-	glUseProgram(program);
 	index = (4 - jump) % 4;
 	if (gun == true) {
 		int g_index = GUN;
@@ -101,25 +108,41 @@ void Player::display() {
 		glDrawArrays(GL_TRIANGLES, 0, vao_size[g_index]);
 		index = P_GUN;
 	}
-	glBindVertexArray(vao[index]);
-	glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
-	
+	glBindVertexArray(vao[index + DEBUG]);
+	glUniformMatrix4fv(light_ctm, 1, GL_FALSE, &final_mat[0][0]);
+	glUniformMatrix4fv(light_view, 1, GL_FALSE, &view_mat_pos[0][0]);
+	glUniformMatrix3fv(light_normal,1,GL_FALSE,&normal_mtx[0][0]);
+
+	glUniform4fv(light_cam, 1, &cam_position[0]);
+	glUniform4fv(light_diffuse, 1, &vec_color[0]);
+	glUniform4fv(light_ambient, 1, &vec_color[0]);
+	glUniform4fv(light_specular, 1, &vec_color[0]);
+	glUniform1f(light_shine, shiness);
+	glUniform3fv(light_dir, 1, &lighting[0]);
+
+	glUniform1i(shading_mod, (int)shading_mode);
+	glUniform4fv(light_color, 1, &vec_color[0]);
+	//glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
+	/*
 	vec_color = BACK_COLOR;
 	glUniform4fv(vColor, 1, &vec_color[0]);
+	*/
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_FILL);
 	glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
-
+	/*
 	vec_color = PLAYER_COLOR;
 	glUniform4fv(vColor, 1, &vec_color[0]);
 	glPolygonMode(GL_FRONT, GL_LINE);
 	glPolygonMode(GL_BACK, GL_LINE);
 	glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
+	*/
 
 	if (jump != 0) {
 		jump--;
 		this->move();
 	}
+	glUseProgram(program);
 }
 int Player::get_life() {
 	return life;

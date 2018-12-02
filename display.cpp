@@ -14,6 +14,7 @@ mat4 per_look;
 mat4 look_at;
 mat4 perspec;
 vec3 hand_loc;
+vec4 cam_position;
 
 GLuint light_program;
 GLint light_ctm;
@@ -25,6 +26,7 @@ GLint light_specular;
 GLint light_shine;
 GLint light_dir;
 GLint light_color;
+GLint light_cam;
 GLint shading_mod;
 
 GLint v_mod;
