@@ -58,8 +58,8 @@ void Enemy::display() {
 	mat4 view_mat = rot* y_z;
 	mat4 view_mat_pos = trans * rot * y_z * scale;
 	mat4 final_mat = per_look * trans * rot * y_z * scale;// *rot * scale;
-	vec4 vec_color = vec4(0.8, 0.8, 0.8, 1.0);
-	vec4 ambient_color = vec4(0.2, 0.2, 0.2, 1.0);
+	vec4 vec_color = vec4(0.9, 0.9, 0.9, 1.0);
+	vec4 ambient_color = vec4(0.3, 0.3, 0.3, 1.0);
 
 	mat4 inv_view_mat = inverse(view_mat_pos);
 	mat4 MVI = transpose(inv_view_mat);

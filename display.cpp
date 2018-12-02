@@ -29,6 +29,10 @@ GLint light_color;
 GLint light_cam;
 GLint shading_mod;
 GLint player_parsing;
+GLint light_power1;
+GLint light_power2;
+GLint light_power3;
+GLint light_player_dir;
 
 GLuint normal_program;
 GLint normal_ctm;
