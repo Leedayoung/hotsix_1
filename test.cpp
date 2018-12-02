@@ -52,15 +52,14 @@ int main(int argc, char **argv) {
 	srand((unsigned)time(NULL));
 	newmap = Map();
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_RGBA);
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitWindowPosition(0, 0);
 	glutInitWindowSize(800, 800);//창 크기 설정
 	glutCreateWindow("GAME");
 	glutMouseFunc(mouse_bullet);
-
 	glewInit();
-	init();
-
+	//glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
 	glutReshapeFunc(reshape);
 	glutDisplayFunc(display);
 	glutKeyboardFunc(player_move_3d);
@@ -68,6 +67,9 @@ int main(int argc, char **argv) {
 	//glutTimerFunc(1000, move_enemies, 1);
 	//glutTimerFunc(150, move_bullets, 1);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
+	init();
+	
+	
 	glutMainLoop();
 	return 0;
 }

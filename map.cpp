@@ -65,11 +65,13 @@ void Map::display() {
 	else {
 		look_at = glm::lookAt(glm::vec3(e_x, e_y, z), glm::vec3(e_x + c_x, e_y + c_y, 0.4f), glm::vec3(0.0f, 0.0f, 1.0f));
 	}
-	mat4 perspec = glm::perspective(glm::radians(80.0f), 1.0f, 0.000000000001f, 5000.0f);
+	mat4 perspec = glm::perspective(glm::radians(80.0f), 1.0f, 0.001f, 5000.0f);
 	per_look = perspec * look_at;
 
 	glClearColor(1.0, 1.0, 1.0, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT);
+	
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
 	glColor3f(1, float(0.7137), float(0.7568));
 	glLineWidth(0.01f);
 	glPointSize(1.0f);
@@ -178,7 +180,7 @@ void Map::display() {
 		draw_string(msg, -0.30, 0.5);
 		draw_string(end_msg, -0.75, 0.3);
 	}
-	glFlush();
+	glutSwapBuffers();
 	return;
 }
 void Map::draw_map(int y, int x, int e_map[map_size][map_size], Enemy e_list[50], int b_map[map_size][map_size], Bullet b_list[50]) {
