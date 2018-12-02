@@ -12,11 +12,7 @@ uniform mat4 view_model;
 uniform vec4 cam;
 uniform vec3 player;
 
-
-out vec3 T;
-out vec3 N;
-out vec3 B;
-
+out mat3 TBN;
 out vec2 UV;
 out vec4 eye;
 out vec3 normal_out;
@@ -27,11 +23,12 @@ out vec3 point2_light;
 void main()
 {
 	gl_Position = ctm * vPosition;
-	T = (normal_model * vec4(normalize(tangent),1)).xyz;
-    N = (normal_model * vec4(normalize(vNormal),1)).xyz;
-    B = (normal_model * vec4(normalize(bitangent),1)).xyz;
 	
 	UV = _uv;
+	vec3 T = (vec4(normalize(tangent),1)).xyz;
+    vec3 N = (vec4(normalize(vNormal),1)).xyz;
+    vec3 B = (vec4(normalize(bitangent),1)).xyz;
+	TBN = mat3(T, B, N);
 
 	eye = cam - (view_model * vPosition);
 	cam_out = vec3(cam);

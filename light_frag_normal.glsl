@@ -6,9 +6,7 @@ in vec3 cam_out;
 in vec3 point1_light;
 in vec3 point2_light;
 in vec2 UV;
-in vec3 T;
-in vec3 B;
-in vec3 N;
+in mat3 TBN;
 
 uniform sampler2D  NormalTextureSampler;
 uniform vec4 diffuse;
@@ -21,7 +19,6 @@ out vec4 fcolor;
 
 void main()
 {
-	mat3 TBN = mat3(T, B, N);
 	vec3 normal_out = texture2D(NormalTextureSampler, UV).rgb;
 	normal_out = normalize(normal_out * 2.0 - 1.0);  // this normal is in tangent space
 	normal_out = TBN * normal_out;
@@ -54,6 +51,5 @@ void main()
         spec += specular * pow(intSpec, shine_point);
     }
 	float intensity = (intensity1+intensity2+intensity3);
-    fcolor = max(intensity * diffuse + spec, ambient);
-	
+	fcolor = max(intensity * diffuse + spec, ambient);
 }

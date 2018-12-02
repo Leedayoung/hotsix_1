@@ -179,7 +179,7 @@ void Map::display() {
 	return;
 }
 void Map::draw_map(int y, int x, int e_map[map_size][map_size], Enemy e_list[50], int b_map[map_size][map_size], Bullet b_list[50]) {
-	glUseProgram(light_program);
+	glUseProgram(normal_program);
 	int index;
 	index = WALL;
 	glBindVertexArray(vao[index+DEBUG]);
@@ -189,19 +189,20 @@ void Map::draw_map(int y, int x, int e_map[map_size][map_size], Enemy e_list[50]
 	vec4 ambient_color = vec4(0.15, 0.15, 0.0, 1.0);
 	mat4 inv_view_mat = inverse(trans);
 	mat4 MVI = transpose(inv_view_mat);
-	mat3 normal_mtx = mat3(MVI);
+	mat3 normal_mtx = mat4(1.0);
 
-	glUniformMatrix4fv(light_ctm, 1, GL_FALSE, &final_mat[0][0]);
-	glUniformMatrix4fv(light_view, 1, GL_FALSE, &trans[0][0]);
-	glUniformMatrix3fv(light_normal, 1, GL_FALSE, &normal_mtx[0][0]);
+	glUniformMatrix4fv(normal_ctm, 1, GL_FALSE, &final_mat[0][0]);
+	glUniformMatrix4fv(normal_view_model, 1, GL_FALSE, &trans[0][0]);
+	glUniformMatrix3fv(normal_normal_model, 1, GL_FALSE, &normal_mtx[0][0]);
 
-	glUniform4fv(light_diffuse, 1, &vec_color[0]);
-	glUniform4fv(light_ambient, 1, &ambient_color[0]);
-	glUniform4fv(light_specular, 1, &vec_color[0]);
+	glUniform4fv(normal_diffuse, 1, &vec_color[0]);
+	glUniform4fv(normal_ambient, 1, &ambient_color[0]);
+	glUniform4fv(normal_specular, 1, &vec_color[0]);
 
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_FILL);
 	glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
+
 
 	if (map_arr[y][x] == map_info::wall) {
 		glUseProgram(normal_program);
@@ -232,6 +233,7 @@ void Map::draw_map(int y, int x, int e_map[map_size][map_size], Enemy e_list[50]
 		glUseProgram(light_program);
 	}
 	else if (map_arr[y][x] == map_info::item) {
+		glUseProgram(light_program);
 		index = ITEM;
 		glBindVertexArray(vao[index+DEBUG]);
 		mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, 0.1));
@@ -257,11 +259,14 @@ void Map::draw_map(int y, int x, int e_map[map_size][map_size], Enemy e_list[50]
 		glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
 	}
 	else if (e_map[y][x] != 0) {
+		glUseProgram(light_program);
 		e_list[e_map[y][x]].display();
 	}
 	else if (b_map[y][x] != 0) {
+		glUseProgram(light_program);
 		b_list[b_map[y][x]].display();
 	}
+	glUseProgram(light_program);
 }
 Map::Map() {
 	win = false;
