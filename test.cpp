@@ -321,55 +321,24 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 			sum_vec = vec3(0.0, 0.0, 0.0);
 		}
 	}
-
 	
-	unsigned int texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	// set the texture wrapping/filtering options (on the currently bound texture object)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	
-	/*int width, height, nrChannels;
-	unsigned char *data = stbi_load(&texture_path[0], &width, &height, &nrChannels, 0);
-	if (data) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		//glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else {
-		cout << "Faile to load texture" << endl;
-	}
-	stbi_image_free(data);
-	*/
-
-	//glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	//glEnableVertexAttribArray(2);	
-	
-
 	glGenVertexArrays(1, &vao[index]);
 	glBindVertexArray(vao[index]);
 	GLuint buffer;
+
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	glBufferData(GL_ARRAY_BUFFER, out_vertices.size() * sizeof(vec4), &out_vertices[0], GL_STATIC_DRAW);
 	vao_size[index] = out_vertices.size();
-	GLuint loc = glGetAttribLocation(program, "vPosition");
-	glEnableVertexAttribArray(loc);
-	glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-
-	glGenVertexArrays(1, &vao[index+DEBUG]);
-	glBindVertexArray(vao[index+DEBUG]);
 	loc = glGetAttribLocation(light_program, "vPosition");
 	glEnableVertexAttribArray(loc);
 	glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));	
+
 	//vertex normal setting
 	GLuint normalbuffer;
 	glGenBuffers(1, &normalbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
 	glBufferData(GL_ARRAY_BUFFER, out_normal_map.size() * sizeof(glm::vec3), &out_normal_map[0], GL_STATIC_DRAW);
-	// 3rd attribute buffer : normals
 	GLuint vNormal = glGetAttribLocation(light_program, "vNormal");
 	glEnableVertexAttribArray(vNormal);
 	glVertexAttribPointer(
@@ -385,7 +354,6 @@ void load_obj_files(string file_path, string texture_path, int type, int index) 
 	glGenBuffers(1, &normalbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
 	glBufferData(GL_ARRAY_BUFFER, out_normal_map_flat.size() * sizeof(glm::vec3), &out_normal_map_flat[0], GL_STATIC_DRAW);
-	// 3rd attribute buffer : normals
 	GLuint vNormal_flat = glGetAttribLocation(light_program, "vNormal_flat");
 	glEnableVertexAttribArray(vNormal_flat);
 	glVertexAttribPointer(

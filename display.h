@@ -11,7 +11,7 @@
 #include <glm/gtc/type_ptr.hpp>
 using namespace glm;
 #define v_size 50
-#define DEBUG 20
+#define DEBUG 0
 
 extern GLuint program;
 extern GLint ctmParam;
