@@ -69,9 +69,9 @@ void Map::display() {
 	//Pre-define-directional light
 	glUseProgram(light_program);
 	float shiness = 10;
-	float light1 = 0.25;
-	float light2 = 0.35;
-	float light3 = 0.35;
+	float light1 = 0.22;
+	float light2 = 0.38;
+	float light3 = 0.38;
 	vec4 light_color_ = vec4(1.0, 1.0, 1.0, 1.0);
 	vec3 lighting = vec3(1.0, 1.0, 0.5);
 	float x = player.get_x();
