@@ -1,7 +1,8 @@
 #version 120
 
 in vec3 vNormal;
-in vec4 vPosition;
+in vec4 vPosition;	
+in vec3 vNormal_flat;
 
 uniform mat4 ctm;
 uniform mat4 view_model;
@@ -9,6 +10,7 @@ uniform mat3 normal_mtx;
 uniform vec4 cam;
 uniform vec3 player;
 uniform int dir;
+uniform int flat;
 
 out vec4 eye;
 out vec3 normal_out;
@@ -18,10 +20,17 @@ out vec3 point2_light;
 
 void main()
 {
-   float w = 1.0;
+   vec3 u_vNormal;
+	if(flat == 0){
+		u_vNormal = vNormal_flat;
+		
+	}else{
+		u_vNormal = vNormal;
+	}
+   float w = 1.5;
    float h = 1.2;
    float al = 1.0;
-   normal_out = normalize(normal_mtx*vNormal);
+   normal_out = normalize(normal_mtx*u_vNormal);
    eye = cam - (view_model * vPosition);
    gl_Position = ctm * vPosition;
    cam_out = vec3(cam);

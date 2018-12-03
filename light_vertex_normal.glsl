@@ -12,12 +12,12 @@ uniform mat4 view_model;
 uniform vec4 cam;
 uniform vec3 player;
 uniform int dir;
+uniform int flat;
 
 
 out mat3 TBN;
 out vec2 UV;
 out vec3 eye;
-out vec3 normal_out;
 out vec3 cam_out;
 out vec3 point1_light;
 out vec3 point2_light;
@@ -26,7 +26,7 @@ void main()
 {
 	gl_Position = ctm * vPosition;
 	
-	float w = 1.0;
+	float w = 1.5;
     float h = 1.2;
     float al = 1.0;
 	UV = _uv;

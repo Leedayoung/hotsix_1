@@ -56,6 +56,7 @@ void Bullet::display() {
 	mat4 MVI = transpose(inv_view_mat);
 	mat3 normal_mtx = mat3(MVI);
 
+
 	vec4 vec_color = BULLET_COLOR;
 	glUniformMatrix4fv(light_ctm, 1, GL_FALSE, &final_mat[0][0]);
 	glUniformMatrix4fv(light_view, 1, GL_FALSE, &view_mat_pos[0][0]);

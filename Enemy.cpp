@@ -60,6 +60,7 @@ void Enemy::display() {
 	mat4 final_mat = per_look * trans * rot * y_z * scale;// *rot * scale;
 	vec4 vec_color = vec4(0.9, 0.9, 0.9, 1.0);
 	vec4 ambient_color = vec4(0.3, 0.3, 0.3, 1.0);
+	float shiness = 1.0;
 
 	mat4 inv_view_mat = inverse(view_mat_pos);
 	mat4 MVI = transpose(inv_view_mat);
@@ -72,6 +73,7 @@ void Enemy::display() {
 	glUniform4fv(light_diffuse, 1, &vec_color[0]);
 	glUniform4fv(light_ambient, 1, &ambient_color[0]);
 	glUniform4fv(light_specular, 1, &vec_color[0]);
+	glUniform1f(light_shine, shiness);
 
 	glUniform1i(shading_mod, (int)shading_mode);
 	
@@ -89,6 +91,9 @@ void Enemy::display() {
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_FILL);
 	glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
+	shiness = 10.0;
+	glUniform1f(light_shine, shiness);
+
 	glUseProgram(program);
 	/*
 	glLineWidth(0.01);

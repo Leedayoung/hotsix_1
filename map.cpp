@@ -35,9 +35,9 @@ void Map::display() {
 		z = 4.5f;
 		break;
 	case 1://1 person
-		s = 1.3;
+		s = 1.4;
 		e = -1;
-		z = 1.3f;
+		z = 1.5f;
 		break;
 	}
 	switch (direc) {
@@ -70,8 +70,8 @@ void Map::display() {
 	glUseProgram(light_program);
 	float shiness = 10;
 	float light1 = 0.25;
-	float light2 = 0.3;
-	float light3 = 0.3;
+	float light2 = 0.35;
+	float light3 = 0.35;
 	vec4 light_color_ = vec4(1.0, 1.0, 1.0, 1.0);
 	vec3 lighting = vec3(1.0, 1.0, 0.5);
 	float x = player.get_x();
