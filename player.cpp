@@ -115,8 +115,6 @@ void Player::display() {
 	glUniform4fv(light_diffuse, 1, &vec_color[0]);
 	glUniform4fv(light_ambient, 1, &ambient_color[0]);
 	glUniform4fv(light_specular, 1, &vec_color[0]);
-
-	glUniform1i(shading_mod, (int)shading_mode);
 	//glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &final_mat[0][0]);
 	/*
 	vec_color = BACK_COLOR;

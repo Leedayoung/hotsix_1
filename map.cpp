@@ -87,6 +87,7 @@ void Map::display() {
 	glUniform1i(light_player_dir, player.get_direction());
 	glUniform3fv(light_dir, 1, &lighting[0]);
 	glUniform3fv(player_parsing, 1, &player_vec[0]);
+	glUniform1i(shading_mod, (int)shading_mode);
 	
 	glUseProgram(normal_program);
 	glUniform4fv(normal_cam, 1, &cam_position[0]);

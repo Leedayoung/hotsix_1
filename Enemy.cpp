@@ -74,8 +74,6 @@ void Enemy::display() {
 	glUniform4fv(light_ambient, 1, &ambient_color[0]);
 	glUniform4fv(light_specular, 1, &vec_color[0]);
 	glUniform1f(light_shine, shiness);
-
-	glUniform1i(shading_mod, (int)shading_mode);
 	
 	/*
 	glUniformMatrix4fv(v_mod, 1, GL_FALSE, &view_mat_pos[0][0]);

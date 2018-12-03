@@ -43,7 +43,7 @@ void Bullet::display() {
 		break;
 	}
 	int index = BULL;
-
+	glUseProgram(light_program);
 	glBindVertexArray(vao[index+DEBUG]);
 	mat4 y_z = mat4(vec4(1.0, 0.0, 0.0, 0.0), vec4(0.0, 0.0, 1.0, 0.0), vec4(0.0, 1.0, 0.0, 0.0), vec4(0.0, 0.0, 0.0, 1.0));
 	mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(pos_x, pos_y, 0.0));
@@ -65,8 +65,8 @@ void Bullet::display() {
 	glUniform4fv(light_diffuse, 1, &vec_color[0]);
 	glUniform4fv(light_ambient, 1, &ambient_color[0]);
 	glUniform4fv(light_specular, 1, &vec_color[0]);
-
 	glUniform1i(shading_mod, (int)shading_mode);
+
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_FILL);
 	glDrawArrays(GL_TRIANGLES, 0, vao_size[index]);
