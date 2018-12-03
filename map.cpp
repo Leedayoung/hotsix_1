@@ -69,9 +69,9 @@ void Map::display() {
 	//Pre-define-directional light
 	glUseProgram(light_program);
 	float shiness = 10;
-	float light1 = 0.22;
-	float light2 = 0.38;
-	float light3 = 0.38;
+	float light1 = 0.20;
+	float light2 = 0.50;
+	float light3 = 0.50;
 	vec4 light_color_ = vec4(1.0, 1.0, 1.0, 1.0);
 	vec3 lighting = vec3(1.0, 1.0, 0.5);
 	float x = player.get_x();
@@ -197,8 +197,8 @@ void Map::draw_map(int y, int x, int e_map[map_size][map_size], Enemy e_list[50]
 	glBindVertexArray(vao[index+DEBUG]);
 	mat4 trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, -0.05))*scale(mat4(1.0), vec3(1.0, 1.0, 0.1));
 	mat4 final_mat = per_look * trans;
-	vec4 vec_color = vec4(0.2, 0.5, 0.0, 1.0);
-	vec4 ambient_color = vec4(0.02, 0.05, 0.0, 1.0);
+	vec4 vec_color = vec4(0.15, 0.3, 0.0, 1.0);
+	vec4 ambient_color = vec4(0.02, 0.04, 0.0, 1.0);
 	mat4 inv_view_mat = inverse(trans);
 	mat4 MVI = transpose(inv_view_mat);
 	mat3 normal_mtx = mat4(1.0);

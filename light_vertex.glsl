@@ -32,7 +32,7 @@ void main()
 	}
    float w = 1.5;
    float h = 1.2;
-   float al = 1.5;
+   float al = 1.2;
    normal_out = normalize(normal_mtx*u_vNormal);
    eye = cam - (view_model * vPosition);
    gl_Position = ctm * vPosition;

@@ -30,7 +30,7 @@ void main()
 	
 	float w = 1.5;
     float h = 1.2;
-    float al = 1.5;
+    float al = 1.2;
 	UV = _uv;
 	vec3 T = (vec4(normalize(tangent),1)).xyz;
     vec3 N = (vec4(normalize(vNormal),1)).xyz;
