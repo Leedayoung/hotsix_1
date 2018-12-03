@@ -97,8 +97,9 @@ void Player::display() {
 		int g_index = GUN;
 		gun = false;
 		mat4 gun_trans = glm::translate(glm::mat4(1.0), hand_loc) *glm::scale(glm::mat4(1.0), vec3(3.0f, 3.0f, 3.0f));
-		mat4 gun_view_mtx = view_mat_pos*gun_trans;
-		mat4 gun_final_mat = final_mat * gun_trans;
+		mat4 gun_rot = mat4(vec4(1.0, 0.0, 0.0, 0.0), vec4(0.0, 1.0, 0.0, 0.0), vec4(0.0, 0.0, -1.0, 0.0), vec4(0.0, 0.0, 0.0, 1.0));
+		mat4 gun_view_mtx = view_mat_pos*gun_trans* gun_rot;
+		mat4 gun_final_mat = final_mat * gun_trans* gun_rot;
 		mat4 gun_inv_view_mat = inverse(gun_view_mtx);
 		mat4 gun_MVI = transpose(gun_inv_view_mat);
 		mat3 gun_normal_mtx = mat3(gun_MVI);
@@ -110,8 +111,8 @@ void Player::display() {
 		glUniformMatrix3fv(light_normal, 1, GL_FALSE, &gun_normal_mtx[0][0]);
 
 		glUniform4fv(light_diffuse, 1, &vec_color_[0]);
-		glUniform4fv(light_ambient, 1, &ambient_color[0]);
-		glUniform4fv(light_specular, 1, &vec_color[0]);
+		glUniform4fv(light_ambient, 1, &ambient_color_[0]);
+		glUniform4fv(light_specular, 1, &vec_color_[0]);
 		glPolygonMode(GL_FRONT, GL_FILL);
 		glPolygonMode(GL_BACK, GL_FILL);
 		glDrawArrays(GL_TRIANGLES, 0, vao_size[g_index]);

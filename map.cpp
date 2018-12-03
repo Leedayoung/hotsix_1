@@ -35,9 +35,9 @@ void Map::display() {
 		z = 4.5f;
 		break;
 	case 1://1 person
-		s = 1.4;
-		e = -1;
-		z = 1.5f;
+		s = 2.0;
+		e = -0.2;
+		z = 1.7f;
 		break;
 	}
 	switch (direc) {
