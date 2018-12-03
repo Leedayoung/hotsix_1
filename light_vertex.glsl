@@ -24,7 +24,8 @@ void main()
 	if(flat == 0){
 		u_vNormal = vNormal_flat;
 		
-	}else{
+	}
+	else{
 		u_vNormal = vNormal;
 	}
    float w = 1.5;

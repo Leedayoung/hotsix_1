@@ -26,7 +26,6 @@ bool Bullet::move() {
 	return true;
 }
 void Bullet::display() {
-
 	float mul;
 	switch (direc) {
 	case direction::up:
@@ -56,7 +55,6 @@ void Bullet::display() {
 	mat4 MVI = transpose(inv_view_mat);
 	mat3 normal_mtx = mat3(MVI);
 
-
 	vec4 vec_color = BULLET_COLOR;
 	glUniformMatrix4fv(light_ctm, 1, GL_FALSE, &final_mat[0][0]);
 	glUniformMatrix4fv(light_view, 1, GL_FALSE, &view_mat_pos[0][0]);
@@ -65,7 +63,6 @@ void Bullet::display() {
 	glUniform4fv(light_diffuse, 1, &vec_color[0]);
 	glUniform4fv(light_ambient, 1, &ambient_color[0]);
 	glUniform4fv(light_specular, 1, &vec_color[0]);
-	glUniform1i(shading_mod, (int)shading_mode);
 
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_FILL);
