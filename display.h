@@ -103,7 +103,7 @@ extern vec4 point_light_col;
 #define HEART 9
 #define BULL v_size-2
 #define WALL v_size-1
-#define ITEM v_size-1
+#define ITEM v_size-5
 
 
 class treenode {
