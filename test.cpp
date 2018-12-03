@@ -138,7 +138,7 @@ void init() {
 
 	load_obj_files("OBJ files/M1911.obj","OBJ files/M1911-RIGHT.jpg", 0, GUN);
 	load_obj_files("OBJ files/bullet.obj","OBJ files/bullet.jpg", 0, BULL);
-	load_obj_files("OBJ files/cu.txt", "OBJ files/bullet.jpg", 0, ITEM);
+	load_obj_files("OBJ files/cube.obj", "OBJ files/bullet.jpg", 0, ITEM);
 	load_obj_files_normal("OBJ files/cube.obj", WALL);
 
 
