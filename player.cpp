@@ -57,7 +57,7 @@ void Player::move() {
 		pos_x += s;
 		break;
 	}
-	point_light_loc = vec3(pos_x, pos_y, 1.0);
+	//point_light_loc = vec3(pos_x, pos_y, 1.0);
 }
 
 void Player::display() {
