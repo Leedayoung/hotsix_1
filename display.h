@@ -82,7 +82,7 @@ extern vec4 point_light_col;
 #define BULLET_COLOR vec4(0.7, 0.0, 0.7, 1.0)
 #define ENEMY_COLOR vec4(0.8, 0.8, 0.8, 0.5)
 #define BACK_COLOR vec4(0.5, 0.5, 0.5, 1.0)
-#define GUN_COLOR vec4(0.3, 0.3, 0.3, 0.5)
+#define GUN_COLOR vec4(0.83, 0.83, 0.83, 1.0)
 #define TIME_SEG_COLOR vec4(1.0, 0.7, 0.7, 1.0)
 
 

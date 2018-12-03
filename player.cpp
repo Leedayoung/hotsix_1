@@ -97,11 +97,21 @@ void Player::display() {
 		int g_index = GUN;
 		gun = false;
 		mat4 gun_trans = glm::translate(glm::mat4(1.0), hand_loc) *glm::scale(glm::mat4(1.0), vec3(3.0f, 3.0f, 3.0f));
+		mat4 gun_view_mtx = view_mat_pos*gun_trans;
 		mat4 gun_final_mat = final_mat * gun_trans;
-		vec4 vec_color = GUN_COLOR;
-		glBindVertexArray(vao[g_index]);
-		glUniformMatrix4fv(ctmParam, 1, GL_FALSE, &gun_final_mat[0][0]);
-		glUniform4fv(vColor, 1, &vec_color[0]);
+		mat4 gun_inv_view_mat = inverse(gun_view_mtx);
+		mat4 gun_MVI = transpose(gun_inv_view_mat);
+		mat3 gun_normal_mtx = mat3(gun_MVI);
+		vec4 vec_color_ = GUN_COLOR;
+		vec4 ambient_color_ = 0.1f * GUN_COLOR;
+		glBindVertexArray(vao[g_index + DEBUG]);
+		glUniformMatrix4fv(light_ctm, 1, GL_FALSE, &gun_final_mat[0][0]);
+		glUniformMatrix4fv(light_view, 1, GL_FALSE, &gun_view_mtx[0][0]);
+		glUniformMatrix3fv(light_normal, 1, GL_FALSE, &gun_normal_mtx[0][0]);
+
+		glUniform4fv(light_diffuse, 1, &vec_color_[0]);
+		glUniform4fv(light_ambient, 1, &ambient_color[0]);
+		glUniform4fv(light_specular, 1, &vec_color[0]);
 		glPolygonMode(GL_FRONT, GL_FILL);
 		glPolygonMode(GL_BACK, GL_FILL);
 		glDrawArrays(GL_TRIANGLES, 0, vao_size[g_index]);
