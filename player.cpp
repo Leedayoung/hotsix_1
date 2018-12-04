@@ -98,8 +98,9 @@ void Player::display() {
 		gun = false;
 		mat4 gun_trans = glm::translate(glm::mat4(1.0), hand_loc);
 		mat4 gun_rot = glm::translate(glm::mat4(1.0), vec3(0.0, 2.0, 8.0)) * mat4(vec4(1.0, 0.0, 0.0, 0.0), vec4(0.0, 1.0, 0.0, 0.0), vec4(0.0, 0.0, -1.0, 0.0), vec4(0.0, 0.0, 0.0, 1.0));
-		mat4 gun_view_mtx = view_mat_pos*gun_trans* gun_rot;
-		mat4 gun_final_mat = final_mat * gun_trans* gun_rot;
+		mat4 gun_scale = glm::scale(glm::mat4(1.0), vec3(1.5f, 1.5f, 1.5f));
+		mat4 gun_view_mtx = view_mat_pos*gun_trans*gun_scale* gun_rot;
+		mat4 gun_final_mat = final_mat * gun_trans*gun_scale* gun_rot;
 		mat4 gun_inv_view_mat = inverse(gun_view_mtx);
 		mat4 gun_MVI = transpose(gun_inv_view_mat);
 		mat3 gun_normal_mtx = mat3(gun_MVI);
